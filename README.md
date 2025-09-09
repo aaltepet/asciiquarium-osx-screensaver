@@ -1,10 +1,12 @@
 # Asciiquarium macOS Screensaver
 
-A native macOS screensaver that brings the beloved asciiquarium terminal application to your screen saver.
+A native macOS screensaver and application that brings the beloved asciiquarium terminal application to your screen saver and desktop.
 
 ## Overview
 
-This project ports the popular [asciiquarium](https://github.com/cmatsuoka/asciiquarium) Perl script to a native macOS screensaver using the ScreenSaver framework. Experience the nostalgic charm of ASCII art aquarium animations right on your Mac's screen saver.
+This project ports the popular [asciiquarium](https://github.com/cmatsuoka/asciiquarium) Perl script to native macOS using Swift and the ScreenSaver/AppKit frameworks. Experience the nostalgic charm of ASCII art aquarium animations right on your Mac's screen saver or in a standalone application window.
+
+**License**: GNU General Public License v2 (GPL-2.0) - matching the original asciiquarium
 
 ## Features
 
