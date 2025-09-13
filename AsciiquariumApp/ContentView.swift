@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var isAnimating = false
     @State private var asciiText = ""
     private let renderer = ASCIIRenderer()
-    
+
     var body: some View {
         VStack {
             // Title
@@ -20,13 +20,13 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding()
-            
+
             // ASCII Aquarium Display
             VStack {
                 Text("Fish Count: \(engine.entities.count)")
                     .font(.headline)
                     .padding(.bottom, 5)
-                
+
                 // ASCII Display
                 ScrollView {
                     Text(asciiText)
@@ -35,11 +35,11 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(8)
                 }
-                .frame(width: 800, height: 600)
+                .frame(width: AsciiquariumEngine.sceneWidth, height: AsciiquariumEngine.sceneHeight)
                 .background(Color.black)
                 .cornerRadius(8)
             }
-            
+
             // Controls
             HStack {
                 Button(isAnimating ? "Stop" : "Start") {
@@ -52,12 +52,14 @@ struct ContentView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                
+
                 Button("Add Fish") {
                     // Add a new fish to the aquarium
-                    let randomX = CGFloat.random(in: 0...800)
-                    let randomY = CGFloat.random(in: 0...600)
-                    let fish = AquariumEntity(type: .fish, position: CGPoint(x: randomX, y: randomY), shape: "><>", color: .cyan, speed: 1.0)
+                    let randomX = CGFloat.random(in: 0...AsciiquariumEngine.sceneWidth)
+                    let randomY = CGFloat.random(in: 0...AsciiquariumEngine.sceneHeight)
+                    let fish = AquariumEntity(
+                        type: .fish, position: CGPoint(x: randomX, y: randomY), shape: "><>",
+                        color: .cyan, speed: 1.0)
                     engine.entities.append(fish)
                 }
                 .buttonStyle(.bordered)
