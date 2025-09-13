@@ -17,9 +17,11 @@ class AsciiquariumEngine: ObservableObject {
     private var lastUpdateTime: CFTimeInterval = 0
     private var frameCallback: ((CGRect) -> Void)?
 
-    // Scene dimensions
-    static let sceneWidth: CGFloat = 800
-    static let sceneHeight: CGFloat = 600
+    // Scene dimensions - will be calculated dynamically
+    var sceneWidth: CGFloat = 800
+    var sceneHeight: CGFloat = 600
+    var gridWidth: Int = 80
+    var gridHeight: Int = 24
 
     // Animation settings
     private let targetFPS: Double = 30.0
@@ -65,6 +67,32 @@ class AsciiquariumEngine: ObservableObject {
         frameCallback = callback
     }
 
+    /// Update scene dimensions based on optimal grid calculation
+    func updateSceneDimensions(width: Int, height: Int, fontSize: CGFloat) {
+        self.gridWidth = width
+        self.gridHeight = height
+
+        // Calculate pixel dimensions based on font metrics
+        let font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+        let charWidth = calculateCharacterWidth(for: font)
+        let lineHeight = calculateLineHeight(for: font)
+
+        self.sceneWidth = CGFloat(width) * charWidth
+        self.sceneHeight = CGFloat(height) * lineHeight
+    }
+
+    /// Calculate character width for a given font
+    private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
+        let sampleString = "M"
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        return sampleString.size(withAttributes: attributes).width
+    }
+
+    /// Calculate line height for a given font
+    private func calculateLineHeight(for font: NSFont) -> CGFloat {
+        return font.ascender - font.descender + font.leading
+    }
+
     /// Update animation frame
     private func updateFrame() {
         let currentTime = CACurrentMediaTime()
@@ -75,12 +103,12 @@ class AsciiquariumEngine: ObservableObject {
         spawnNewEntities(currentTime: currentTime)
 
         // Notify that a new frame is ready
-        frameCallback?(CGRect(x: 0, y: 0, width: Self.sceneWidth, height: Self.sceneHeight))
+        frameCallback?(CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight))
     }
 
     /// Update all entities
     private func updateEntities(deltaTime: CFTimeInterval) {
-        let bounds = CGRect(x: 0, y: 0, width: Self.sceneWidth, height: Self.sceneHeight)
+        let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
         let currentTime = Date().timeIntervalSince1970
 
         // Update existing entities
@@ -112,7 +140,7 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a new fish
     private func spawnFish() {
-        let bounds = CGRect(x: 0, y: 0, width: Self.sceneWidth, height: Self.sceneHeight)
+        let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
         let position = CGPoint(
             x: CGFloat.random(in: 0...bounds.width),
             y: CGFloat.random(in: 0...bounds.height)

@@ -148,6 +148,75 @@ class ASCIIRenderer {
         return Int(bounds.height / lineHeight)
     }
 
+    /// Calculate optimal character grid dimensions that fit perfectly in the given bounds
+    func calculateOptimalGridDimensions(for bounds: CGRect) -> (
+        width: Int, height: Int, fontSize: CGFloat
+    ) {
+        var bestGrid = (width: 0, height: 0, fontSize: CGFloat(8.0))
+        var bestScore = 0.0
+
+        // Try different font sizes to find the best fit
+        for testSize in stride(from: 8.0, through: 24.0, by: 0.5) {
+            let testFont = NSFont.monospacedSystemFont(ofSize: testSize, weight: .regular)
+            let charWidth = calculateCharacterWidth(for: testFont)
+            let lineHeight = calculateLineHeight(for: testFont)
+
+            let gridWidth = Int(bounds.width / charWidth)
+            let gridHeight = Int(bounds.height / lineHeight)
+
+            // Skip if dimensions are invalid
+            guard gridWidth > 0 && gridHeight > 0 else { continue }
+
+            // Calculate actual used dimensions
+            let usedWidth = CGFloat(gridWidth) * charWidth
+            let usedHeight = CGFloat(gridHeight) * lineHeight
+
+            // Calculate utilization percentages
+            let widthUtilization = usedWidth / bounds.width
+            let heightUtilization = usedHeight / bounds.height
+
+            // New scoring system that prioritizes both width and height utilization
+            // Weight width utilization more heavily to ensure we use the full width
+            let widthScore = widthUtilization * 1.5  // Weight width more heavily
+            let heightScore = heightUtilization * 1.0
+            let totalScore = widthScore + heightScore
+
+            // Also consider the total area utilization as a tie-breaker
+            let areaUtilization = (usedWidth * usedHeight) / (bounds.width * bounds.height)
+            let finalScore = totalScore + (areaUtilization * 0.5)
+
+            // Choose this solution if it's better
+            if finalScore > bestScore {
+                bestScore = finalScore
+                bestGrid = (width: gridWidth, height: gridHeight, fontSize: testSize)
+            }
+        }
+
+        // If we didn't find a good solution, fall back to a conservative approach
+        if bestGrid.width == 0 || bestGrid.height == 0 {
+            let fallbackFont = NSFont.monospacedSystemFont(ofSize: 12.0, weight: .regular)
+            let charWidth = calculateCharacterWidth(for: fallbackFont)
+            let lineHeight = calculateLineHeight(for: fallbackFont)
+            let gridWidth = max(1, Int(bounds.width / charWidth))
+            let gridHeight = max(1, Int(bounds.height / lineHeight))
+            bestGrid = (width: gridWidth, height: gridHeight, fontSize: 12.0)
+        }
+
+        return bestGrid
+    }
+
+    /// Calculate character width for a given font
+    private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
+        let sampleString = "M"
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        return sampleString.size(withAttributes: attributes).width
+    }
+
+    /// Calculate line height for a given font
+    private func calculateLineHeight(for font: NSFont) -> CGFloat {
+        return font.ascender - font.descender + font.leading
+    }
+
     /// Update font with new size and clear cache
     private func updateFont(size: CGFloat) {
         font = NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
