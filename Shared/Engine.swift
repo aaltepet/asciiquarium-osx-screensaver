@@ -69,6 +69,11 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Update scene dimensions based on optimal grid calculation
     func updateSceneDimensions(width: Int, height: Int, fontSize: CGFloat) {
+        print("=== Engine Scene Dimensions Update ===")
+        print("Input: width=\(width), height=\(height), fontSize=\(fontSize)")
+        print("Previous: sceneWidth=\(sceneWidth), sceneHeight=\(sceneHeight)")
+        print("Previous grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
+
         self.gridWidth = width
         self.gridHeight = height
 
@@ -79,13 +84,38 @@ class AsciiquariumEngine: ObservableObject {
 
         self.sceneWidth = CGFloat(width) * charWidth
         self.sceneHeight = CGFloat(height) * lineHeight
+
+        print("Calculated: charWidth=\(charWidth), lineHeight=\(lineHeight)")
+        print("New: sceneWidth=\(sceneWidth), sceneHeight=\(sceneHeight)")
+        print("New grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
+        print("=====================================")
     }
 
     /// Calculate character width for a given font
     private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
-        let sampleString = "M"
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        return sampleString.size(withAttributes: attributes).width
+        // Use NSLayoutManager to get the actual space each character takes when rendered
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer()
+        let textStorage = NSTextStorage()
+
+        textStorage.addLayoutManager(layoutManager)
+        layoutManager.addTextContainer(textContainer)
+
+        // Test with multiple characters to get accurate per-character width
+        let testString = "MMMMMMMMMMMMMMMM"  // 16 characters
+        let attributedString = NSAttributedString(string: testString, attributes: [.font: font])
+        textStorage.setAttributedString(attributedString)
+
+        let usedRect = layoutManager.usedRect(for: textContainer)
+        let perCharWidth = usedRect.width / CGFloat(testString.count)
+
+        // Validate the result and fallback to font.maximumAdvancement if invalid
+        if perCharWidth.isFinite && perCharWidth > 0 {
+            return perCharWidth
+        } else {
+            print("Warning: NSLayoutManager calculation failed, using font.maximumAdvancement")
+            return font.maximumAdvancement.width
+        }
     }
 
     /// Calculate line height for a given font

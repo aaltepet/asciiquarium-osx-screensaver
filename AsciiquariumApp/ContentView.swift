@@ -29,27 +29,23 @@ struct ContentView: View {
                     .padding(.bottom, 5)
 
                 // ASCII Display
-                Text(asciiText)
-                    .font(.system(.body, design: .monospaced))
-                    .foregroundColor(.cyan)
-                    .frame(
-                        width: engine.sceneWidth,
-                        height: engine.sceneHeight, alignment: .topLeading
-                    )
-                    .background(Color.black)
-                    .cornerRadius(8)
-                    .clipped()
-                    .background(
-                        GeometryReader { geometry in
-                            Color.clear
-                                .onAppear {
-                                    updateDisplayBounds(geometry.size)
-                                }
-                                .onChange(of: geometry.size) { _, newSize in
-                                    updateDisplayBounds(newSize)
-                                }
+                GeometryReader { geometry in
+                    Text(asciiText)
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundColor(.cyan)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .background(Color.black)
+                        .cornerRadius(8)
+                        .clipped()
+                        .onAppear {
+                            // Always update bounds when geometry appears
+                            updateDisplayBounds(geometry.size)
                         }
-                    )
+                        .onChange(of: geometry.size) { _, newSize in
+                            updateDisplayBounds(newSize)
+                        }
+                }
+                .frame(minHeight: 200)  // Ensure minimum height for initial display
             }
 
             // Controls
@@ -85,6 +81,14 @@ struct ContentView: View {
                 let attributedString = renderer.renderScene(entities: engine.entities, in: bounds)
                 asciiText = attributedString.string
             }
+
+            // Calculate initial optimal grid dimensions immediately
+            let optimalGrid = renderer.calculateOptimalGridDimensions(for: displayBounds)
+            engine.updateSceneDimensions(
+                width: optimalGrid.width,
+                height: optimalGrid.height,
+                fontSize: optimalGrid.fontSize
+            )
         }
     }
 
@@ -92,12 +96,22 @@ struct ContentView: View {
     private func updateDisplayBounds(_ size: CGSize) {
         let newBounds = CGRect(x: 0, y: 0, width: size.width, height: size.height)
 
-        // Only update if bounds actually changed
+        print("=== ContentView Bounds Update ===")
+        print("New size: \(size)")
+        print("New bounds: \(newBounds)")
+        print("Previous bounds: \(displayBounds)")
+        print("Bounds changed: \(newBounds != displayBounds)")
+
+        // Always update when bounds change
         if newBounds != displayBounds {
             displayBounds = newBounds
 
             // Calculate optimal grid dimensions
             let optimalGrid = renderer.calculateOptimalGridDimensions(for: newBounds)
+
+            print(
+                "Optimal grid: width=\(optimalGrid.width), height=\(optimalGrid.height), fontSize=\(optimalGrid.fontSize)"
+            )
 
             // Update engine with new dimensions
             engine.updateSceneDimensions(
@@ -106,6 +120,7 @@ struct ContentView: View {
                 fontSize: optimalGrid.fontSize
             )
         }
+        print("=================================")
     }
 }
 
