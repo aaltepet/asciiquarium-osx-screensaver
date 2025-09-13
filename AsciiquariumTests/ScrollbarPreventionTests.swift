@@ -54,12 +54,12 @@ struct ScrollbarPreventionTests {
                 "Content height should fit within bounds. Actual: \(actualHeight), Bounds: \(bounds.height)"
             )
 
-            // Content should use most of the available space (at least 80%)
+            // Content should use most of the available space (at least 90% width, 80% height)
             let widthUtilization = actualWidth / bounds.width
             let heightUtilization = actualHeight / bounds.height
             #expect(
-                widthUtilization >= 0.8,
-                "Should use at least 80% of available width. Utilization: \(widthUtilization)")
+                widthUtilization >= 0.90,
+                "Should use at least 90% of available width. Utilization: \(widthUtilization)")
             #expect(
                 heightUtilization >= 0.8,
                 "Should use at least 80% of available height. Utilization: \(heightUtilization)")
@@ -102,8 +102,8 @@ struct ScrollbarPreventionTests {
             let widthUtilization = actualWidth / bounds.width
             let heightUtilization = actualHeight / bounds.height
             #expect(
-                widthUtilization >= 0.7,
-                "Should use at least 70% of available width for \(name). Utilization: \(widthUtilization)"
+                widthUtilization >= 0.85,
+                "Should use at least 85% of available width for \(name). Utilization: \(widthUtilization)"
             )
             #expect(
                 heightUtilization >= 0.7,

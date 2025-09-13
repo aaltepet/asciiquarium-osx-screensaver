@@ -154,9 +154,11 @@ class ASCIIRenderer {
     ) {
         var bestGrid = (width: 0, height: 0, fontSize: CGFloat(8.0))
         var bestScore = 0.0
+        var bestWidthUtilization = 0.0
 
         // Try different font sizes to find the best fit
-        for testSize in stride(from: 8.0, through: 24.0, by: 0.5) {
+        // Use smaller increments for more precise width optimization
+        for testSize in stride(from: 8.0, through: 24.0, by: 0.25) {
             let testFont = NSFont.monospacedSystemFont(ofSize: testSize, weight: .regular)
             let charWidth = calculateCharacterWidth(for: testFont)
             let lineHeight = calculateLineHeight(for: testFont)
@@ -175,20 +177,33 @@ class ASCIIRenderer {
             let widthUtilization = usedWidth / bounds.width
             let heightUtilization = usedHeight / bounds.height
 
-            // New scoring system that prioritizes both width and height utilization
-            // Weight width utilization more heavily to ensure we use the full width
-            let widthScore = widthUtilization * 1.5  // Weight width more heavily
-            let heightScore = heightUtilization * 1.0
-            let totalScore = widthScore + heightScore
-
-            // Also consider the total area utilization as a tie-breaker
-            let areaUtilization = (usedWidth * usedHeight) / (bounds.width * bounds.height)
-            let finalScore = totalScore + (areaUtilization * 0.5)
-
-            // Choose this solution if it's better
-            if finalScore > bestScore {
-                bestScore = finalScore
-                bestGrid = (width: gridWidth, height: gridHeight, fontSize: testSize)
+            // Two-pass approach: First prioritize width utilization, then optimize overall
+            let widthThreshold: CGFloat = 0.90  // Only consider solutions with 90%+ width utilization
+            
+            if widthUtilization >= widthThreshold {
+                // For high width utilization, use a balanced score
+                let widthScore = widthUtilization * 2.0
+                let heightScore = heightUtilization * 1.0
+                let areaUtilization = (usedWidth * usedHeight) / (bounds.width * bounds.height)
+                let finalScore = widthScore + heightScore + (areaUtilization * 0.3)
+                
+                if finalScore > bestScore || (widthUtilization > bestWidthUtilization && finalScore >= bestScore * 0.95) {
+                    bestScore = finalScore
+                    bestWidthUtilization = widthUtilization
+                    bestGrid = (width: gridWidth, height: gridHeight, fontSize: testSize)
+                }
+            } else if bestWidthUtilization < widthThreshold {
+                // Only consider lower width utilization if we haven't found a good width solution yet
+                let widthScore = widthUtilization * 4.0  // Heavily weight width utilization
+                let heightScore = heightUtilization * 1.0
+                let areaUtilization = (usedWidth * usedHeight) / (bounds.width * bounds.height)
+                let finalScore = widthScore + heightScore + (areaUtilization * 0.1)
+                
+                if finalScore > bestScore {
+                    bestScore = finalScore
+                    bestWidthUtilization = widthUtilization
+                    bestGrid = (width: gridWidth, height: gridHeight, fontSize: testSize)
+                }
             }
         }
 
