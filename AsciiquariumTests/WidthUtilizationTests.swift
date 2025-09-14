@@ -52,9 +52,11 @@ struct WidthUtilizationTests {
         for y in 0..<gridDimensions.height {
             for x in 0..<gridDimensions.width {
                 let entity = AquariumEntity(
+                    type: .fish,
                     position: CGPoint(x: CGFloat(x), y: CGFloat(y)),
                     shape: "X",
-                    color: .blue
+                    color: .blue,
+                    speed: 1.0
                 )
                 entities.append(entity)
             }
@@ -205,7 +207,7 @@ struct WidthUtilizationTests {
         print("Selected Font Size: \(gridDimensions.fontSize)")
         print("Best Font Size: \(bestFontSize)")
         print(
-            "Selected Width Utilization: \(gridDimensions.width * calculateCharacterWidth(for: NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)) / bounds.width * 100)%"
+            "Selected Width Utilization: \(CGFloat(gridDimensions.width) * calculateCharacterWidth(for: NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)) / bounds.width * 100)%"
         )
         print("Best Width Utilization: \(bestWidthUtilization * 100)%")
 

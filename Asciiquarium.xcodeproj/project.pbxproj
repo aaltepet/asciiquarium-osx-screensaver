@@ -354,6 +354,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
+				836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
+				836CB76F2E726FFF00A5207B /* Entity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,7 +607,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Asciiquarium.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Asciiquarium";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsciiquariumApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AsciiquariumApp";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Debug;
@@ -627,7 +630,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Asciiquarium.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Asciiquarium";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsciiquariumApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AsciiquariumApp";
 				XROS_DEPLOYMENT_TARGET = 2.2;
 			};
 			name = Release;

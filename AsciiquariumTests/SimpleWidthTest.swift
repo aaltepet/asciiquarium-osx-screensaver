@@ -1,16 +1,17 @@
 import AppKit
 import Foundation
+import Testing
 
 /// Simple test to prove width utilization issues
 struct SimpleWidthTest {
 
-    static func runTest() {
+    @Test func testWidthUtilization() async throws {
         print("=== Width Utilization Test ===")
 
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Simulate the two-step algorithm
-        let result = calculateOptimalGridDimensions(for: bounds)
+        let result = Self.calculateOptimalGridDimensions(for: bounds)
 
         print("Bounds: \(bounds)")
         print("Grid: \(result.width) x \(result.height)")
@@ -18,8 +19,8 @@ struct SimpleWidthTest {
 
         // Calculate character metrics
         let font = NSFont.monospacedSystemFont(ofSize: result.fontSize, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: font)
-        let lineHeight = calculateLineHeight(for: font)
+        let charWidth = Self.calculateCharacterWidth(for: font)
+        let lineHeight = Self.calculateLineHeight(for: font)
 
         print("Char Width: \(charWidth)")
         print("Line Height: \(lineHeight)")
@@ -56,8 +57,8 @@ struct SimpleWidthTest {
 
         for testSize in stride(from: 8.0, through: 24.0, by: 0.25) {
             let testFont = NSFont.monospacedSystemFont(ofSize: testSize, weight: .regular)
-            let testCharWidth = calculateCharacterWidth(for: testFont)
-            let testLineHeight = calculateLineHeight(for: testFont)
+            let testCharWidth = Self.calculateCharacterWidth(for: testFont)
+            let testLineHeight = Self.calculateLineHeight(for: testFont)
 
             let testGridWidth = Int(bounds.width / testCharWidth)
             let testGridHeight = Int(bounds.height / testLineHeight)
@@ -78,8 +79,8 @@ struct SimpleWidthTest {
 
         // Test the best font size
         let bestFont = NSFont.monospacedSystemFont(ofSize: bestFontSize, weight: .regular)
-        let bestCharWidth = calculateCharacterWidth(for: bestFont)
-        let bestLineHeight = calculateLineHeight(for: bestFont)
+        let bestCharWidth = Self.calculateCharacterWidth(for: bestFont)
+        let bestLineHeight = Self.calculateLineHeight(for: bestFont)
         let bestGridWidth = Int(bounds.width / bestCharWidth)
         let bestGridHeight = Int(bounds.height / bestLineHeight)
         let bestUsedWidth = CGFloat(bestGridWidth) * bestCharWidth
@@ -100,7 +101,7 @@ struct SimpleWidthTest {
         // Step 1: Find the optimal font size based on height utilization
         for testSize in stride(from: 8.0, through: 24.0, by: 0.25) {
             let testFont = NSFont.monospacedSystemFont(ofSize: testSize, weight: .regular)
-            let lineHeight = calculateLineHeight(for: testFont)
+            let lineHeight = Self.calculateLineHeight(for: testFont)
 
             let gridHeight = Int(bounds.height / lineHeight)
             guard gridHeight > 0 else { continue }
@@ -118,8 +119,8 @@ struct SimpleWidthTest {
 
         // Step 2: Calculate width based on the optimal font size
         let optimalFont = NSFont.monospacedSystemFont(ofSize: bestFontSize, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: optimalFont)
-        let lineHeight = calculateLineHeight(for: optimalFont)
+        let charWidth = Self.calculateCharacterWidth(for: optimalFont)
+        let lineHeight = Self.calculateLineHeight(for: optimalFont)
 
         let gridWidth = Int(bounds.width / charWidth)
         let gridHeight = Int(bounds.height / lineHeight)
@@ -141,6 +142,3 @@ struct SimpleWidthTest {
         return font.ascender - font.descender + font.leading
     }
 }
-
-// Run the test
-SimpleWidthTest.runTest()
