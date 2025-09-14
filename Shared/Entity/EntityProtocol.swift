@@ -37,6 +37,10 @@ protocol Entity: AnyObject {
     var collisionHandler: ((Entity) -> Void)? { get set }
     var collisionDepth: Int? { get set }
 
+    // MARK: - Layout Properties
+    var isFullWidth: Bool { get set }
+    var isFullHeight: Bool { get set }
+
     // MARK: - Computed Properties
     var size: Size2D { get }
     var isAlive: Bool { get }

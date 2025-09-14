@@ -108,39 +108,43 @@ class ASCIIRenderer {
 
         // Add entities to the scene
         for entity in sortedEntities {
-            let x = Int(CGFloat(entity.position.x) / characterWidth)
             let y = Int(CGFloat(entity.position.y) / lineHeight)
 
-            if x >= 0 && x < width && y >= 0 && y < height {
-                // Render each line of the entity's shape
-                for (shapeLineIndex, shapeLine) in entity.shape.enumerated() {
-                    let entityY = y + shapeLineIndex
-                    if entityY >= 0 && entityY < height {
-                        let line = lines[entityY]
-                        let startIndex = line.startIndex
-                        let endIndex = line.index(
-                            startIndex, offsetBy: min(x + shapeLine.count, width))
-                        let before = String(line[startIndex..<line.index(startIndex, offsetBy: x)])
-                        let after = String(line[endIndex..<line.endIndex])
+            if y >= 0 && y < height {
+                // Handle full-width entities
+                if entity.isFullWidth {
+                    // For full-width entities, generate current shape (allows for dynamic/random generation)
+                    if let fullWidthEntity = entity as? EntityFullWidth {
+                        let entityShape = fullWidthEntity.getShape(for: width)
+                        for (shapeLineIndex, shapeLine) in entityShape.enumerated() {
+                            let entityY = y + shapeLineIndex
+                            if entityY >= 0 && entityY < height {
+                                lines[entityY] = shapeLine
+                            }
+                        }
+                    }
+                } else {
+                    // Handle regular positioned entities - use shape directly for efficiency
+                    let x = Int(CGFloat(entity.position.x) / characterWidth)
+                    if x >= 0 && x < width {
+                        // Render each line of the entity's shape
+                        for (shapeLineIndex, shapeLine) in entity.shape.enumerated() {
+                            let entityY = y + shapeLineIndex
+                            if entityY >= 0 && entityY < height {
+                                let line = lines[entityY]
+                                let startIndex = line.startIndex
+                                let endIndex = line.index(
+                                    startIndex, offsetBy: min(x + shapeLine.count, width))
+                                let before = String(
+                                    line[startIndex..<line.index(startIndex, offsetBy: x)])
+                                let after = String(line[endIndex..<line.endIndex])
 
-                        lines[entityY] = before + shapeLine + after
+                                lines[entityY] = before + shapeLine + after
+                            }
+                        }
                     }
                 }
             }
-        }
-
-        // Add water surface (3 lines from bottom)
-        let surfaceY = max(0, height - 4)
-        if surfaceY < height {
-            let surfaceLine = String(repeating: "~", count: width)
-            lines[surfaceY] = surfaceLine
-        }
-
-        // Add bottom border (last line)
-        let bottomY = height - 1
-        if bottomY >= 0 && bottomY < height {
-            let bottomLine = String(repeating: "=", count: width)
-            lines[bottomY] = bottomLine
         }
 
         // Create attributed string

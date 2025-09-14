@@ -43,6 +43,9 @@
 		831152A62E773B2600E05696 /* EntityFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152812E773B2600E05696 /* EntityFactory.swift */; };
 		831152A72E773B2600E05696 /* BubbleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152772E773B2600E05696 /* BubbleEntity.swift */; };
 		831152A82E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
+		831152B22E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
+		831152B32E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
+		831152B42E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
 		836CB7652E726FD300A5207B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7632E726FD300A5207B /* ContentView.swift */; };
 		836CB7662E726FD300A5207B /* AsciiquariumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7612E726FD300A5207B /* AsciiquariumApp.swift */; };
 		836CB7672E726FD300A5207B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 836CB7622E726FD300A5207B /* Assets.xcassets */; };
@@ -87,6 +90,7 @@
 		831152812E773B2600E05696 /* EntityFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFactory.swift; sourceTree = "<group>"; };
 		831152822E773B2600E05696 /* EntityProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityProtocol.swift; sourceTree = "<group>"; };
 		831152832E773B2600E05696 /* EntityTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTypes.swift; sourceTree = "<group>"; };
+		831152B12E77837800E05696 /* EntityFullWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFullWidth.swift; sourceTree = "<group>"; };
 		836CB6E42E726B9F00A5207B /* AsciiquariumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiquariumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		836CB6F52E726BA100A5207B /* AsciiquariumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		836CB6FF2E726BA100A5207B /* AsciiquariumUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +176,7 @@
 				8311527F2E773B2600E05696 /* BaseEntity.swift */,
 				831152802E773B2600E05696 /* Entity.swift */,
 				831152812E773B2600E05696 /* EntityFactory.swift */,
+				831152B12E77837800E05696 /* EntityFullWidth.swift */,
 				831152822E773B2600E05696 /* EntityProtocol.swift */,
 				831152832E773B2600E05696 /* EntityTypes.swift */,
 			);
@@ -428,6 +433,7 @@
 				831152952E773B2600E05696 /* Entity.swift in Sources */,
 				831152962E773B2600E05696 /* SharkEntity.swift in Sources */,
 				831152972E773B2600E05696 /* CastleEntity.swift in Sources */,
+				831152B22E77837800E05696 /* EntityFullWidth.swift in Sources */,
 				831152982E773B2600E05696 /* EntityProtocol.swift in Sources */,
 				831152992E773B2600E05696 /* FishEntity.swift in Sources */,
 				8311529A2E773B2600E05696 /* EntityFactory.swift in Sources */,
@@ -455,6 +461,7 @@
 				831152A32E773B2600E05696 /* CastleEntity.swift in Sources */,
 				831152A42E773B2600E05696 /* EntityProtocol.swift in Sources */,
 				831152A52E773B2600E05696 /* FishEntity.swift in Sources */,
+				831152B42E77837800E05696 /* EntityFullWidth.swift in Sources */,
 				831152A62E773B2600E05696 /* EntityFactory.swift in Sources */,
 				831152A72E773B2600E05696 /* BubbleEntity.swift in Sources */,
 				831152A82E773B2600E05696 /* BaseEntity.swift in Sources */,
@@ -473,6 +480,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				831152B32E77837800E05696 /* EntityFullWidth.swift in Sources */,
 				836CB8CE2E77054800A5207B /* Engine.swift in Sources */,
 				836CB8CF2E77054800A5207B /* ASCIIRenderer.swift in Sources */,
 				831152852E773B2600E05696 /* WaterlineEntity.swift in Sources */,

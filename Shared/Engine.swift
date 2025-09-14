@@ -129,7 +129,10 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
-        // Spawn a few fish to start
+        let position = Position3D(50, Int.random(in: 0...Int(sceneHeight)), 0)
+        let waterline = EntityFactory.createWaterline(at: position)
+        entities.append(waterline)
+
         for _ in 0..<3 {
             spawnFish()
         }
@@ -146,5 +149,9 @@ class AsciiquariumEngine: ObservableObject {
 
         let fish = EntityFactory.createFish(at: position)
         entities.append(fish)
+    }
+
+    /// Spawn a new waterline
+    private func spawnWaterline() {
     }
 }

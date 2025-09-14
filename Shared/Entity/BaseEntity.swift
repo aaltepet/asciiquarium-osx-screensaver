@@ -37,6 +37,10 @@ class BaseEntity: Entity {
     var collisionHandler: ((Entity) -> Void)?
     var collisionDepth: Int?
 
+    // MARK: - Layout Properties
+    var isFullWidth: Bool = false
+    var isFullHeight: Bool = false
+
     // MARK: - Internal State
     var frameCount: Int = 0
     private var isKilled: Bool = false
@@ -139,6 +143,7 @@ class BaseEntity: Entity {
             height: size.height
         )
     }
+
 }
 
 // MARK: - Entity Extension for Bounds

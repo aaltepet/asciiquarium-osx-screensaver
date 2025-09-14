@@ -508,4 +508,46 @@ struct ASCIIRendererTests {
             result1.string == result2.string, "Rendering should be consistent across multiple calls"
         )
     }
+
+    // MARK: - Single Entity Placement Tests
+
+    @Test func testWaterlineEntityPlacement() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+
+        // Create a single waterline entity at a specific position
+        let waterlinePosition = Position3D(0, 50, 0)  // x=0 (full-width), y=50 (from top), z=0
+        let waterline = EntityFactory.createWaterline(segmentIndex: 0, at: waterlinePosition)
+        let entities = [waterline]
+
+        // Get the cached waterline pattern directly
+        let expectedWidth = Int(bounds.width / renderer.characterWidth)
+        let cachedWaterline = waterline.getShape(for: expectedWidth)
+
+        // Render the scene
+        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let lines = attributedString.string.components(separatedBy: "\n")
+
+        // Calculate expected grid position
+        let expectedGridY = Int(CGFloat(waterlinePosition.y) / renderer.lineHeight)
+
+        // Verify the waterline appears at the correct position
+        #expect(expectedGridY < lines.count, "Waterline should be within bounds")
+
+        if expectedGridY < lines.count {
+            let waterlineLine = lines[expectedGridY]
+
+            // Verify waterline spans the full width
+            #expect(waterlineLine.count >= expectedWidth, "Waterline should span full width")
+
+            // Verify the waterline matches the cached pattern
+            #expect(
+                waterlineLine == cachedWaterline[0],
+                "Rendered waterline should match cached pattern")
+
+            // Verify it contains valid waterline characters (waves or carets)
+            let hasValidChars = waterlineLine.contains("~") || waterlineLine.contains("^")
+            #expect(hasValidChars, "Waterline should contain wave or caret characters")
+        }
+    }
 }
