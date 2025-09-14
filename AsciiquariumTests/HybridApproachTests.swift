@@ -40,7 +40,7 @@ struct HybridApproachTests {
         let renderer = createTestRenderer()
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Verify the algorithm found a valid solution
         #expect(optimalGrid.width > 0, "Optimal grid width should be positive")
@@ -109,7 +109,7 @@ struct HybridApproachTests {
         let renderer = createTestRenderer()
 
         let testBounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: testBounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: testBounds)
 
         // Update engine with new dimensions
         engine.updateSceneDimensions(
@@ -150,7 +150,7 @@ struct HybridApproachTests {
         let testBounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Calculate optimal grid
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: testBounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: testBounds)
 
         // Update engine
         engine.updateSceneDimensions(
@@ -206,7 +206,7 @@ struct HybridApproachTests {
             let bounds = CGRect(origin: .zero, size: size)
 
             // Calculate optimal grid
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
             engine.updateSceneDimensions(
@@ -259,7 +259,7 @@ struct HybridApproachTests {
             )] = []
 
         for _ in 0..<5 {
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
             engine.updateSceneDimensions(
                 width: optimalGrid.width,
                 height: optimalGrid.height,

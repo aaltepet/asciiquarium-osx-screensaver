@@ -82,13 +82,12 @@ struct ContentView: View {
                 asciiText = attributedString.string
             }
 
-            // Calculate initial grid dimensions immediately
-            let maxCharsPerLine = calculateMaxCharactersPerLine(for: displayBounds)
-            let maxLines = calculateMaxLines(for: displayBounds)
+            // Calculate initial optimal grid dimensions immediately
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: displayBounds)
             engine.updateSceneDimensions(
-                width: maxCharsPerLine,
-                height: maxLines,
-                fontSize: 12.0
+                width: optimalGrid.width,
+                height: optimalGrid.height,
+                fontSize: optimalGrid.fontSize
             )
         }
     }
@@ -107,92 +106,21 @@ struct ContentView: View {
         if newBounds != displayBounds {
             displayBounds = newBounds
 
-            // Calculate how many characters can fit in the available space
-            let maxCharsPerLine = calculateMaxCharactersPerLine(for: newBounds)
-            let maxLines = calculateMaxLines(for: newBounds)
+            // Calculate optimal grid dimensions
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: newBounds)
 
-            print("Max characters per line: \(maxCharsPerLine)")
-            print("Max lines: \(maxLines)")
+            print(
+                "Optimal grid: width=\(optimalGrid.width), height=\(optimalGrid.height), fontSize=\(optimalGrid.fontSize)"
+            )
 
-            // Update engine with calculated dimensions
+            // Update engine with new dimensions
             engine.updateSceneDimensions(
-                width: maxCharsPerLine,
-                height: maxLines,
-                fontSize: 12.0  // Use a fixed font size for now
+                width: optimalGrid.width,
+                height: optimalGrid.height,
+                fontSize: optimalGrid.fontSize
             )
         }
         print("=================================")
-    }
-
-    /// Calculate maximum characters that can fit in the available width
-    private func calculateMaxCharactersPerLine(for bounds: CGRect) -> Int {
-        let font = NSFont.monospacedSystemFont(ofSize: 12.0, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: font)
-        let maxChars = Int(bounds.width / charWidth)
-        print("Character width: \(charWidth), Max chars: \(maxChars)")
-        return max(1, maxChars)
-    }
-
-    /// Calculate maximum lines that can fit in the available height
-    private func calculateMaxLines(for bounds: CGRect) -> Int {
-        let font = NSFont.monospacedSystemFont(ofSize: 12.0, weight: .regular)
-        let lineHeight = calculateLineHeight(for: font)
-        let maxLines = Int(bounds.height / lineHeight)
-        print("Line height: \(lineHeight), Max lines: \(maxLines)")
-        return max(1, maxLines)
-    }
-
-    /// Calculate character width for a given font
-    private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
-        // Use NSLayoutManager to get the actual space each character takes when rendered
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer()
-        let textStorage = NSTextStorage()
-
-        textStorage.addLayoutManager(layoutManager)
-        layoutManager.addTextContainer(textContainer)
-
-        // Test with multiple characters to get accurate per-character width
-        let testString = "MMMMMMMMMMMMMMMM"  // 16 characters
-        let attributedString = NSAttributedString(string: testString, attributes: [.font: font])
-        textStorage.setAttributedString(attributedString)
-
-        let usedRect = layoutManager.usedRect(for: textContainer)
-        let perCharWidth = usedRect.width / CGFloat(testString.count)
-
-        // Validate the result and fallback to font.maximumAdvancement if invalid
-        if perCharWidth.isFinite && perCharWidth > 0 {
-            return perCharWidth
-        } else {
-            print("Warning: NSLayoutManager calculation failed, using font.maximumAdvancement")
-            return font.maximumAdvancement.width
-        }
-    }
-
-    /// Calculate line height for a given font
-    private func calculateLineHeight(for font: NSFont) -> CGFloat {
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer()
-        let textStorage = NSTextStorage()
-
-        textStorage.addLayoutManager(layoutManager)
-        layoutManager.addTextContainer(textContainer)
-
-        let testString = "M\nM"  // Two lines
-        let attributedString = NSAttributedString(string: testString, attributes: [.font: font])
-        textStorage.setAttributedString(attributedString)
-
-        let usedRect = layoutManager.usedRect(for: textContainer)
-        let lineHeight = usedRect.height / 2.0  // Divide by 2 since we have 2 lines
-
-        // Validate the result and fallback to font.ascender + font.descender if invalid
-        if lineHeight.isFinite && lineHeight > 0 {
-            return lineHeight
-        } else {
-            print(
-                "Warning: NSLayoutManager calculation failed, using font.ascender + font.descender")
-            return font.ascender + abs(font.descender)
-        }
     }
 }
 

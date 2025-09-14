@@ -28,7 +28,7 @@ struct ContentViewScrollbarTests {
         let engine = createTestEngine()
 
         // Calculate optimal grid dimensions
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Update engine with optimal dimensions
         engine.updateSceneDimensions(

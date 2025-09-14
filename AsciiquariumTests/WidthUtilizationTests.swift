@@ -44,7 +44,7 @@ struct WidthUtilizationTests {
     private func createTestEntities(for bounds: CGRect) -> [AquariumEntity] {
         // Create entities that fill the entire grid
         let renderer = createTestRenderer()
-        let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         var entities: [AquariumEntity] = []
 
@@ -73,7 +73,7 @@ struct WidthUtilizationTests {
         let entities = createTestEntities(for: bounds)
 
         // Calculate optimal grid dimensions
-        let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Calculate actual content size
         let actualSize = calculateActualContentSize(
@@ -132,7 +132,7 @@ struct WidthUtilizationTests {
         let renderer = createTestRenderer()
 
         // Calculate optimal grid dimensions
-        let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Calculate character metrics
         let optimalFont = NSFont.monospacedSystemFont(
@@ -172,7 +172,7 @@ struct WidthUtilizationTests {
         let renderer = createTestRenderer()
 
         // Calculate optimal grid dimensions
-        let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Test different font sizes to see if we can find a better one
         var bestFontSize: CGFloat = 8.0
@@ -232,7 +232,7 @@ struct WidthUtilizationTests {
             let entities = createTestEntities(for: bounds)
 
             // Calculate optimal grid dimensions
-            let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+            let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Calculate actual content size
             let actualSize = calculateActualContentSize(
@@ -268,7 +268,7 @@ struct WidthUtilizationTests {
         let renderer = createTestRenderer()
 
         // Calculate optimal grid dimensions
-        let gridDimensions = renderer.calculateOptimalGridDimensions(for: bounds)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Calculate character metrics
         let optimalFont = NSFont.monospacedSystemFont(

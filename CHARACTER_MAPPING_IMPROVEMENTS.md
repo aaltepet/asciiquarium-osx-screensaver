@@ -136,18 +136,21 @@ This document tracks the step-by-step implementation of improved font scaling an
 - [x] Run existing test suite to establish baseline
 - **Files**: `Asciiquarium.xcodeproj/project.pbxproj`
 
-#### 2. Consolidate Character Calculation Methods (HIGH)
-- [ ] Create new `Shared/FontMetrics.swift` utility class
-- [ ] Implement single, consistent character width calculation method
-- [ ] Implement single, consistent line height calculation method
-- [ ] Remove duplicate `calculateCharacterWidth` from `ContentView.swift`
-- [ ] Remove duplicate `calculateCharacterWidth` from `Engine.swift`
-- [ ] Remove duplicate `calculateLineHeight` from `Engine.swift`
-- [ ] Update `ASCIIRenderer.swift` to use new `FontMetrics` class
-- [ ] Update `ContentView.swift` to use new `FontMetrics` class
-- [ ] Update `Engine.swift` to use new `FontMetrics` class
-- [ ] Test that all files produce consistent results
-- **Files**: Create new `Shared/FontMetrics.swift`, update all existing files
+#### 2. Consolidate Character Calculation Methods (HIGH) ✅
+- [x] Create new `Shared/FontMetrics.swift` utility class
+- [x] Implement single, consistent character width calculation method
+- [x] Implement single, consistent line height calculation method
+- [x] Remove duplicate `calculateCharacterWidth` from `ContentView.swift`
+- [x] Remove duplicate `calculateCharacterWidth` from `Engine.swift`
+- [x] Remove duplicate `calculateLineHeight` from `Engine.swift`
+- [x] Update `ASCIIRenderer.swift` to use new `FontMetrics` class
+- [x] Update `ContentView.swift` to use new `FontMetrics` class
+- [x] Update `Engine.swift` to use new `FontMetrics` class
+- [x] Remove unnecessary `calculateOptimalGridDimensions` from `ASCIIRenderer`
+- [x] Update `ContentView.swift` to use `FontMetrics` directly
+- [x] Update all test files to use `FontMetrics` directly
+- [x] Test that all files produce consistent results
+- **Files**: ✅ Created `Shared/FontMetrics.swift`, updated all existing files
 
 #### 3. Fix Font Size Consistency (HIGH)
 - [ ] Remove hardcoded 12.0pt font size from `ContentView.swift`

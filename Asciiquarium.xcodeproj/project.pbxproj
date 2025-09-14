@@ -17,6 +17,7 @@
 		836CB7702E726FFF00A5207B /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76A2E726FFF00A5207B /* Engine.swift */; };
 		836CB7712E726FFF00A5207B /* ASCIIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */; };
 		836CB7722E726FFF00A5207B /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76B2E726FFF00A5207B /* Entity.swift */; };
+		836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7732E726FFF00A5207B /* FontMetrics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASCIIRenderer.swift; sourceTree = "<group>"; };
 		836CB76A2E726FFF00A5207B /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		836CB76B2E726FFF00A5207B /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		836CB7732E726FFF00A5207B /* FontMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontMetrics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -150,6 +152,7 @@
 				836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */,
 				836CB76A2E726FFF00A5207B /* Engine.swift */,
 				836CB76B2E726FFF00A5207B /* Entity.swift */,
+				836CB7732E726FFF00A5207B /* FontMetrics.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
 				836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
 				836CB76F2E726FFF00A5207B /* Entity.swift in Sources */,
+				836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */,
 				836CB7662E726FD300A5207B /* AsciiquariumApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,9 +358,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
-				836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
-				836CB76F2E726FFF00A5207B /* Entity.swift in Sources */,
+				836CB7702E726FFF00A5207B /* Engine.swift in Sources */,
+				836CB7712E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
+				836CB7722E726FFF00A5207B /* Entity.swift in Sources */,
+				836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

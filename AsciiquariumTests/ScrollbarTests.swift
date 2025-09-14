@@ -74,7 +74,7 @@ struct ScrollbarTests {
         ]
 
         for bounds in testBounds {
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Grid dimensions should be positive
             #expect(optimalGrid.width > 0, "Grid width should be positive for bounds: \(bounds)")
@@ -127,7 +127,7 @@ struct ScrollbarTests {
         let testBounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Calculate optimal grid
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: testBounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: testBounds)
 
         // Update engine with optimal dimensions
         engine.updateSceneDimensions(
@@ -179,7 +179,7 @@ struct ScrollbarTests {
             let bounds = CGRect(x: 0, y: 0, width: width, height: height)
 
             // Calculate optimal grid
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
             engine.updateSceneDimensions(
@@ -225,7 +225,7 @@ struct ScrollbarTests {
 
         for bounds in resizeScenarios {
             // Calculate optimal grid for this size
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
             engine.updateSceneDimensions(
@@ -263,7 +263,7 @@ struct ScrollbarTests {
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Calculate optimal grid
-        let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
         engine.updateSceneDimensions(
             width: optimalGrid.width,
             height: optimalGrid.height,
@@ -304,7 +304,7 @@ struct ScrollbarTests {
         var previousFontSize: CGFloat = 0
 
         for bounds in testBounds {
-            let optimalGrid = renderer.calculateOptimalGridDimensions(for: bounds)
+            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Font size should increase with larger bounds
             if previousFontSize > 0 {
