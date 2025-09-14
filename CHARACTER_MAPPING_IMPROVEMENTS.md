@@ -70,6 +70,146 @@ This document tracks the step-by-step implementation of improved font scaling an
 - Fixed scene dimensions not matching character grid
 - Text rendering inconsistencies with calculated metrics
 
+## Critical Issues Identified
+
+### 1. Duplicate and Conflicting Calculation Methods
+- **Problem**: Multiple implementations of character width/height calculations across files
+- **Locations**: 
+  - `ContentView.swift` (lines 146-196): Uses NSLayoutManager with 16-character test
+  - `ASCIIRenderer.swift` (lines 24-42, 218-248): Uses size(withAttributes:) + font metrics
+  - `Engine.swift` (lines 95-124): Duplicates NSLayoutManager approach
+- **Impact**: Inconsistent results, maintenance nightmare
+- **Priority**: HIGH
+
+### 2. Inconsistent Font Size Handling
+- **Problem**: Three different font sizes used simultaneously
+- **Locations**:
+  - `ContentView.swift`: Hardcoded 12.0pt
+  - `ASCIIRenderer.swift`: 14.0pt in constructor, dynamic in calculateOptimalFontSize
+  - `Engine.swift`: Uses passed-in font size
+- **Impact**: Grid calculations don't match actual rendering
+- **Priority**: HIGH
+
+### 3. Broken Test Host Configuration
+- **Problem**: Xcode project points to wrong app name
+- **Current**: `Asciiquarium.app` 
+- **Should be**: `AsciiquariumApp.app`
+- **Impact**: Cannot run tests to validate fixes
+- **Priority**: CRITICAL
+
+### 4. Inefficient Grid Calculation Algorithm
+- **Problem**: `calculateOptimalGridDimensions` only optimizes height, ignores width
+- **Location**: `ASCIIRenderer.swift` lines 151-216
+- **Impact**: Poor space utilization, suboptimal font sizing
+- **Priority**: HIGH
+
+### 5. Bounds vs Grid Mismatch
+- **Problem**: ContentView calculates grid size differently than ASCIIRenderer
+- **Impact**: Engine and renderer use different grid dimensions
+- **Priority**: HIGH
+
+### 6. Character Width Calculation Inconsistencies
+- **Problem**: Different methods produce different results
+- **Methods**:
+  - `size(withAttributes:)` - Simple but potentially inaccurate
+  - `NSLayoutManager` with 16-char test - Accurate but overcomplicated
+  - `font.maximumAdvancement.width` - Fallback that may not match rendering
+- **Priority**: MEDIUM
+
+### 7. Missing Error Handling
+- **Problem**: No validation for edge cases
+- **Missing**: Zero/negative bounds, invalid font metrics, division by zero
+- **Priority**: MEDIUM
+
+### 8. Performance Issues
+- **Problem**: Brute-force search on every bounds change
+- **Impact**: Unnecessary CPU usage, poor responsiveness
+- **Priority**: LOW
+
+## Prioritized Action Plan
+
+### Phase 1: Critical Fixes (Must Do First)
+
+#### 1. Fix Test Host Configuration (CRITICAL)
+- [ ] Update Xcode project to point to correct app name (`AsciiquariumApp.app`)
+- [ ] Verify tests can run successfully
+- [ ] Run existing test suite to establish baseline
+- **Files**: `Asciiquarium.xcodeproj/project.pbxproj`
+
+#### 2. Consolidate Character Calculation Methods (HIGH)
+- [ ] Create new `Shared/FontMetrics.swift` utility class
+- [ ] Implement single, consistent character width calculation method
+- [ ] Implement single, consistent line height calculation method
+- [ ] Remove duplicate `calculateCharacterWidth` from `ContentView.swift`
+- [ ] Remove duplicate `calculateCharacterWidth` from `Engine.swift`
+- [ ] Remove duplicate `calculateLineHeight` from `Engine.swift`
+- [ ] Update `ASCIIRenderer.swift` to use new `FontMetrics` class
+- [ ] Update `ContentView.swift` to use new `FontMetrics` class
+- [ ] Update `Engine.swift` to use new `FontMetrics` class
+- [ ] Test that all files produce consistent results
+- **Files**: Create new `Shared/FontMetrics.swift`, update all existing files
+
+#### 3. Fix Font Size Consistency (HIGH)
+- [ ] Remove hardcoded 12.0pt font size from `ContentView.swift`
+- [ ] Remove hardcoded 14.0pt font size from `ASCIIRenderer.swift` constructor
+- [ ] Establish single source of truth for font sizing in `FontMetrics` class
+- [ ] Update `ContentView.swift` to use dynamic font sizing
+- [ ] Update `ASCIIRenderer.swift` to use dynamic font sizing
+- [ ] Update `Engine.swift` to use dynamic font sizing
+- [ ] Verify all components use same font size
+- **Files**: `ContentView.swift`, `ASCIIRenderer.swift`, `Engine.swift`
+
+### Phase 2: Core Algorithm Fixes (HIGH Priority)
+
+#### 4. Fix Grid Calculation Algorithm (HIGH)
+- [ ] Analyze current `calculateOptimalGridDimensions` algorithm
+- [ ] Implement width utilization optimization alongside height
+- [ ] Replace brute-force search with efficient binary search or mathematical approach
+- [ ] Add proper aspect ratio consideration to algorithm
+- [ ] Add logging to verify optimization is working
+- [ ] Test with various screen sizes and aspect ratios
+- **Files**: `ASCIIRenderer.swift` - `calculateOptimalGridDimensions`
+
+#### 5. Resolve Bounds vs Grid Mismatch (HIGH)
+- [ ] Identify where ContentView and ASCIIRenderer calculate differently
+- [ ] Ensure both use same `FontMetrics` calculations
+- [ ] Synchronize grid dimensions between engine and renderer
+- [ ] Add validation that calculated dimensions match
+- [ ] Test that engine scene bounds match renderer grid
+- [ ] Add logging to track dimension mismatches
+- **Files**: `ContentView.swift`, `ASCIIRenderer.swift`, `Engine.swift`
+
+### Phase 3: Robustness Improvements (MEDIUM Priority)
+
+#### 6. Standardize Character Width Calculation (MEDIUM)
+- [ ] Research and choose most accurate calculation method
+- [ ] Implement chosen method in `FontMetrics` class
+- [ ] Add proper fallback mechanisms
+- [ ] Add validation for calculation results
+- [ ] Add error handling for edge cases
+- [ ] Test accuracy across different fonts and sizes
+- **Files**: New `FontMetrics.swift`, update all calculation sites
+
+#### 7. Add Comprehensive Error Handling (MEDIUM)
+- [ ] Add bounds validation (zero, negative, infinite values)
+- [ ] Add font metrics validation
+- [ ] Add division by zero protection
+- [ ] Add meaningful error messages and logging
+- [ ] Add graceful degradation for invalid inputs
+- [ ] Test error handling with edge case inputs
+- **Files**: All calculation methods
+
+### Phase 4: Performance Optimization (LOW Priority)
+
+#### 8. Implement Caching and Performance Improvements (LOW)
+- [ ] Add caching for font metric calculations
+- [ ] Implement efficient grid calculation algorithm
+- [ ] Add performance monitoring and logging
+- [ ] Optimize font size search algorithm
+- [ ] Add metrics for calculation performance
+- [ ] Test performance with various screen sizes
+- **Files**: `FontMetrics.swift`, `ASCIIRenderer.swift`
+
 ## Approach
 Using improved font scaling with dynamic metrics to maintain the current text-based approach while fixing core positioning issues.
 
