@@ -31,18 +31,6 @@ struct TestHelpers {
         ]
     }
 
-    // MARK: - Font Calculation Helpers
-
-    static func calculateCharacterWidth(for font: NSFont) -> CGFloat {
-        let sampleString = "M"
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        return sampleString.size(withAttributes: attributes).width
-    }
-
-    static func calculateLineHeight(for font: NSFont) -> CGFloat {
-        return font.ascender - font.descender + font.leading
-    }
-
     // MARK: - Content Size Calculation
 
     static func calculateAttributedStringSize(attributedString: NSAttributedString, font: NSFont)

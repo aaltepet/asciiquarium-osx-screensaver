@@ -198,8 +198,8 @@ struct ASCIIRendererTests {
 
             // Calculate actual pixel dimensions
             let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
-            let charWidth = TestHelpers.calculateCharacterWidth(for: font)
-            let lineHeight = TestHelpers.calculateLineHeight(for: font)
+            let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+            let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
 
             let actualWidth = CGFloat(optimalGrid.width) * charWidth
             let actualHeight = CGFloat(optimalGrid.height) * lineHeight
@@ -253,8 +253,8 @@ struct ASCIIRendererTests {
             attributedString: attributedString, font: font)
 
         // Calculate expected dimensions based on grid
-        let charWidth = TestHelpers.calculateCharacterWidth(for: font)
-        let lineHeight = TestHelpers.calculateLineHeight(for: font)
+        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
         let expectedWidth = CGFloat(optimalGrid.width) * charWidth
         let expectedHeight = CGFloat(optimalGrid.height) * lineHeight
 

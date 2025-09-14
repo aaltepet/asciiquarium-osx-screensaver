@@ -13,22 +13,12 @@ struct FontMetricsTests {
 
     // MARK: - Helper Functions
 
-    private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
-        let sampleString = "M"
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        return sampleString.size(withAttributes: attributes).width
-    }
-
-    private func calculateLineHeight(for font: NSFont) -> CGFloat {
-        return font.ascender - font.descender + font.leading
-    }
-
     private func calculateActualRenderedSize(
         for bounds: CGRect, gridWidth: Int, gridHeight: Int, fontSize: CGFloat
     ) -> CGSize {
         let font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        let _ = calculateCharacterWidth(for: font)
-        let _ = calculateLineHeight(for: font)
+        let _ = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let _ = FontMetrics.shared.calculateLineHeight(for: font)
 
         // Create a test string that represents the full grid
         var lines: [String] = []
@@ -60,7 +50,7 @@ struct FontMetricsTests {
     @Test func testCharacterWidthCalculationAccuracy() async throws {
         let font = FontMetrics.shared.createDefaultFont()
         let calculatedWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
-        let expectedWidth = calculateCharacterWidth(for: font)
+        let expectedWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
 
         // FontMetrics calculation should be accurate
         #expect(calculatedWidth > 0, "Character width should be positive")
@@ -77,7 +67,7 @@ struct FontMetricsTests {
     @Test func testLineHeightCalculationAccuracy() async throws {
         let font = FontMetrics.shared.createDefaultFont()
         let calculatedHeight = FontMetrics.shared.calculateLineHeight(for: font)
-        let expectedHeight = calculateLineHeight(for: font)
+        let expectedHeight = FontMetrics.shared.calculateLineHeight(for: font)
 
         // FontMetrics calculation should be accurate
         #expect(calculatedHeight > 0, "Line height should be positive")
@@ -135,8 +125,8 @@ struct FontMetricsTests {
 
         // Calculate character metrics
         let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: font)
-        let lineHeight = calculateLineHeight(for: font)
+        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
 
         // Grid should fit within bounds
         let expectedWidth = CGFloat(gridDimensions.width) * charWidth
@@ -179,8 +169,8 @@ struct FontMetricsTests {
 
         // Calculate character metrics
         let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: font)
-        let lineHeight = calculateLineHeight(for: font)
+        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
 
         // Calculate how many characters SHOULD fit
         let expectedWidthChars = Int(bounds.width / charWidth)
@@ -210,7 +200,7 @@ struct FontMetricsTests {
 
         // Calculate character metrics
         let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
-        let charWidth = calculateCharacterWidth(for: font)
+        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
 
         // Calculate the exact width that should be used
         let exactWidth = CGFloat(gridDimensions.width) * charWidth
