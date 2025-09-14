@@ -17,7 +17,7 @@ class ASCIIRenderer {
     private var cachedFontSize: CGFloat?
 
     init() {
-        self.font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
+        self.font = FontMetrics.shared.createDefaultFont()
     }
 
     // Character dimensions for accurate positioning

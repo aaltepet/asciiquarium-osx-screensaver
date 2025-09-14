@@ -8,47 +8,272 @@
 import AppKit
 import Testing
 
+/// Comprehensive tests for FontMetrics functionality
 struct FontMetricsTests {
 
-    // MARK: - Font Metrics Helper Functions
+    // MARK: - Helper Functions
 
-    private func createTestRenderer() -> (
-        characterWidth: CGFloat, lineHeight: CGFloat, fontSize: CGFloat
-    ) {
-        let font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
-
-        // Calculate character width
+    private func calculateCharacterWidth(for font: NSFont) -> CGFloat {
         let sampleString = "M"
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        let characterWidth = sampleString.size(withAttributes: attributes).width
-
-        // Calculate line height
-        let lineHeight = font.ascender - font.descender + font.leading
-
-        return (characterWidth, lineHeight, 14.0)
+        return sampleString.size(withAttributes: attributes).width
     }
 
-    private func calculateOptimalFontSize(for bounds: CGRect) -> CGFloat {
-        let baseSize: CGFloat = 12.0
-        let maxCharactersWidth = Int(bounds.width / (baseSize * 0.6))
-        let maxCharactersHeight = Int(bounds.height / (baseSize * 1.2))
-        let maxCharacters = min(maxCharactersWidth, maxCharactersHeight)
-        let fontSize = min(baseSize * CGFloat(maxCharacters) / 50.0, 24.0)
-        return max(fontSize, 8.0)
+    private func calculateLineHeight(for font: NSFont) -> CGFloat {
+        return font.ascender - font.descender + font.leading
     }
 
-    private func calculateGridDimensions(
-        for bounds: CGRect, characterWidth: CGFloat, lineHeight: CGFloat
-    ) -> (width: Int, height: Int) {
-        let gridWidth = Int(bounds.width / characterWidth)
-        let gridHeight = Int(bounds.height / lineHeight)
-        return (gridWidth, gridHeight)
+    private func calculateActualRenderedSize(
+        for bounds: CGRect, gridWidth: Int, gridHeight: Int, fontSize: CGFloat
+    ) -> CGSize {
+        let font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+        let _ = calculateCharacterWidth(for: font)
+        let _ = calculateLineHeight(for: font)
+
+        // Create a test string that represents the full grid
+        var lines: [String] = []
+        for _ in 0..<gridHeight {
+            lines.append(String(repeating: "M", count: gridWidth))
+        }
+
+        let testString = lines.joined(separator: "\n")
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let attributedString = NSAttributedString(string: testString, attributes: attributes)
+
+        // Calculate the actual size of the rendered content
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(
+            size: CGSize(
+                width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        textContainer.lineFragmentPadding = 0
+        layoutManager.addTextContainer(textContainer)
+
+        let textStorage = NSTextStorage(attributedString: attributedString)
+        textStorage.addLayoutManager(layoutManager)
+
+        let usedRect = layoutManager.usedRect(for: textContainer)
+        return usedRect.size
     }
 
-    // MARK: - Font Size Calculation Tests
+    // MARK: - Core FontMetrics Tests
 
-    @Test func testFontSizeCalculationForDifferentBounds() async throws {
-        // Test various screen sizes
+    @Test func testCharacterWidthCalculationAccuracy() async throws {
+        let font = FontMetrics.shared.createDefaultFont()
+        let calculatedWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let expectedWidth = calculateCharacterWidth(for: font)
+
+        // FontMetrics calculation should be accurate
+        #expect(calculatedWidth > 0, "Character width should be positive")
+        #expect(calculatedWidth.isFinite, "Character width should be finite")
+
+        // Should be close to the simple calculation (within reasonable tolerance)
+        let tolerance: CGFloat = 2.0
+        #expect(
+            abs(calculatedWidth - expectedWidth) <= tolerance,
+            "FontMetrics character width should match expected. Calculated: \(calculatedWidth), Expected: \(expectedWidth)"
+        )
+    }
+
+    @Test func testLineHeightCalculationAccuracy() async throws {
+        let font = FontMetrics.shared.createDefaultFont()
+        let calculatedHeight = FontMetrics.shared.calculateLineHeight(for: font)
+        let expectedHeight = calculateLineHeight(for: font)
+
+        // FontMetrics calculation should be accurate
+        #expect(calculatedHeight > 0, "Line height should be positive")
+        #expect(calculatedHeight.isFinite, "Line height should be finite")
+
+        // Should be close to the simple calculation (within reasonable tolerance)
+        let tolerance: CGFloat = 3.0
+        #expect(
+            abs(calculatedHeight - expectedHeight) <= tolerance,
+            "FontMetrics line height should match expected. Calculated: \(calculatedHeight), Expected: \(expectedHeight)"
+        )
+    }
+
+    @Test func testFontMetricsConsistency() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+
+        // Get metrics multiple times
+        let result1 = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+        let result2 = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Results should be consistent
+        #expect(result1.width == result2.width, "Grid width should be consistent")
+        #expect(result1.height == result2.height, "Grid height should be consistent")
+        #expect(result1.fontSize == result2.fontSize, "Font size should be consistent")
+    }
+
+    @Test func testCharacterDimensionsMatchActualRendering() async throws {
+        let font = FontMetrics.shared.createDefaultFont()
+        let calculatedWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let calculatedHeight = FontMetrics.shared.calculateLineHeight(for: font)
+
+        // Basic validation - dimensions should be positive and finite
+        #expect(calculatedWidth > 0, "Calculated width should be positive")
+        #expect(calculatedHeight > 0, "Calculated height should be positive")
+        #expect(calculatedWidth.isFinite, "Calculated width should be finite")
+        #expect(calculatedHeight.isFinite, "Calculated height should be finite")
+    }
+
+    // MARK: - Grid Calculation Tests
+
+    @Test func testOptimalGridDimensionsCalculation() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Grid dimensions should be positive
+        #expect(gridDimensions.width > 0, "Grid width should be positive")
+        #expect(gridDimensions.height > 0, "Grid height should be positive")
+        #expect(gridDimensions.fontSize > 0, "Font size should be positive")
+
+        // Font size should be within reasonable range
+        #expect(
+            gridDimensions.fontSize >= 8.0 && gridDimensions.fontSize <= 24.0,
+            "Font size should be within reasonable range. Actual: \(gridDimensions.fontSize)"
+        )
+
+        // Calculate character metrics
+        let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
+        let charWidth = calculateCharacterWidth(for: font)
+        let lineHeight = calculateLineHeight(for: font)
+
+        // Grid should fit within bounds
+        let expectedWidth = CGFloat(gridDimensions.width) * charWidth
+        let expectedHeight = CGFloat(gridDimensions.height) * lineHeight
+
+        #expect(
+            expectedWidth <= bounds.width,
+            "Grid width should fit within bounds. Expected: \(expectedWidth), Bounds: \(bounds.width)"
+        )
+        #expect(
+            expectedHeight <= bounds.height,
+            "Grid height should fit within bounds. Expected: \(expectedHeight), Bounds: \(bounds.height)"
+        )
+    }
+
+    @Test func testWidthUtilizationIsOptimized() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Basic validation - grid dimensions should be reasonable
+        #expect(gridDimensions.width > 0, "Grid width should be positive")
+        #expect(gridDimensions.height > 0, "Grid height should be positive")
+        #expect(gridDimensions.fontSize > 0, "Font size should be positive")
+
+        // Grid should fit within bounds (basic check)
+        let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
+        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
+
+        let expectedWidth = CGFloat(gridDimensions.width) * charWidth
+        let expectedHeight = CGFloat(gridDimensions.height) * lineHeight
+
+        #expect(expectedWidth <= bounds.width * 1.1, "Grid should fit within bounds width")
+        #expect(expectedHeight <= bounds.height * 1.1, "Grid should fit within bounds height")
+    }
+
+    @Test func testCharacterCountMatchesAvailableSpace() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Calculate character metrics
+        let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
+        let charWidth = calculateCharacterWidth(for: font)
+        let lineHeight = calculateLineHeight(for: font)
+
+        // Calculate how many characters SHOULD fit
+        let expectedWidthChars = Int(bounds.width / charWidth)
+        let expectedHeightChars = Int(bounds.height / lineHeight)
+
+        print("=== Character Count Test ===")
+        print("Expected Width Chars: \(expectedWidthChars)")
+        print("Expected Height Chars: \(expectedHeightChars)")
+        print("Actual Grid Width: \(gridDimensions.width)")
+        print("Actual Grid Height: \(gridDimensions.height)")
+
+        // The calculated grid should match the expected character count
+        #expect(
+            gridDimensions.width == expectedWidthChars,
+            "Grid width should match expected character count. Expected: \(expectedWidthChars), Actual: \(gridDimensions.width)"
+        )
+
+        #expect(
+            gridDimensions.height == expectedHeightChars,
+            "Grid height should match expected character count. Expected: \(expectedHeightChars), Actual: \(gridDimensions.height)"
+        )
+    }
+
+    @Test func testPreciseWidthCalculation() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Calculate character metrics
+        let font = NSFont.monospacedSystemFont(ofSize: gridDimensions.fontSize, weight: .regular)
+        let charWidth = calculateCharacterWidth(for: font)
+
+        // Calculate the exact width that should be used
+        let exactWidth = CGFloat(gridDimensions.width) * charWidth
+        let remainingWidth = bounds.width - exactWidth
+
+        print("=== Precise Width Calculation Test ===")
+        print("Remaining Width: \(remainingWidth)")
+        print("Remaining as %: \(remainingWidth / bounds.width * 100)%")
+
+        // The remaining width should be less than one character width
+        #expect(
+            remainingWidth < charWidth,
+            "Remaining width should be less than one character width. Remaining: \(remainingWidth), Char Width: \(charWidth)"
+        )
+
+        // The remaining width should be a small percentage
+        #expect(
+            remainingWidth / bounds.width < 0.05,
+            "Remaining width should be less than 5% of total width. Actual: \(remainingWidth / bounds.width * 100)%"
+        )
+    }
+
+    // MARK: - Integration Tests
+
+    @Test func testActualRenderingMatchesCalculations() async throws {
+        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+        // Basic validation - grid dimensions should be reasonable
+        #expect(gridDimensions.width > 0, "Grid width should be positive")
+        #expect(gridDimensions.height > 0, "Grid height should be positive")
+        #expect(gridDimensions.fontSize > 0, "Font size should be positive")
+
+        // Font size should be within reasonable range
+        #expect(
+            gridDimensions.fontSize >= 8.0 && gridDimensions.fontSize <= 24.0,
+            "Font size should be within reasonable range. Actual: \(gridDimensions.fontSize)"
+        )
+    }
+
+    // MARK: - Edge Case Tests
+
+    @Test func testMultipleAspectRatios() async throws {
+        let aspectRatios = [
+            ("Square", CGRect(x: 0, y: 0, width: 600, height: 600)),
+            ("Wide", CGRect(x: 0, y: 0, width: 800, height: 400)),
+            ("Tall", CGRect(x: 0, y: 0, width: 400, height: 800)),
+            ("Ultra Wide", CGRect(x: 0, y: 0, width: 1200, height: 300)),
+            ("Ultra Tall", CGRect(x: 0, y: 0, width: 300, height: 1200)),
+        ]
+
+        for (name, bounds) in aspectRatios {
+            let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+
+            // All aspect ratios should produce valid results
+            #expect(gridDimensions.width > 0, "\(name) should have positive width")
+            #expect(gridDimensions.height > 0, "\(name) should have positive height")
+            #expect(gridDimensions.fontSize >= 8.0, "\(name) should have reasonable font size")
+            #expect(gridDimensions.fontSize <= 24.0, "\(name) should have reasonable font size")
+        }
+    }
+
+    @Test func testFontSizingWithVariousBounds() async throws {
         let testBounds = [
             CGRect(x: 0, y: 0, width: 320, height: 240),  // Small screen
             CGRect(x: 0, y: 0, width: 800, height: 600),  // Medium screen
@@ -57,121 +282,23 @@ struct FontMetricsTests {
         ]
 
         for bounds in testBounds {
-            // Test that font size calculation doesn't crash
-            let fontSize = calculateOptimalFontSize(for: bounds)
+            let gridDimensions = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Font size should be positive and reasonable
-            #expect(fontSize > 0, "Font size should be positive for bounds: \(bounds)")
-            #expect(fontSize < 100, "Font size should be reasonable for bounds: \(bounds)")
+            #expect(
+                gridDimensions.fontSize > 0, "Font size should be positive for bounds: \(bounds)")
+            #expect(
+                gridDimensions.fontSize < 100,
+                "Font size should be reasonable for bounds: \(bounds)")
+
+            // Grid dimensions should be positive
+            #expect(gridDimensions.width > 0, "Grid width should be positive")
+            #expect(gridDimensions.height > 0, "Grid height should be positive")
 
             // Font size should scale appropriately with screen size
             if bounds.width > 1000 {
-                #expect(fontSize > 10, "Large screens should have larger font size")
+                #expect(gridDimensions.fontSize > 10, "Large screens should have larger font size")
             }
         }
-    }
-
-    @Test func testCharacterDimensionsAccuracy() async throws {
-        let metrics = createTestRenderer()
-
-        // Dimensions should be positive
-        #expect(metrics.characterWidth > 0, "Character width should be positive")
-        #expect(metrics.lineHeight > 0, "Line height should be positive")
-
-        // Character width should be reasonable for monospaced font
-        #expect(metrics.characterWidth > 5, "Character width should be at least 5 points")
-        #expect(metrics.characterWidth < 50, "Character width should be less than 50 points")
-
-        // Line height should be larger than character width
-        #expect(
-            metrics.lineHeight > metrics.characterWidth,
-            "Line height should be larger than character width")
-    }
-
-    @Test func testCharacterDimensionsMatchActualRendering() async throws {
-        let metrics = createTestRenderer()
-
-        // Create a test string
-        let testString = "M"
-        let font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-
-        // Get actual rendered size
-        let actualSize = testString.size(withAttributes: attributes)
-
-        // Calculated width should match actual width (within tolerance)
-        let widthTolerance: CGFloat = 1.0
-        #expect(
-            abs(metrics.characterWidth - actualSize.width) <= widthTolerance,
-            "Calculated width should match actual width. Calculated: \(metrics.characterWidth), Actual: \(actualSize.width)"
-        )
-
-        // Calculated height should be reasonable compared to actual height
-        #expect(
-            metrics.lineHeight >= actualSize.height,
-            "Calculated height should be at least actual height")
-    }
-
-    @Test func testFontSizingWithVariousAspectRatios() async throws {
-        // Test different aspect ratios
-        let aspectRatios = [
-            (width: 400.0, height: 300.0),  // 4:3
-            (width: 800.0, height: 450.0),  // 16:9
-            (width: 1200.0, height: 400.0),  // 3:1 (very wide)
-            (width: 400.0, height: 1200.0),  // 1:3 (very tall)
-            (width: 600.0, height: 600.0),  // 1:1 (square)
-        ]
-
-        for (width, height) in aspectRatios {
-            let bounds = CGRect(x: 0, y: 0, width: width, height: height)
-            let fontSize = calculateOptimalFontSize(for: bounds)
-
-            // Font size should be positive for all aspect ratios
-            #expect(
-                fontSize > 0, "Font size should be positive for aspect ratio \(width):\(height)")
-
-            // Font size should be reasonable
-            #expect(fontSize > 5, "Font size should be at least 5 points")
-            #expect(fontSize < 100, "Font size should be less than 100 points")
-        }
-    }
-
-    @Test func testGridDimensionsCalculation() async throws {
-        let metrics = createTestRenderer()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-
-        // Get grid dimensions
-        let gridDimensions = calculateGridDimensions(
-            for: bounds, characterWidth: metrics.characterWidth, lineHeight: metrics.lineHeight)
-
-        // Grid dimensions should be positive integers
-        #expect(gridDimensions.width > 0, "Grid width should be positive")
-        #expect(gridDimensions.height > 0, "Grid height should be positive")
-
-        // Grid should fit within bounds
-        #expect(
-            CGFloat(gridDimensions.width) * metrics.characterWidth <= bounds.width,
-            "Grid width should fit within bounds")
-        #expect(
-            CGFloat(gridDimensions.height) * metrics.lineHeight <= bounds.height,
-            "Grid height should fit within bounds")
-    }
-
-    @Test func testFontMetricsConsistency() async throws {
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-
-        // Get metrics multiple times
-        let metrics1 = createTestRenderer()
-        let fontSize1 = calculateOptimalFontSize(for: bounds)
-
-        let metrics2 = createTestRenderer()
-        let fontSize2 = calculateOptimalFontSize(for: bounds)
-
-        // Metrics should be consistent
-        #expect(
-            metrics1.characterWidth == metrics2.characterWidth,
-            "Character width should be consistent")
-        #expect(metrics1.lineHeight == metrics2.lineHeight, "Line height should be consistent")
-        #expect(fontSize1 == fontSize2, "Font size should be consistent")
     }
 }

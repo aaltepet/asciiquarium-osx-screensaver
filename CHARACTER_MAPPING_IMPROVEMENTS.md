@@ -14,16 +14,6 @@ This document tracks the step-by-step implementation of improved font scaling an
 - [x] **Tests**: Validate character width/height calculations match actual rendering
 - [x] **Tests**: Test font sizing with various aspect ratios and screen sizes
 
-### Step 2: Add Sub-Character Positioning
-- [ ] Implement fractional position handling instead of integer truncation
-- [ ] Use proper rounding for character grid positioning
-- [ ] Add support for smooth entity movement between character positions
-- [ ] Handle edge cases where entities are between character boundaries
-- [ ] **Tests**: Verify fractional position mapping accuracy
-- [ ] **Tests**: Test rounding behavior at character boundaries
-- [ ] **Tests**: Validate smooth movement between grid positions
-- [ ] **Tests**: Test edge cases (entities at exact boundaries, negative positions)
-
 ### Step 3: Implement Aspect Ratio Preservation
 - [ ] Calculate the character grid dimensions to match the display aspect ratio
 - [ ] Ensure the scene bounds match the actual character grid
@@ -152,26 +142,26 @@ This document tracks the step-by-step implementation of improved font scaling an
 - [x] Test that all files produce consistent results
 - **Files**: ✅ Created `Shared/FontMetrics.swift`, updated all existing files
 
-#### 3. Fix Font Size Consistency (HIGH)
-- [ ] Remove hardcoded 12.0pt font size from `ContentView.swift`
-- [ ] Remove hardcoded 14.0pt font size from `ASCIIRenderer.swift` constructor
-- [ ] Establish single source of truth for font sizing in `FontMetrics` class
-- [ ] Update `ContentView.swift` to use dynamic font sizing
-- [ ] Update `ASCIIRenderer.swift` to use dynamic font sizing
-- [ ] Update `Engine.swift` to use dynamic font sizing
-- [ ] Verify all components use same font size
-- **Files**: `ContentView.swift`, `ASCIIRenderer.swift`, `Engine.swift`
+#### 3. Fix Font Size Consistency (HIGH) ✅
+- [x] Remove hardcoded 12.0pt font size from `ContentView.swift` (no hardcoded sizes found)
+- [x] Remove hardcoded 14.0pt font size from `ASCIIRenderer.swift` constructor
+- [x] Establish single source of truth for font sizing in `FontMetrics` class
+- [x] Update `ContentView.swift` to use dynamic font sizing (already using FontMetrics)
+- [x] Update `ASCIIRenderer.swift` to use dynamic font sizing
+- [x] Update `Engine.swift` to use dynamic font sizing (already using dynamic fontSize)
+- [x] Verify all components use same font size
+- **Files**: ✅ Updated `ASCIIRenderer.swift`, `FontMetrics.swift`, test files
 
 ### Phase 2: Core Algorithm Fixes (HIGH Priority)
 
-#### 4. Fix Grid Calculation Algorithm (HIGH)
-- [ ] Analyze current `calculateOptimalGridDimensions` algorithm
-- [ ] Implement width utilization optimization alongside height
-- [ ] Replace brute-force search with efficient binary search or mathematical approach
-- [ ] Add proper aspect ratio consideration to algorithm
-- [ ] Add logging to verify optimization is working
-- [ ] Test with various screen sizes and aspect ratios
-- **Files**: `ASCIIRenderer.swift` - `calculateOptimalGridDimensions`
+#### 4. Fix Grid Calculation Algorithm (HIGH) ✅
+- [x] Analyze current `calculateOptimalGridDimensions` algorithm
+- [x] Implement width utilization optimization alongside height
+- [x] Replace brute-force search with efficient binary search or mathematical approach
+- [x] Add proper aspect ratio consideration to algorithm
+- [x] Add logging to verify optimization is working
+- [x] Test with various screen sizes and aspect ratios
+- **Files**: `FontMetrics.swift` - `calculateOptimalGridDimensions`
 
 #### 5. Resolve Bounds vs Grid Mismatch (HIGH)
 - [ ] Identify where ContentView and ASCIIRenderer calculate differently
@@ -201,46 +191,3 @@ This document tracks the step-by-step implementation of improved font scaling an
 - [ ] Add graceful degradation for invalid inputs
 - [ ] Test error handling with edge case inputs
 - **Files**: All calculation methods
-
-### Phase 4: Performance Optimization (LOW Priority)
-
-#### 8. Implement Caching and Performance Improvements (LOW)
-- [ ] Add caching for font metric calculations
-- [ ] Implement efficient grid calculation algorithm
-- [ ] Add performance monitoring and logging
-- [ ] Optimize font size search algorithm
-- [ ] Add metrics for calculation performance
-- [ ] Test performance with various screen sizes
-- **Files**: `FontMetrics.swift`, `ASCIIRenderer.swift`
-
-## Approach
-Using improved font scaling with dynamic metrics to maintain the current text-based approach while fixing core positioning issues.
-
-## Testing Strategy
-
-### Test Categories
-1. **Unit Tests**: Test individual functions and methods in isolation
-2. **Integration Tests**: Test component interactions
-3. **Performance Tests**: Ensure rendering remains smooth
-4. **Visual Tests**: Validate character alignment and positioning
-
-### Test Files to Create
-- `AsciiquariumTests/ASCIIRendererTests.swift` - Test rendering logic
-- `AsciiquariumTests/CharacterMappingTests.swift` - Test position mapping
-- `AsciiquariumTests/FontMetricsTests.swift` - Test font calculations
-- `AsciiquariumTests/EntityMovementTests.swift` - Test entity positioning
-- `AsciiquariumTests/IntegrationTests.swift` - Test full system
-
-### Key Test Scenarios
-- Different screen sizes (320x240, 800x600, 1920x1080, 4K)
-- Various aspect ratios (4:3, 16:9, 21:9, 1:1)
-- Font size changes and dynamic resizing
-- Entity movement across character boundaries
-- Edge cases (zero size, negative positions, extreme values)
-
-## Files to Modify
-- `Shared/ASCIIRenderer.swift` - Main rendering logic
-- `Shared/Engine.swift` - Scene dimensions and entity updates
-- `AsciiquariumApp/ContentView.swift` - Display integration
-- `Shared/Entity.swift` - Entity positioning logic (if needed)
-- `AsciiquariumTests/` - Add comprehensive test coverage

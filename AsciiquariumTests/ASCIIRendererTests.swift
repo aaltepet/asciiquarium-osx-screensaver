@@ -13,7 +13,7 @@ struct ASCIIRendererTests {
     // MARK: - Rendering Helper Functions
 
     private func createTestAttributedString() -> NSAttributedString {
-        let font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
+        let font = FontMetrics.shared.createDefaultFont()
         return NSAttributedString(
             string: "Test String",
             attributes: [
