@@ -38,7 +38,7 @@ class BaseEntity: Entity {
     var collisionDepth: Int?
 
     // MARK: - Internal State
-    private var frameCount: Int = 0
+    var frameCount: Int = 0
     private var isKilled: Bool = false
 
     // MARK: - Computed Properties

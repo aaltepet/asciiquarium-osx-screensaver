@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Waterline Entity
 class WaterlineEntity: BaseEntity {
     init(name: String, position: Position3D, segmentIndex: Int) {
-        let waterlineSegment = createWaterlineSegment(segmentIndex: segmentIndex)
+        let waterlineSegment = WaterlineEntity.createWaterlineSegment(segmentIndex: segmentIndex)
         super.init(name: name, type: .waterline, shape: waterlineSegment, position: position)
         setupWaterline()
     }
@@ -21,7 +21,7 @@ class WaterlineEntity: BaseEntity {
         // Waterlines don't move
     }
 
-    private func createWaterlineSegment(segmentIndex: Int) -> [String] {
+    private static func createWaterlineSegment(segmentIndex: Int) -> [String] {
         let baseSegments = [
             "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
             "^^^^ ^^^  ^^^   ^^^    ^^^^      ",

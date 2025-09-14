@@ -83,7 +83,7 @@ class ASCIIRenderer {
     }
 
     /// Render the asciiquarium scene
-    func renderScene(entities: [AquariumEntity], in bounds: CGRect) -> NSAttributedString {
+    func renderScene(entities: [Entity], in bounds: CGRect) -> NSAttributedString {
         let mutableString = NSMutableAttributedString()
 
         // Validate dimensions before proceeding
@@ -103,19 +103,29 @@ class ASCIIRenderer {
             lines.append(String(repeating: " ", count: width))
         }
 
+        // Sort entities by depth (z-coordinate) for proper layering
+        let sortedEntities = entities.sorted { $0.position.z < $1.position.z }
+
         // Add entities to the scene
-        for entity in entities {
-            let x = Int(entity.position.x / characterWidth)
-            let y = Int(entity.position.y / lineHeight)
+        for entity in sortedEntities {
+            let x = Int(CGFloat(entity.position.x) / characterWidth)
+            let y = Int(CGFloat(entity.position.y) / lineHeight)
 
             if x >= 0 && x < width && y >= 0 && y < height {
-                let line = lines[y]
-                let startIndex = line.startIndex
-                let endIndex = line.index(startIndex, offsetBy: min(x + entity.shape.count, width))
-                let before = String(line[startIndex..<line.index(startIndex, offsetBy: x)])
-                let after = String(line[endIndex..<line.endIndex])
+                // Render each line of the entity's shape
+                for (shapeLineIndex, shapeLine) in entity.shape.enumerated() {
+                    let entityY = y + shapeLineIndex
+                    if entityY >= 0 && entityY < height {
+                        let line = lines[entityY]
+                        let startIndex = line.startIndex
+                        let endIndex = line.index(
+                            startIndex, offsetBy: min(x + shapeLine.count, width))
+                        let before = String(line[startIndex..<line.index(startIndex, offsetBy: x)])
+                        let after = String(line[endIndex..<line.endIndex])
 
-                lines[y] = before + entity.shape + after
+                        lines[entityY] = before + shapeLine + after
+                    }
+                }
             }
         }
 

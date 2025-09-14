@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Core animation engine for the asciiquarium
 class AsciiquariumEngine: ObservableObject {
-    @Published var entities: [AquariumEntity] = []
+    @Published var entities: [Entity] = []
     @Published var isRunning = false
 
     private var animationTimer: Timer?
@@ -107,16 +107,15 @@ class AsciiquariumEngine: ObservableObject {
     /// Update all entities
     private func updateEntities(deltaTime: CFTimeInterval) {
         let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
-        let currentTime = Date().timeIntervalSince1970
 
         // Update existing entities
-        for i in 0..<entities.count {
-            entities[i].update(deltaTime: deltaTime, bounds: bounds)
+        for entity in entities {
+            entity.update(deltaTime: deltaTime)
         }
 
-        // Remove expired entities
+        // Remove dead entities
         entities.removeAll { entity in
-            entity.isExpired(currentTime: currentTime)
+            !entity.isAlive
         }
     }
 
@@ -139,19 +138,13 @@ class AsciiquariumEngine: ObservableObject {
     /// Spawn a new fish
     private func spawnFish() {
         let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
-        let position = CGPoint(
-            x: CGFloat.random(in: 0...bounds.width),
-            y: CGFloat.random(in: 0...bounds.height)
+        let position = Position3D(
+            Int.random(in: 0...Int(bounds.width)),
+            Int.random(in: 0...Int(bounds.height)),
+            Int.random(in: 3...20)  // Random depth for fish
         )
 
-        let fish = AquariumEntity(
-            type: .fish,
-            position: position,
-            shape: "><>",
-            color: .blue,
-            speed: 1.0
-        )
-
+        let fish = EntityFactory.createFish(at: position)
         entities.append(fish)
     }
 }

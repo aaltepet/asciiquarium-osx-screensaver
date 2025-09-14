@@ -63,11 +63,10 @@ struct ContentView: View {
 
                 Button("Add Fish") {
                     // Add a new fish to the aquarium
-                    let randomX = CGFloat.random(in: 0...engine.sceneWidth)
-                    let randomY = CGFloat.random(in: 0...engine.sceneHeight)
-                    let fish = AquariumEntity(
-                        type: .fish, position: CGPoint(x: randomX, y: randomY), shape: "><>",
-                        color: .cyan, speed: 1.0)
+                    let randomX = Int.random(in: 0...Int(engine.sceneWidth))
+                    let randomY = Int.random(in: 0...Int(engine.sceneHeight))
+                    let randomZ = Int.random(in: 3...20)
+                    let fish = EntityFactory.createFish(at: Position3D(randomX, randomY, randomZ))
                     engine.entities.append(fish)
                 }
                 .buttonStyle(.bordered)

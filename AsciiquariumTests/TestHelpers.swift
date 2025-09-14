@@ -23,17 +23,11 @@ struct TestHelpers {
         return AsciiquariumEngine()
     }
 
-    static func createTestEntities() -> [AquariumEntity] {
+    static func createTestEntities() -> [Entity] {
         return [
-            AquariumEntity(
-                type: .fish, position: CGPoint(x: 100, y: 100), shape: "><>", color: .blue,
-                speed: 1.0),
-            AquariumEntity(
-                type: .fish, position: CGPoint(x: 200, y: 150), shape: "><>", color: .cyan,
-                speed: 1.0),
-            AquariumEntity(
-                type: .fish, position: CGPoint(x: 300, y: 200), shape: "><>", color: .green,
-                speed: 1.0),
+            EntityFactory.createFish(at: Position3D(100, 100, 10)),
+            EntityFactory.createFish(at: Position3D(200, 150, 15)),
+            EntityFactory.createFish(at: Position3D(300, 200, 5)),
         ]
     }
 

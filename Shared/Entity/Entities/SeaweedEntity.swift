@@ -14,7 +14,7 @@ class SeaweedEntity: BaseEntity {
 
     init(name: String, position: Position3D) {
         let height = Int.random(in: 3...6)
-        let seaweedShape = createSeaweedShape(height: height)
+        let seaweedShape = SeaweedEntity.createSeaweedShape(height: height)
         super.init(name: name, type: .seaweed, shape: seaweedShape, position: position)
         setupSeaweed()
     }
@@ -25,7 +25,7 @@ class SeaweedEntity: BaseEntity {
         callbackArgs = [0.0, 0.0, 0.0, 0.25]  // Sway animation
     }
 
-    private func createSeaweedShape(height: Int) -> [String] {
+    private static func createSeaweedShape(height: Int) -> [String] {
         var leftSide = ""
         var rightSide = ""
 
