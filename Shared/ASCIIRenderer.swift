@@ -104,7 +104,7 @@ class ASCIIRenderer {
         }
 
         // Add entities to the scene
-        /*for entity in entities {
+        for entity in entities {
             let x = Int(entity.position.x / characterWidth)
             let y = Int(entity.position.y / lineHeight)
 
@@ -117,7 +117,7 @@ class ASCIIRenderer {
 
                 lines[y] = before + entity.shape + after
             }
-        }*/
+        }
 
         // Add water surface (3 lines from bottom)
         let surfaceY = max(0, height - 4)
