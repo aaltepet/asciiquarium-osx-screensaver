@@ -89,6 +89,9 @@ struct ContentView: View {
                 height: optimalGrid.height,
                 fontSize: optimalGrid.fontSize
             )
+
+            // Update renderer with optimal font sizing
+            renderer.updateFontWithOptimalSizing(for: displayBounds)
         }
     }
 
@@ -119,6 +122,9 @@ struct ContentView: View {
                 height: optimalGrid.height,
                 fontSize: optimalGrid.fontSize
             )
+
+            // Update renderer with optimal font sizing
+            renderer.updateFontWithOptimalSizing(for: newBounds)
         }
         print("=================================")
     }

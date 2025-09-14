@@ -18,16 +18,15 @@ class ASCIIRenderer {
 
     init() {
         self.font = FontMetrics.shared.createDefaultFont()
+        updateCachedDimensions()
     }
 
-    // Character dimensions for accurate positioning
+    // Character dimensions for accurate positioning using FontMetrics
     var characterWidth: CGFloat {
         if let cached = cachedCharacterWidth {
             return cached
         }
-        let sampleString = "M"
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        let width = sampleString.size(withAttributes: attributes).width
+        let width = FontMetrics.shared.calculateCharacterWidth(for: font)
         cachedCharacterWidth = width
         return width
     }
@@ -36,16 +35,65 @@ class ASCIIRenderer {
         if let cached = cachedLineHeight {
             return cached
         }
-        let height = font.ascender - font.descender + font.leading
+        let height = FontMetrics.shared.calculateLineHeight(for: font)
         cachedLineHeight = height
         return height
+    }
+
+    /// Update font with new size and clear cache
+    func updateFont(size: CGFloat) {
+        font = NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
+        updateCachedDimensions()
+        cachedFontSize = size
+    }
+
+    /// Update font with optimal sizing from FontMetrics
+    func updateFontWithOptimalSizing(for bounds: CGRect) {
+        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+        updateFont(size: optimalGrid.fontSize)
+    }
+
+    /// Update cached dimensions using FontMetrics
+    private func updateCachedDimensions() {
+        cachedCharacterWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
+        cachedLineHeight = FontMetrics.shared.calculateLineHeight(for: font)
+    }
+
+    /// Validate character dimensions and provide fallback if needed
+    private func validateDimensions() -> Bool {
+        guard let charWidth = cachedCharacterWidth,
+            let lineHeight = cachedLineHeight
+        else {
+            return false
+        }
+
+        return charWidth.isFinite && charWidth > 0 && lineHeight.isFinite && lineHeight > 0
+    }
+
+    /// Draw a single character at a specific position
+    func drawCharacter(_ character: String, at point: CGPoint, color: NSColor) -> NSAttributedString
+    {
+        return NSAttributedString(
+            string: character,
+            attributes: [
+                .font: font,
+                .foregroundColor: color,
+            ]
+        )
     }
 
     /// Render the asciiquarium scene
     func renderScene(entities: [AquariumEntity], in bounds: CGRect) -> NSAttributedString {
         let mutableString = NSMutableAttributedString()
 
-        // Create a simple text representation
+        // Validate dimensions before proceeding
+        guard validateDimensions() else {
+            print("Warning: Invalid character dimensions, using fallback")
+            updateCachedDimensions()
+            return NSAttributedString(string: "Error: Invalid font dimensions")
+        }
+
+        // Create a simple text representation using cached character dimensions
         var lines: [String] = []
         let height = Int(bounds.height / lineHeight)
         let width = Int(bounds.width / characterWidth)
@@ -56,7 +104,7 @@ class ASCIIRenderer {
         }
 
         // Add entities to the scene
-        for entity in entities {
+        /*for entity in entities {
             let x = Int(entity.position.x / characterWidth)
             let y = Int(entity.position.y / lineHeight)
 
@@ -69,7 +117,7 @@ class ASCIIRenderer {
 
                 lines[y] = before + entity.shape + after
             }
-        }
+        }*/
 
         // Add water surface (3 lines from bottom)
         let surfaceY = max(0, height - 4)
@@ -98,25 +146,5 @@ class ASCIIRenderer {
         }
 
         return mutableString
-    }
-
-    /// Draw a single character at a specific position
-    func drawCharacter(_ character: String, at point: CGPoint, color: NSColor) -> NSAttributedString
-    {
-        return NSAttributedString(
-            string: character,
-            attributes: [
-                .font: font,
-                .foregroundColor: color,
-            ]
-        )
-    }
-
-    /// Update font with new size and clear cache
-    private func updateFont(size: CGFloat) {
-        font = NSFont.monospacedSystemFont(ofSize: size, weight: .regular)
-        cachedCharacterWidth = nil
-        cachedLineHeight = nil
-        cachedFontSize = size
     }
 }
