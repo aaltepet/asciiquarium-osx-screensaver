@@ -49,7 +49,8 @@ struct ASCIIRendererTests {
         let testBounds = TestHelpers.generateTestBounds()
 
         for bounds in testBounds {
-            let attributedString = renderer.renderScene(entities: entities, in: bounds)
+            let attributedString = renderer.renderScene(
+                entities: entities, gridWidth: 80, gridHeight: 24)
 
             // Should render successfully for all bounds
             #expect(!attributedString.string.isEmpty, "Should render for bounds: \(bounds)")
@@ -68,7 +69,8 @@ struct ASCIIRendererTests {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
 
         // Should have water surface
@@ -115,7 +117,7 @@ struct ASCIIRendererTests {
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Update font with optimal sizing
-        renderer.updateFontWithOptimalSizing(for: bounds)
+        renderer.updateFont(size: 12.0)
 
         // Font should be updated (we can't easily test the exact size without FontMetrics access)
         #expect(
@@ -143,7 +145,8 @@ struct ASCIIRendererTests {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
 
         // All lines should have the same width (monospaced)
@@ -159,7 +162,8 @@ struct ASCIIRendererTests {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
 
         // Should have reasonable number of lines
@@ -238,14 +242,11 @@ struct ASCIIRendererTests {
         let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: testBounds)
 
         // Update engine with optimal dimensions
-        engine.updateSceneDimensions(
-            width: optimalGrid.width,
-            height: optimalGrid.height,
-            fontSize: optimalGrid.fontSize
-        )
+        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
         // Render the scene
-        let attributedString = renderer.renderScene(entities: entities, in: testBounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
 
         // Calculate actual content dimensions
         let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
@@ -284,14 +285,11 @@ struct ASCIIRendererTests {
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
             // Render scene
-            let attributedString = renderer.renderScene(entities: entities, in: bounds)
+            let attributedString = renderer.renderScene(
+                entities: entities, gridWidth: 80, gridHeight: 24)
 
             // Calculate actual content dimensions
             let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
@@ -330,14 +328,11 @@ struct ASCIIRendererTests {
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
             // Render scene
-            let attributedString = renderer.renderScene(entities: entities, in: bounds)
+            let attributedString = renderer.renderScene(
+                entities: entities, gridWidth: 80, gridHeight: 24)
 
             // Verify content fits perfectly
             let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
@@ -366,14 +361,11 @@ struct ASCIIRendererTests {
 
         // Calculate optimal grid
         let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
-        engine.updateSceneDimensions(
-            width: optimalGrid.width,
-            height: optimalGrid.height,
-            fontSize: optimalGrid.fontSize
-        )
+        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
         // Render scene
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
 
         // All lines should have the same width (monospaced grid)
@@ -407,14 +399,11 @@ struct ASCIIRendererTests {
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
             // Render scene
-            let attributedString = renderer.renderScene(entities: entities, in: bounds)
+            let attributedString = renderer.renderScene(
+                entities: entities, gridWidth: 80, gridHeight: 24)
 
             // Calculate actual content dimensions
             let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
@@ -482,7 +471,7 @@ struct ASCIIRendererTests {
         // Measure time for multiple renders
         let (_, executionTime) = TestHelpers.measureExecutionTime {
             for _ in 0..<10 {
-                _ = renderer.renderScene(entities: entities, in: bounds)
+                _ = renderer.renderScene(entities: entities, gridWidth: 80, gridHeight: 24)
             }
         }
 
@@ -500,8 +489,8 @@ struct ASCIIRendererTests {
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Render the same scene multiple times
-        let result1 = renderer.renderScene(entities: entities, in: bounds)
-        let result2 = renderer.renderScene(entities: entities, in: bounds)
+        let result1 = renderer.renderScene(entities: entities, gridWidth: 80, gridHeight: 24)
+        let result2 = renderer.renderScene(entities: entities, gridWidth: 80, gridHeight: 24)
 
         // Results should be identical
         #expect(
@@ -513,23 +502,24 @@ struct ASCIIRendererTests {
 
     @Test func testWaterlineEntityPlacement() async throws {
         let renderer = TestHelpers.createTestRenderer()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        let gridWidth = 80
+        let gridHeight = 24
 
         // Create a single waterline entity at a specific position
-        let waterlinePosition = Position3D(0, 50, 0)  // x=0 (full-width), y=50 (from top), z=0
+        let waterlinePosition = Position3D(0, 4, 0)  // x=0 (full-width), y=4 (grid row), z=0
         let waterline = EntityFactory.createWaterline(segmentIndex: 0, at: waterlinePosition)
         let entities = [waterline]
 
         // Get the cached waterline pattern directly
-        let expectedWidth = Int(bounds.width / renderer.characterWidth)
-        let cachedWaterline = waterline.getShape(for: expectedWidth)
+        let cachedWaterline = waterline.getShape(for: gridWidth)
 
-        // Render the scene
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        // Render the scene using grid coordinates
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: gridWidth, gridHeight: gridHeight)
         let lines = attributedString.string.components(separatedBy: "\n")
 
-        // Calculate expected grid position
-        let expectedGridY = Int(CGFloat(waterlinePosition.y) / renderer.lineHeight)
+        // Waterline should be at grid row 4
+        let expectedGridY = waterlinePosition.y
 
         // Verify the waterline appears at the correct position
         #expect(expectedGridY < lines.count, "Waterline should be within bounds")
@@ -538,7 +528,7 @@ struct ASCIIRendererTests {
             let waterlineLine = lines[expectedGridY]
 
             // Verify waterline spans the full width
-            #expect(waterlineLine.count >= expectedWidth, "Waterline should span full width")
+            #expect(waterlineLine.count >= gridWidth, "Waterline should span full width")
 
             // Verify the waterline matches the cached pattern
             #expect(

@@ -17,9 +17,7 @@ class AsciiquariumEngine: ObservableObject {
     private var lastUpdateTime: CFTimeInterval = 0
     private var frameCallback: ((CGRect) -> Void)?
 
-    // Scene dimensions - will be calculated dynamically
-    var sceneWidth: CGFloat = 800
-    var sceneHeight: CGFloat = 600
+    // Grid dimensions - the only dimensions we need for grid-based coordinates
     var gridWidth: Int = 80
     var gridHeight: Int = 24
 
@@ -67,26 +65,15 @@ class AsciiquariumEngine: ObservableObject {
         frameCallback = callback
     }
 
-    /// Update scene dimensions based on optimal grid calculation
-    func updateSceneDimensions(width: Int, height: Int, fontSize: CGFloat) {
-        print("=== Engine Scene Dimensions Update ===")
-        print("Input: width=\(width), height=\(height), fontSize=\(fontSize)")
-        print("Previous: sceneWidth=\(sceneWidth), sceneHeight=\(sceneHeight)")
+    /// Update grid dimensions - Engine only manages grid coordinates
+    func updateGridDimensions(width: Int, height: Int) {
+        print("=== Engine Grid Dimensions Update ===")
+        print("Input: width=\(width), height=\(height)")
         print("Previous grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
 
         self.gridWidth = width
         self.gridHeight = height
 
-        // Calculate pixel dimensions based on font metrics
-        let font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
-        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
-
-        self.sceneWidth = CGFloat(width) * charWidth
-        self.sceneHeight = CGFloat(height) * lineHeight
-
-        print("Calculated: charWidth=\(charWidth), lineHeight=\(lineHeight)")
-        print("New: sceneWidth=\(sceneWidth), sceneHeight=\(sceneHeight)")
         print("New grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
         print("=====================================")
     }
@@ -100,14 +87,12 @@ class AsciiquariumEngine: ObservableObject {
         updateEntities(deltaTime: deltaTime)
         spawnNewEntities(currentTime: currentTime)
 
-        // Notify that a new frame is ready
-        frameCallback?(CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight))
+        // Notify that a new frame is ready - ContentView will handle the actual rendering
+        frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
     }
 
     /// Update all entities
     private func updateEntities(deltaTime: CFTimeInterval) {
-        let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
-
         // Update existing entities
         for entity in entities {
             entity.update(deltaTime: deltaTime)
@@ -129,8 +114,9 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
-        let position = Position3D(50, Int.random(in: 0...Int(sceneHeight)), 0)
-        let waterline = EntityFactory.createWaterline(at: position)
+        // Place waterline at row 4 (grid coordinates)
+        let waterlinePosition = Position3D(0, 4, 0)
+        let waterline = EntityFactory.createWaterline(at: waterlinePosition)
         entities.append(waterline)
 
         for _ in 0..<3 {
@@ -140,10 +126,10 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a new fish
     private func spawnFish() {
-        let bounds = CGRect(x: 0, y: 0, width: sceneWidth, height: sceneHeight)
         let position = Position3D(
-            Int.random(in: 0...Int(bounds.width)),
-            Int.random(in: 0...Int(bounds.height)),
+            Int.random(in: 0..<gridWidth),
+            // must be below the waterline
+            Int.random(in: 7..<gridHeight),
             Int.random(in: 3...20)  // Random depth for fish
         )
 

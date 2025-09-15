@@ -11,6 +11,7 @@ struct ContentView: View {
     @StateObject private var engine = AsciiquariumEngine()
     @State private var isAnimating = false
     @State private var asciiText = ""
+    @State private var attributedAsciiText = AttributedString("")
     @State private var displayBounds = CGRect(x: 0, y: 0, width: 800, height: 600)
     private let renderer = ASCIIRenderer()
 
@@ -30,9 +31,10 @@ struct ContentView: View {
 
                 // ASCII Display
                 GeometryReader { geometry in
-                    Text(asciiText)
-                        .font(.system(.body, design: .monospaced))
-                        .foregroundColor(.cyan)
+                    Text(attributedAsciiText)
+                        .kerning(0)
+                        .lineSpacing(0)
+                        .fixedSize(horizontal: true, vertical: false)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                         .background(Color.black)
                         .cornerRadius(8)
@@ -62,9 +64,10 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent)
 
                 Button("Add Fish") {
-                    // Add a new fish to the aquarium
-                    let randomX = Int.random(in: 0...Int(engine.sceneWidth))
-                    let randomY = Int.random(in: 0...Int(engine.sceneHeight))
+                    // Add a new fish to the aquarium using grid coordinates
+                    let randomX = Int.random(in: 0..<engine.gridWidth)
+                    // must be below the waterline
+                    let randomY = Int.random(in: 7..<engine.gridHeight)
                     let randomZ = Int.random(in: 3...20)
                     let fish = EntityFactory.createFish(at: Position3D(randomX, randomY, randomZ))
                     engine.entities.append(fish)
@@ -76,21 +79,22 @@ struct ContentView: View {
         .onAppear {
             // Set up frame callback for real-time updates
             engine.setFrameCallback { bounds in
-                // Render the current scene
-                let attributedString = renderer.renderScene(entities: engine.entities, in: bounds)
+                // Render the current scene using grid coordinates
+                let attributedString = renderer.renderScene(
+                    entities: engine.entities, gridWidth: engine.gridWidth,
+                    gridHeight: engine.gridHeight)
                 asciiText = attributedString.string
+                attributedAsciiText = AttributedString(attributedString)
             }
 
-            // Calculate initial optimal grid dimensions immediately
+            // Calculate initial optimal grid dimensions and font size
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: displayBounds)
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
-            // Update renderer with optimal font sizing
-            renderer.updateFontWithOptimalSizing(for: displayBounds)
+            // Update renderer with the same font size calculated by FontMetrics
+            renderer.updateFont(size: optimalGrid.fontSize)
+            // Apply exact same font to the SwiftUI Text to avoid wrapping mismatches
+            attributedAsciiText = AttributedString("")
         }
     }
 
@@ -108,22 +112,20 @@ struct ContentView: View {
         if newBounds != displayBounds {
             displayBounds = newBounds
 
-            // Calculate optimal grid dimensions
+            // Calculate optimal grid dimensions and font size
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: newBounds)
 
             print(
                 "Optimal grid: width=\(optimalGrid.width), height=\(optimalGrid.height), fontSize=\(optimalGrid.fontSize)"
             )
 
-            // Update engine with new dimensions
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            // Update engine with new grid dimensions
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
-            // Update renderer with optimal font sizing
-            renderer.updateFontWithOptimalSizing(for: newBounds)
+            // Update renderer with the same font size calculated by FontMetrics
+            renderer.updateFont(size: optimalGrid.fontSize)
+            // Clear attributed text so next frame uses updated font
+            attributedAsciiText = AttributedString("")
         }
         print("=================================")
     }

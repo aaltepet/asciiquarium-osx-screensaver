@@ -104,10 +104,16 @@ class BaseEntity: Entity {
         let dy = args[2] as? Double ?? 0.0
         let dz = args.count > 3 ? (args[3] as? Double ?? 0.0) : 0.0
 
+        // Convert speed to grid-based movement (1 grid cell per second by default)
+        let gridSpeed = speed * 30.0  // 30 FPS * 1 cell/second = 1 cell per frame
+        let moveX = Int(gridSpeed * dx * deltaTime)
+        let moveY = Int(gridSpeed * dy * deltaTime)
+        let moveZ = Int(gridSpeed * dz * deltaTime)
+
         return Position3D(
-            position.x + Int(speed * dx * deltaTime),
-            position.y + Int(speed * dy * deltaTime),
-            position.z + Int(speed * dz * deltaTime)
+            position.x + moveX,
+            position.y + moveY,
+            position.z + moveZ
         )
     }
 

@@ -77,9 +77,12 @@ class FishEntity: BaseEntity {
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        // Fish-specific movement logic
+        // Fish-specific movement logic - move 1 grid cell per second
+        let gridSpeed = speed * 30.0  // 30 FPS * 1 cell/second = 1 cell per frame
+        let moveX = Int(gridSpeed * Double(direction) * deltaTime)
+
         return Position3D(
-            position.x + Int(speed * Double(direction) * deltaTime),
+            position.x + moveX,
             position.y,
             position.z
         )

@@ -29,6 +29,10 @@ enum EntityType: String, CaseIterable {
 }
 
 // MARK: - Position and Size
+/// Represents a position in the ASCII character grid (not pixel coordinates)
+/// - x: Column position (0 = leftmost column)
+/// - y: Row position (0 = topmost row)
+/// - z: Depth/layer for rendering order (higher z = rendered on top)
 struct Position3D: Equatable {
     var x: Int
     var y: Int

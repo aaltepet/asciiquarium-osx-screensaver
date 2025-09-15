@@ -25,9 +25,9 @@ struct TestHelpers {
 
     static func createTestEntities() -> [Entity] {
         return [
-            EntityFactory.createFish(at: Position3D(100, 100, 10)),
-            EntityFactory.createFish(at: Position3D(200, 150, 15)),
-            EntityFactory.createFish(at: Position3D(300, 200, 5)),
+            EntityFactory.createFish(at: Position3D(10, 10, 10)),
+            EntityFactory.createFish(at: Position3D(20, 15, 15)),
+            EntityFactory.createFish(at: Position3D(30, 20, 5)),
         ]
     }
 

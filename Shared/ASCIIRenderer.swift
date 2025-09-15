@@ -47,12 +47,6 @@ class ASCIIRenderer {
         cachedFontSize = size
     }
 
-    /// Update font with optimal sizing from FontMetrics
-    func updateFontWithOptimalSizing(for bounds: CGRect) {
-        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
-        updateFont(size: optimalGrid.fontSize)
-    }
-
     /// Update cached dimensions using FontMetrics
     private func updateCachedDimensions() {
         cachedCharacterWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
@@ -83,7 +77,7 @@ class ASCIIRenderer {
     }
 
     /// Render the asciiquarium scene
-    func renderScene(entities: [Entity], in bounds: CGRect) -> NSAttributedString {
+    func renderScene(entities: [Entity], gridWidth: Int, gridHeight: Int) -> NSAttributedString {
         let mutableString = NSMutableAttributedString()
 
         // Validate dimensions before proceeding
@@ -93,14 +87,12 @@ class ASCIIRenderer {
             return NSAttributedString(string: "Error: Invalid font dimensions")
         }
 
-        // Create a simple text representation using cached character dimensions
+        // Create a simple text representation using grid dimensions
         var lines: [String] = []
-        let height = Int(bounds.height / lineHeight)
-        let width = Int(bounds.width / characterWidth)
 
         // Initialize empty lines
-        for _ in 0..<height {
-            lines.append(String(repeating: " ", count: width))
+        for _ in 0..<gridHeight {
+            lines.append(String(repeating: " ", count: gridWidth))
         }
 
         // Sort entities by depth (z-coordinate) for proper layering
@@ -108,38 +100,40 @@ class ASCIIRenderer {
 
         // Add entities to the scene
         for entity in sortedEntities {
-            let y = Int(CGFloat(entity.position.y) / lineHeight)
+            let y = entity.position.y
 
-            if y >= 0 && y < height {
+            if y >= 0 && y < gridHeight {
                 // Handle full-width entities
                 if entity.isFullWidth {
                     // For full-width entities, generate current shape (allows for dynamic/random generation)
                     if let fullWidthEntity = entity as? EntityFullWidth {
-                        let entityShape = fullWidthEntity.getShape(for: width)
+                        let entityShape = fullWidthEntity.getShape(for: gridWidth)
                         for (shapeLineIndex, shapeLine) in entityShape.enumerated() {
                             let entityY = y + shapeLineIndex
-                            if entityY >= 0 && entityY < height {
+                            if entityY >= 0 && entityY < gridHeight {
                                 lines[entityY] = shapeLine
                             }
                         }
                     }
                 } else {
                     // Handle regular positioned entities - use shape directly for efficiency
-                    let x = Int(CGFloat(entity.position.x) / characterWidth)
-                    if x >= 0 && x < width {
+                    let x = entity.position.x
+                    if x >= 0 && x < gridWidth {
                         // Render each line of the entity's shape
                         for (shapeLineIndex, shapeLine) in entity.shape.enumerated() {
                             let entityY = y + shapeLineIndex
-                            if entityY >= 0 && entityY < height {
-                                let line = lines[entityY]
-                                let startIndex = line.startIndex
-                                let endIndex = line.index(
-                                    startIndex, offsetBy: min(x + shapeLine.count, width))
-                                let before = String(
-                                    line[startIndex..<line.index(startIndex, offsetBy: x)])
-                                let after = String(line[endIndex..<line.endIndex])
+                            if entityY >= 0 && entityY < gridHeight {
+                                var line = lines[entityY]
+                                let availableWidth = max(0, gridWidth - x)
+                                if availableWidth == 0 { continue }
+                                let croppedShape = String(shapeLine.prefix(availableWidth))
 
-                                lines[entityY] = before + shapeLine + after
+                                // Replace exactly [x, x + croppedShape.count) with croppedShape
+                                let replaceStart = line.index(line.startIndex, offsetBy: x)
+                                let replaceEnd = line.index(
+                                    replaceStart, offsetBy: croppedShape.count)
+                                line.replaceSubrange(replaceStart..<replaceEnd, with: croppedShape)
+                                lines[entityY] = line
                             }
                         }
                     }

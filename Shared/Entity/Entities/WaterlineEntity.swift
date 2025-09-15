@@ -19,9 +19,8 @@ class WaterlineEntity: EntityFullWidth {
         "^^      ^^^^      ^^^    ^^^^^^  ",
     ]
 
-    init(name: String, position: Position3D, segmentIndex: Int? = nil) {
+    init(name: String, position: Position3D) {
         // Use provided segmentIndex or generate random variation
-        let actualSegmentIndex = segmentIndex ?? Int.random(in: 0..<4)
         let waterlineSegment = WaterlineEntity.createWaterlineSegment(segmentIndex: 0)
         super.init(name: name, type: .waterline, shape: ["~"], position: position)
 

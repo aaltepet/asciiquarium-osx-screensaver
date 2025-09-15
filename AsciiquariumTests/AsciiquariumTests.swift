@@ -23,13 +23,10 @@ struct AsciiquariumTests {
 
         // Test the complete flow: calculate optimal grid, update engine, render scene
         let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
-        engine.updateSceneDimensions(
-            width: optimalGrid.width,
-            height: optimalGrid.height,
-            fontSize: optimalGrid.fontSize
-        )
+        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
-        let attributedString = renderer.renderScene(entities: entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: entities, gridWidth: 80, gridHeight: 24)
 
         // Basic validation that the flow works
         #expect(!attributedString.string.isEmpty, "Should produce non-empty output")
@@ -45,14 +42,11 @@ struct AsciiquariumTests {
         let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
         // Update engine with optimal dimensions
-        engine.updateSceneDimensions(
-            width: optimalGrid.width,
-            height: optimalGrid.height,
-            fontSize: optimalGrid.fontSize
-        )
+        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
         // Render using engine's entities
-        let attributedString = renderer.renderScene(entities: engine.entities, in: bounds)
+        let attributedString = renderer.renderScene(
+            entities: engine.entities, gridWidth: 80, gridHeight: 24)
 
         // Should render successfully
         #expect(!attributedString.string.isEmpty, "Should render engine entities")
@@ -60,8 +54,6 @@ struct AsciiquariumTests {
         // Engine should have reasonable dimensions
         #expect(engine.gridWidth > 0, "Engine should have positive grid width")
         #expect(engine.gridHeight > 0, "Engine should have positive grid height")
-        #expect(engine.sceneWidth > 0, "Engine should have positive scene width")
-        #expect(engine.sceneHeight > 0, "Engine should have positive scene height")
     }
 
     @Test func testFontMetricsIntegration() async throws {
@@ -104,14 +96,11 @@ struct AsciiquariumTests {
             let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
             // Update engine
-            engine.updateSceneDimensions(
-                width: optimalGrid.width,
-                height: optimalGrid.height,
-                fontSize: optimalGrid.fontSize
-            )
+            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
             // Render scene
-            let attributedString = renderer.renderScene(entities: entities, in: bounds)
+            let attributedString = renderer.renderScene(
+                entities: entities, gridWidth: 80, gridHeight: 24)
 
             // Should always produce valid output
             #expect(!attributedString.string.isEmpty, "Should render for size \(size)")
@@ -132,16 +121,12 @@ struct AsciiquariumTests {
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
         let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
 
-        engine.updateSceneDimensions(
-            width: optimalGrid.width,
-            height: optimalGrid.height,
-            fontSize: optimalGrid.fontSize
-        )
+        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
 
         // Measure performance of multiple renders
         let (_, executionTime) = TestHelpers.measureExecutionTime {
             for _ in 0..<50 {
-                _ = renderer.renderScene(entities: entities, in: bounds)
+                _ = renderer.renderScene(entities: entities, gridWidth: 80, gridHeight: 24)
             }
         }
 

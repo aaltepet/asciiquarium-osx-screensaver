@@ -60,16 +60,11 @@ class EntityFactory {
         return BubbleEntity(name: "bubble_\(UUID().uuidString.prefix(8))", position: position)
     }
 
-    static func createWaterline(segmentIndex: Int? = nil, at position: Position3D)
+    static func createWaterline(at position: Position3D)
         -> WaterlineEntity
     {
-        let name =
-            if let segmentIndex = segmentIndex {
-                "waterline_\(segmentIndex)"
-            } else {
-                "waterline_random"
-            }
-        return WaterlineEntity(name: name, position: position, segmentIndex: segmentIndex)
+        return WaterlineEntity(
+            name: "waterline_\(UUID().uuidString.prefix(8))", position: position)
     }
 
     static func createCastle(at position: Position3D) -> CastleEntity {
