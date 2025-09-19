@@ -11,6 +11,7 @@ import Foundation
 class WaterlineEntity: EntityFullWidth {
     private var cachedWaterline: [String]?
     private var cachedWidth: Int = 0
+    private let segmentIndex: Int
 
     private static var baseSegments = [
         "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
@@ -19,9 +20,8 @@ class WaterlineEntity: EntityFullWidth {
         "^^      ^^^^      ^^^    ^^^^^^  ",
     ]
 
-    init(name: String, position: Position3D) {
-        // Use provided segmentIndex or generate random variation
-        let waterlineSegment = WaterlineEntity.createWaterlineSegment(segmentIndex: 0)
+    init(name: String, position: Position3D, segmentIndex: Int) {
+        self.segmentIndex = max(0, min(segmentIndex, WaterlineEntity.baseSegments.count - 1))
         super.init(name: name, type: .waterline, shape: ["~"], position: position)
 
         isPhysical = true
@@ -29,14 +29,7 @@ class WaterlineEntity: EntityFullWidth {
         // Waterlines don't move
     }
 
-    private static func createWaterlineSegment(segmentIndex: Int) -> [String] {
-
-        guard segmentIndex < self.baseSegments.count else {
-            return [baseSegments[0]]
-        }
-
-        return [baseSegments[segmentIndex]]
-    }
+    private func canonicalSegment() -> String { WaterlineEntity.baseSegments[self.segmentIndex] }
 
     override func getShape(for width: Int) -> [String] {
         // Use cached waterline if available and width hasn't changed
@@ -44,16 +37,12 @@ class WaterlineEntity: EntityFullWidth {
             return cached
         }
 
-        // Generate waterline pattern using random segments for each repetition
-        let segmentSize = WaterlineEntity.baseSegments[0].count  // All segments should be same size
+        // Generate waterline pattern using the fixed canonical segment for this row
+        let segment = canonicalSegment()
+        let segmentSize = segment.count  // All segments should be same size
         let repeatCount = (width / segmentSize) + 1
 
-        var tiledShape = ""
-        for _ in 0..<repeatCount {
-            let randomSegmentIndex = Int.random(in: 0..<WaterlineEntity.baseSegments.count)
-            let randomSegment = WaterlineEntity.baseSegments[randomSegmentIndex]
-            tiledShape += randomSegment
-        }
+        let tiledShape = String(repeating: segment, count: repeatCount)
 
         let truncatedShape = String(tiledShape.prefix(width))
 
