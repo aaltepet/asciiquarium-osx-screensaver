@@ -332,17 +332,24 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - Each row uses one of the four canonical segments; rows tile across full width.
     - Rows use z-depths: `water_line3`, `water_line2`, `water_line1`, `water_line0` respectively.
     - Color is cyan; waterlines are physical (for bubble collision).
+    - Unit tests:
+      - WaterlineEntity: returns exactly one line; `getShape(for: W)` length == W; uses its fixed canonical segment repeated to width (no randomization).
+      - WaterlineEntity: `moveEntity` returns nil; shape content unchanged across multiple updates.
+      - WaterlineEntity: `isPhysical == true`, `defaultColor == .cyan`.
+      - Engine: initializes scene with exactly 4 waterline entities at y = 5, 6, 7, 8 and correct z mapping (`waterLine3/2/1/0`).
 
 - [ ] Interleave surface gaps for surface entities
   - **Acceptance**:
     - Depth gaps `water_gap3/2/1/0` are reserved and used for surface entities rendering between the 4 waterline rows.
     - Renderer sorts by `position.z` so surface entities appear visually between waterline rows.
+    - Unit tests (when surface entities are introduced): a stub surface entity at a gap depth renders between adjacent waterline rows in the final buffer (z-order verified).
 
 - [ ] Fish spawning respects water region and depth range
   - **Acceptance**:
     - Fish spawn with `y ≥ 9` and within screen height minus fish height.
     - Fish z-depth is randomized in `[fishStart, fishEnd]`.
     - No fish appear above the water surface rows.
+    - Unit tests: newly spawned fish satisfy `y ≥ 9` and `z ∈ [fishStart, fishEnd]`; no fish with `y < 9`.
 
 - [ ] Bottom placement: castle and seaweed
   - **Acceptance**:
@@ -361,6 +368,7 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
   - **Acceptance**:
     - Bubbles rise and are killed when colliding with any `waterline` row.
     - Verified via unit or visual test that bubbles never render above the surface.
+    - Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
 
 - [ ] Shark (underwater predator) depth and behavior stub
   - **Acceptance**:
