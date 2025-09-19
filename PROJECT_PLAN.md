@@ -321,10 +321,10 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
 
 ## Screen Regions and Spawning Parity Checklist
 
-- [ ] Define shared depth map and region boundaries
+- [x] Define shared depth map and region boundaries
   - **Acceptance**:
     - `Depth` constants exist mirroring Perl: `water_line3=2`, `water_gap3=3`, `water_line2=4`, `water_gap2=5`, `water_line1=6`, `water_gap1=7`, `water_line0=8`, `water_gap0=9`, `fishStart=3`, `fishEnd=20`, `shark=2`, `seaweed=21`, `castle=22`.
-    - `Region` helper exposes fixed Y ranges: `sky` rows `0–4`, `surface` rows `5–8` (4 rows), `water` rows `9…gridHeight-1`, and `bottom` as the last row(s) used by bottom entities.
+    - `Region` helper exposes fixed Y ranges: `sky` rows `0–4`, `surface` rows `5–8` (4 rows), `water` rows `9…gridHeight-1`, and `bottomRows` covering the last row used by bottom entities.
 
 - [ ] Implement multi-layered water surface (4 rows)
   - **Acceptance**:

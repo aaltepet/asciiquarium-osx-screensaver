@@ -52,6 +52,10 @@ struct WorldLayout {
 
     var bottomY: Int { max(0, gridHeight - 1) }
 
+    var bottomRows: ClosedRange<Int> {
+        return bottomY...bottomY
+    }
+
     // Convenience spawn helpers
     var fishSpawnMinY: Int { max(waterRows.lowerBound, 9) }
     var fishSpawnMaxY: Int { max(fishSpawnMinY, bottomY) }
