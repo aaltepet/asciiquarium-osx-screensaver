@@ -20,8 +20,7 @@ class EntityFactory {
         case .shark:
             return SharkEntity(name: name, position: position)
         case .waterline:
-            let segmentIndex = additionalParams["segmentIndex"] as? Int ?? 0
-            return WaterlineEntity(name: name, position: position, segmentIndex: segmentIndex)
+            return WaterlineEntity(name: name, position: position)
         case .castle:
             return CastleEntity(name: name, position: position)
         case .seaweed:

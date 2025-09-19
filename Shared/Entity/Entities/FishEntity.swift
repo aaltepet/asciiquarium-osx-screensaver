@@ -15,24 +15,22 @@ class FishEntity: BaseEntity {
 
     init(name: String, position: Position3D) {
         super.init(name: name, type: .fish, shape: [""], position: position)
-        setupFish()
-    }
-
-    private func setupFish() {
         // Set up fish-specific properties
         isPhysical = true
         dieOffscreen = true
         defaultColor = .cyan
-        callbackArgs = [speed, Double(direction), 0.0, 0.0]
 
-        // Set random fish shape and color
+        // Randomize initial direction and appearance
+        direction = Bool.random() ? 1 : -1
         setupRandomFishAppearance()
+
+        // Sync movement args with randomized direction
+        callbackArgs = [speed, Double(direction), 0.0, 0.0]
     }
 
     private func setupRandomFishAppearance() {
-        // Random fish shape from the Perl source
-        let fishShapes = [
-            // Fish 1 - Right facing
+        // Right-facing shapes
+        let rightFacingShapes: [[String]] = [
             [
                 "       \\",
                 "     ...\\..,",
@@ -41,7 +39,17 @@ class FishEntity: BaseEntity {
                 "/  \\      / /",
                 "    `\"'\"'/'",
             ],
-            // Fish 2 - Left facing
+            [
+                "    \\",
+                "\\ /--\\",
+                ">=  (o>",
+                "/ \\__/",
+                "    /",
+            ],
+        ]
+
+        // Left-facing shapes
+        let leftFacingShapes: [[String]] = [
             [
                 "      /",
                 "  ,../...",
@@ -50,15 +58,6 @@ class FishEntity: BaseEntity {
                 " \\ \\      /  \\",
                 "  `'\\'\"'\"'",
             ],
-            // Fish 3 - Simple right
-            [
-                "    \\",
-                "\\ /--\\",
-                ">=  (o>",
-                "/ \\__/",
-                "    /",
-            ],
-            // Fish 4 - Simple left
             [
                 "  /",
                 " /--\\ /",
@@ -68,8 +67,9 @@ class FishEntity: BaseEntity {
             ],
         ]
 
-        let randomShape = fishShapes.randomElement() ?? fishShapes[0]
-        shape = randomShape
+        // Pick from the set matching our direction
+        let pool = direction > 0 ? rightFacingShapes : leftFacingShapes
+        shape = pool.randomElement() ?? (direction > 0 ? rightFacingShapes[0] : leftFacingShapes[0])
 
         // Random color
         let colors: [ColorCode] = [.cyan, .red, .yellow, .blue, .green, .magenta]
