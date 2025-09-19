@@ -318,3 +318,61 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
 - **Testing**: Application format makes debugging and development easier
 - **Code Reuse**: Shared core reduces maintenance overhead
 - **User Experience**: Both formats provide the same high-quality experience
+
+## Screen Regions and Spawning Parity Checklist
+
+- [ ] Define shared depth map and region boundaries
+  - **Acceptance**:
+    - `Depth` constants exist mirroring Perl: `water_line3=2`, `water_gap3=3`, `water_line2=4`, `water_gap2=5`, `water_line1=6`, `water_gap1=7`, `water_line0=8`, `water_gap0=9`, `fishStart=3`, `fishEnd=20`, `shark=2`, `seaweed=21`, `castle=22`.
+    - `Region` helper exposes fixed Y ranges: `sky` rows `0–4`, `surface` rows `5–8` (4 rows), `water` rows `9…gridHeight-1`, and `bottom` as the last row(s) used by bottom entities.
+
+- [ ] Implement multi-layered water surface (4 rows)
+  - **Acceptance**:
+    - Four `waterline` entities are created at rows `y = 5, 6, 7, 8`.
+    - Each row uses one of the four canonical segments; rows tile across full width.
+    - Rows use z-depths: `water_line3`, `water_line2`, `water_line1`, `water_line0` respectively.
+    - Color is cyan; waterlines are physical (for bubble collision).
+
+- [ ] Interleave surface gaps for surface entities
+  - **Acceptance**:
+    - Depth gaps `water_gap3/2/1/0` are reserved and used for surface entities rendering between the 4 waterline rows.
+    - Renderer sorts by `position.z` so surface entities appear visually between waterline rows.
+
+- [ ] Fish spawning respects water region and depth range
+  - **Acceptance**:
+    - Fish spawn with `y ≥ 9` and within screen height minus fish height.
+    - Fish z-depth is randomized in `[fishStart, fishEnd]`.
+    - No fish appear above the water surface rows.
+
+- [ ] Bottom placement: castle and seaweed
+  - **Acceptance**:
+    - One castle is placed at bottom-right with `z = castle` and correct ASCII art.
+    - Seaweed instances spawn at random x along the bottom, height 3–6, with `z = seaweed`.
+    - Seaweed count scales with width (≈ `gridWidth / 15`).
+
+- [ ] Surface entity spawners (ship, whale, monster, ducks, dolphins, swan)
+  - **Acceptance**:
+    - Spawners create entities constrained to surface rows (near `y ∈ 0…8`) and use appropriate gap depths:
+      - Ship at `water_gap1`, Whale at `water_gap2`, Monster at `water_gap2`, Ducks/Dolphins/Swan at `water_gap3`.
+    - Entities traverse horizontally, die offscreen, and respawn randomly similar to Perl.
+    - Sea monster only ever appears in the surface region.
+
+- [ ] Bubble pops when reaching water surface
+  - **Acceptance**:
+    - Bubbles rise and are killed when colliding with any `waterline` row.
+    - Verified via unit or visual test that bubbles never render above the surface.
+
+- [ ] Shark (underwater predator) depth and behavior stub
+  - **Acceptance**:
+    - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
+    - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
+
+- [ ] Centralize configuration for spawn cadence and densities
+  - **Acceptance**:
+    - Constants exist for spawn intervals, fish density (analog of `screen_size/350`), and seaweed count per width.
+    - Tuning values are grouped in a single config area used by the engine.
+
+- [ ] Documentation and tests for regions and spawners
+  - **Acceptance**:
+    - PROJECT_PLAN updated with region diagram and depth table reference.
+    - Unit tests (where feasible) or developer runbook describe manual verification steps for each region/spawner.
