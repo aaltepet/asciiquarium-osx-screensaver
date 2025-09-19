@@ -114,10 +114,19 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
-        // Place waterline at row 4 (grid coordinates)
-        let waterlinePosition = Position3D(0, 4, 0)
-        let waterline = EntityFactory.createWaterline(at: waterlinePosition)
-        entities.append(waterline)
+        // Create four waterline rows at y=5..8 using explicit (y,z,segmentIndex) tuples
+        let waterlineRows: [(y: Int, z: Int, segmentIndex: Int)] = [
+            (5, Depth.waterLine3, 0),
+            (6, Depth.waterLine2, 1),
+            (7, Depth.waterLine1, 2),
+            (8, Depth.waterLine0, 3),
+        ]
+        for row in waterlineRows {
+            let pos = Position3D(0, row.y, row.z)
+            let wl = EntityFactory.create(
+                from: .waterline(position: pos, segmentIndex: row.segmentIndex))
+            entities.append(wl)
+        }
 
         for _ in 0..<3 {
             spawnFish()
@@ -133,11 +142,10 @@ class AsciiquariumEngine: ObservableObject {
             Int.random(in: 3...20)  // Random depth for fish
         )
 
-        let fish = EntityFactory.createFish(at: position)
+        let fish = EntityFactory.create(from: .fish(position: position))
         entities.append(fish)
     }
 
-    /// Spawn a new waterline
-    private func spawnWaterline() {
-    }
+    /// Spawn a new waterline (not used; surface is static)
+    private func spawnWaterline() {}
 }
