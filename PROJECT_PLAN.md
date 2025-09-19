@@ -338,11 +338,6 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
       - WaterlineEntity: `isPhysical == true`, `defaultColor == .cyan`.
       - Engine: initializes scene with exactly 4 waterline entities at y = 5, 6, 7, 8 and correct z mapping (`waterLine3/2/1/0`).
 
-- [ ] Interleave surface gaps for surface entities
-  - **Acceptance**:
-    - Depth gaps `water_gap3/2/1/0` are reserved and used for surface entities rendering between the 4 waterline rows.
-    - Renderer sorts by `position.z` so surface entities appear visually between waterline rows.
-    - Unit tests (when surface entities are introduced): a stub surface entity at a gap depth renders between adjacent waterline rows in the final buffer (z-order verified).
 
 - [ ] Fish spawning respects water region and depth range
   - **Acceptance**:
@@ -363,6 +358,9 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
       - Ship at `water_gap1`, Whale at `water_gap2`, Monster at `water_gap2`, Ducks/Dolphins/Swan at `water_gap3`.
     - Entities traverse horizontally, die offscreen, and respawn randomly similar to Perl.
     - Sea monster only ever appears in the surface region.
+    - Depth gaps `water_gap3/2/1/0` are reserved and used so surface entities render between the 4 waterline rows.
+    - Renderer sorts by `position.z` so surface entities appear visually between adjacent waterline rows.
+    - Unit tests: a (stub or real) surface entity at a gap depth renders between adjacent waterline rows in the final buffer (z-order verified).
 
 - [ ] Bubble pops when reaching water surface
   - **Acceptance**:
