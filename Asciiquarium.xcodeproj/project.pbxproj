@@ -58,6 +58,9 @@
 		836CB8CD2E77054800A5207B /* FontMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7732E726FFF00A5207B /* FontMetrics.swift */; };
 		836CB8CE2E77054800A5207B /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76A2E726FFF00A5207B /* Engine.swift */; };
 		836CB8CF2E77054800A5207B /* ASCIIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */; };
+		83E0F7E32E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
+		83E0F7E42E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
+		83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +106,7 @@
 		836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASCIIRenderer.swift; sourceTree = "<group>"; };
 		836CB76A2E726FFF00A5207B /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		836CB7732E726FFF00A5207B /* FontMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontMetrics.swift; sourceTree = "<group>"; };
+		83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -229,12 +233,21 @@
 		836CB76C2E726FFF00A5207B /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				83E0F7E22E7D9CDC003D08C2 /* Environment */,
 				831152842E773B2600E05696 /* Entity */,
 				836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */,
 				836CB76A2E726FFF00A5207B /* Engine.swift */,
 				836CB7732E726FFF00A5207B /* FontMetrics.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		83E0F7E22E7D9CDC003D08C2 /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */,
+			);
+			path = Environment;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -439,6 +452,7 @@
 				8311529A2E773B2600E05696 /* EntityFactory.swift in Sources */,
 				8311529B2E773B2600E05696 /* BubbleEntity.swift in Sources */,
 				8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */,
+				83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
 				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
 				836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
 				836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */,
@@ -462,6 +476,7 @@
 				831152A42E773B2600E05696 /* EntityProtocol.swift in Sources */,
 				831152A52E773B2600E05696 /* FishEntity.swift in Sources */,
 				831152B42E77837800E05696 /* EntityFullWidth.swift in Sources */,
+				83E0F7E42E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
 				831152A62E773B2600E05696 /* EntityFactory.swift in Sources */,
 				831152A72E773B2600E05696 /* BubbleEntity.swift in Sources */,
 				831152A82E773B2600E05696 /* BaseEntity.swift in Sources */,
@@ -491,6 +506,7 @@
 				8311528A2E773B2600E05696 /* SharkEntity.swift in Sources */,
 				8311528B2E773B2600E05696 /* CastleEntity.swift in Sources */,
 				8311528C2E773B2600E05696 /* EntityProtocol.swift in Sources */,
+				83E0F7E32E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
 				8311528D2E773B2600E05696 /* FishEntity.swift in Sources */,
 				8311528E2E773B2600E05696 /* EntityFactory.swift in Sources */,
 				8311528F2E773B2600E05696 /* BubbleEntity.swift in Sources */,

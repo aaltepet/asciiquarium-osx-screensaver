@@ -81,6 +81,9 @@ struct ASCIIRendererTests {
                 break
             }
         }
+        
+        763 237 3899 
+        
         #expect(hasWaterSurface, "Should have water surface line")
 
         // Should have bottom border
@@ -507,7 +510,7 @@ struct ASCIIRendererTests {
 
         // Create a single waterline entity at a specific position
         let waterlinePosition = Position3D(0, 4, 0)  // x=0 (full-width), y=4 (grid row), z=0
-        let waterline = EntityFactory.createWaterline(segmentIndex: 0, at: waterlinePosition)
+        let waterline = EntityFactory.createWaterline(at: waterlinePosition, segmentIndex: 0)
         let entities = [waterline]
 
         // Get the cached waterline pattern directly
@@ -540,4 +543,5 @@ struct ASCIIRendererTests {
             #expect(hasValidChars, "Waterline should contain wave or caret characters")
         }
     }
+
 }
