@@ -11,9 +11,11 @@ import Foundation
 class SeaweedEntity: BaseEntity {
     var swayDirection: Int = 1
     private var swayFrame: Int = 0
+    private let seaweedHeight: Int
 
     init(name: String, position: Position3D) {
         let height = Int.random(in: 3...6)
+        self.seaweedHeight = height
         let seaweedShape = SeaweedEntity.createSeaweedShape(height: height)
         super.init(name: name, type: .seaweed, shape: seaweedShape, position: position)
         setupSeaweed()
@@ -28,9 +30,15 @@ class SeaweedEntity: BaseEntity {
     private static func createSeaweedShape(height: Int) -> [String] {
         var lines: [String] = []
         lines.reserveCapacity(height)
+        let inverted = Bool.random()
         for i in 0..<height {
-            // Alternate characters to give a wavy look; animation will swap them
-            let ch: String = (i % 2 == 0) ? "(" : ")"
+            let even = (i % 2 == 0)
+            let ch: String
+            if inverted {
+                ch = even ? ")" : "("
+            } else {
+                ch = even ? "(" : ")"
+            }
             lines.append(ch)
         }
         return lines
@@ -48,16 +56,7 @@ class SeaweedEntity: BaseEntity {
 
     private func updateSwayAnimation() {
         // Simple swaying animation by alternating the seaweed shape
-        if swayFrame % 2 == 0 {
-            // Sway left (keep as-is)
-            return
-        } else {
-            // Sway right (swap parentheses)
-            shape = shape.map { line in
-                line.replacingOccurrences(of: "(", with: ")")
-                    .replacingOccurrences(of: ")", with: "(")
-            }
-        }
+        shape = SeaweedEntity.createSeaweedShape(height: seaweedHeight)
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
