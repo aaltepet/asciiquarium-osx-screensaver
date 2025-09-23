@@ -326,7 +326,7 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - `Depth` constants exist mirroring Perl: `water_line3=2`, `water_gap3=3`, `water_line2=4`, `water_gap2=5`, `water_line1=6`, `water_gap1=7`, `water_line0=8`, `water_gap0=9`, `fishStart=3`, `fishEnd=20`, `shark=2`, `seaweed=21`, `castle=22`.
     - `Region` helper exposes fixed Y ranges: `sky` rows `0–4`, `surface` rows `5–8` (4 rows), `water` rows `9…gridHeight-1`, and `bottomRows` covering the last row used by bottom entities.
 
-- [ ] Implement multi-layered water surface (4 rows)
+- [x] Implement multi-layered water surface (4 rows)
   - **Acceptance**:
     - Four `waterline` entities are created at rows `y = 5, 6, 7, 8`.
     - Each row uses one of the four canonical segments; rows tile across full width.
@@ -339,7 +339,7 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
       - Engine: initializes scene with exactly 4 waterline entities at y = 5, 6, 7, 8 and correct z mapping (`waterLine3/2/1/0`).
 
 
-- [ ] Fish spawning respects water region and depth range
+- [x] Fish spawning respects water region and depth range
   - **Acceptance**:
     - Fish spawn with `y ≥ 9` and within screen height minus fish height.
     - Fish z-depth is randomized in `[fishStart, fishEnd]`.
