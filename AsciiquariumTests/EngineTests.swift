@@ -54,4 +54,79 @@ struct EngineTests {
             )
         }
     }
+
+    @Test func testCastlePlacedBottomRightWithCorrectDepth() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+
+        // When
+        let castles = engine.entities.filter { $0.type == .castle }
+
+        // Then
+        #expect(castles.count == 1, "Exactly one castle should be spawned")
+        if let castle = castles.first {
+            let expectedBottomY = layout.bottomY
+            let actualBottomY = castle.position.y + (castle.size.height - 1)
+            #expect(actualBottomY == expectedBottomY, "Castle must sit on bottom row")
+
+            let expectedX = max(0, engine.gridWidth - castle.size.width)
+            #expect(castle.position.x == expectedX, "Castle should be right-aligned")
+
+            #expect(castle.position.z == Depth.castle, "Castle z-depth mismatch")
+        }
+    }
+
+    @Test func testSeaweedDistributedAlongBottomWithValidHeights() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+
+        // When
+        let weeds = engine.entities.filter { $0.type == .seaweed }
+
+        // Then
+        let expectedCount = max(1, engine.gridWidth / 15)
+        #expect(weeds.count == expectedCount, "Seaweed count should scale with width")
+
+        for w in weeds {
+            let bottomY = w.position.y + (w.size.height - 1)
+            #expect(bottomY == layout.bottomY, "Seaweed should be anchored to bottom")
+            #expect((3...6).contains(w.size.height), "Seaweed height should be in [3,6]")
+            #expect(w.position.z == Depth.seaweed, "Seaweed z-depth mismatch")
+            #expect((0..<engine.gridWidth).contains(w.position.x), "Seaweed x within bounds")
+        }
+    }
+
+    @Test func testBottomDecorReflowsOnResize() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let initialLayout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+        let initialSeaweedCount = engine.entities.filter { $0.type == .seaweed }.count
+        #expect(initialSeaweedCount == max(1, engine.gridWidth / 15))
+
+        // When: increase width and height
+        engine.updateGridDimensions(width: engine.gridWidth + 30, height: engine.gridHeight + 10)
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+
+        // Then: castle reflow
+        if let castle = engine.entities.first(where: { $0.type == .castle }) {
+            let bottomY = castle.position.y + (castle.size.height - 1)
+            #expect(bottomY == layout.bottomY, "Castle should sit on new bottom")
+            let expectedX = max(0, engine.gridWidth - castle.size.width)
+            #expect(castle.position.x == expectedX, "Castle should be re-aligned right")
+        } else {
+            #expect(false, "Castle should exist after resize")
+        }
+
+        // Seaweed reflow
+        let weeds = engine.entities.filter { $0.type == .seaweed }
+        let expectedCount = max(1, engine.gridWidth / 15)
+        #expect(weeds.count == expectedCount, "Seaweed count should reflow with width")
+        for w in weeds {
+            let bottomY = w.position.y + (w.size.height - 1)
+            #expect(bottomY == layout.bottomY, "Seaweed should be re-anchored to new bottom")
+            #expect(w.position.z == Depth.seaweed)
+        }
+    }
 }

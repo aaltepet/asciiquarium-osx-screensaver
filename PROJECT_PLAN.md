@@ -382,3 +382,14 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
   - **Acceptance**:
     - PROJECT_PLAN updated with region diagram and depth table reference.
     - Unit tests (where feasible) or developer runbook describe manual verification steps for each region/spawner.
+
+- [ ] Fish placement refinement
+    - Fish don't appear in the middle of the canvas.  They always spawn off-screen, moving onto the screen, 
+      and dying after moving off the opposite end of the screen.
+    - Fish don't spawn below the bottom of the screen.  Take the height of the fish into account.
+
+- [ ] Colors
+    - review the color capability of the the original perl source code
+    - Add a generalized color-map capability to the asciirenderer and entities
+    - list the entities and add them to this todo list
+    - proceed one entity at a time, I want to review each

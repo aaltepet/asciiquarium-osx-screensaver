@@ -82,8 +82,6 @@ struct ASCIIRendererTests {
             }
         }
         
-        763 237 3899 
-        
         #expect(hasWaterSurface, "Should have water surface line")
 
         // Should have bottom border

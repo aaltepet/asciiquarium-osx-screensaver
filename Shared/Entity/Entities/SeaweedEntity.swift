@@ -26,21 +26,14 @@ class SeaweedEntity: BaseEntity {
     }
 
     private static func createSeaweedShape(height: Int) -> [String] {
-        var leftSide = ""
-        var rightSide = ""
-
-        for i in 1...height {
-            let isLeftSide = i % 2 == 1
-            if isLeftSide {
-                leftSide += "(\n"
-                rightSide += " )\n"
-            } else {
-                leftSide += " )\n"
-                rightSide += "(\n"
-            }
+        var lines: [String] = []
+        lines.reserveCapacity(height)
+        for i in 0..<height {
+            // Alternate characters to give a wavy look; animation will swap them
+            let ch: String = (i % 2 == 0) ? "(" : ")"
+            lines.append(ch)
         }
-
-        return [leftSide, rightSide]
+        return lines
     }
 
     override func update(deltaTime: TimeInterval) {
@@ -56,13 +49,10 @@ class SeaweedEntity: BaseEntity {
     private func updateSwayAnimation() {
         // Simple swaying animation by alternating the seaweed shape
         if swayFrame % 2 == 0 {
-            // Sway left
-            shape = shape.map { line in
-                line.replacingOccurrences(of: "(", with: "(")
-                    .replacingOccurrences(of: ")", with: ")")
-            }
+            // Sway left (keep as-is)
+            return
         } else {
-            // Sway right
+            // Sway right (swap parentheses)
             shape = shape.map { line in
                 line.replacingOccurrences(of: "(", with: ")")
                     .replacingOccurrences(of: ")", with: "(")
