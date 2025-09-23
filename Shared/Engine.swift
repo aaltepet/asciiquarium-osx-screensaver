@@ -138,14 +138,12 @@ class AsciiquariumEngine: ObservableObject {
         let position = Position3D(
             Int.random(in: 0..<gridWidth),
             // must be below the waterline
-            Int.random(in: 7..<gridHeight),
-            Int.random(in: 3...20)  // Random depth for fish
+            Int.random(in: 9..<gridHeight),
+            Int.random(in: Depth.fishStart...Depth.fishEnd)  // Random depth for fish
         )
 
         let fish = EntityFactory.create(from: .fish(position: position))
         entities.append(fish)
     }
 
-    /// Spawn a new waterline (not used; surface is static)
-    private func spawnWaterline() {}
 }

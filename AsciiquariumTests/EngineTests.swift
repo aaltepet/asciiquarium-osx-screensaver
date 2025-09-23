@@ -32,6 +32,26 @@ struct EngineTests {
             #expect(hasMatch, "Missing waterline at y=\(y), z=\(z)")
         }
     }
+
+    @Test func testSpawnedFishRespectWaterRegionAndDepth() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+
+        // When
+        // Force a few spawns
+        for _ in 0..<5 {
+            engine.updateGridDimensions(width: engine.gridWidth, height: engine.gridHeight)
+        }
+
+        let fish = engine.entities.filter { $0.type == .fish }
+
+        // Then
+        for f in fish {
+            #expect(f.position.y >= 9, "Fish should spawn at y ≥ 9, got y=\(f.position.y)")
+            #expect(
+                (Depth.fishStart...Depth.fishEnd).contains(f.position.z),
+                "Fish z should be within [\(Depth.fishStart), \(Depth.fishEnd)], got z=\(f.position.z)"
+            )
+        }
+    }
 }
-
-
