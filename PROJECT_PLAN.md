@@ -346,11 +346,12 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - No fish appear above the water surface rows.
     - Unit tests: newly spawned fish satisfy `y ≥ 9` and `z ∈ [fishStart, fishEnd]`; no fish with `y < 9`.
 
-- [ ] Bottom placement: castle and seaweed
+- [x] Bottom placement: castle and seaweed
   - **Acceptance**:
     - One castle is placed at bottom-right with `z = castle` and correct ASCII art.
     - Seaweed instances spawn at random x along the bottom, height 3–6, with `z = seaweed`.
     - Seaweed count scales with width (≈ `gridWidth / 15`).
+    - Reflows correctly on grid resize (castle stays bottom-right; seaweed count/positions update).
 
 - [ ] Surface entity spawners (ship, whale, monster, ducks, dolphins, swan)
   - **Acceptance**:
@@ -393,3 +394,9 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - Add a generalized color-map capability to the asciirenderer and entities
     - list the entities and add them to this todo list
     - proceed one entity at a time, I want to review each
+
+## Known Issues / TODOs
+
+- [ ] Bottom anchoring bug: castle/seaweed must never render below screen bottom
+- [ ] Depth layering bug: fish render behind seaweed/castle per `Depth`
+- [ ] Castle transparency: blanks should pass through; fish render behind castle
