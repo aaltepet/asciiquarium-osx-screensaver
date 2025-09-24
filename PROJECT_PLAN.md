@@ -323,7 +323,8 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
 
 - [x] Define shared depth map and region boundaries
   - **Acceptance**:
-    - `Depth` constants exist mirroring Perl: `water_line3=2`, `water_gap3=3`, `water_line2=4`, `water_gap2=5`, `water_line1=6`, `water_gap1=7`, `water_line0=8`, `water_gap0=9`, `fishStart=3`, `fishEnd=20`, `shark=2`, `seaweed=21`, `castle=22`.
+    - `Depth` constants exist for: `water_line3=2`, `water_gap3=3`, `water_line2=4`, `water_gap2=5`, `water_line1=6`, `water_gap1=7`, `water_line0=8`, `water_gap0=9`, `castle=1`, `seaweed=2`, `shark=2`, `fishStart=3`, `fishEnd=20`.
+    - Underwater rendering order (back→front): `castle < seaweed (= shark) < fish`.
     - `Region` helper exposes fixed Y ranges: `sky` rows `0–4`, `surface` rows `5–8` (4 rows), `water` rows `9…gridHeight-1`, and `bottomRows` covering the last row used by bottom entities.
 
 - [x] Implement multi-layered water surface (4 rows)
@@ -369,6 +370,13 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - Verified via unit or visual test that bubbles never render above the surface.
     - Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
 
+- [ ] Underwater compositing masks (selective transparency)
+  - **Acceptance**:
+    - Non-full-width entities composite with an alpha mask per-entity so only space outside the entity’s silhouette is transparent.
+    - Spaces inside fish silhouettes remain opaque (do not reveal castle/seaweed behind).
+    - Castle window cutouts follow its mask (intended holes only), otherwise castle remains opaque.
+    - Unit tests: render order fish/seaweed/castle proves no background leaks through interior spaces; outside bounding spaces remain pass-through.
+
 - [ ] Shark (underwater predator) depth and behavior stub
   - **Acceptance**:
     - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
@@ -395,8 +403,16 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
     - list the entities and add them to this todo list
     - proceed one entity at a time, I want to review each
 
+### Animation Parity Tasks
+
+- [ ] Seaweed animation parity with Perl
+  - **Acceptance**:
+    - Sway timing includes randomness comparable to Perl (interval jitter/phase differences).
+    - Visual check across multiple minutes shows non-uniform, organic swaying.
+    - Add unit/visual tests to validate timing variance bounds (not exact determinism).
+
 ## Known Issues / TODOs
 
-- [ ] Bottom anchoring bug: castle/seaweed must never render below screen bottom
-- [ ] Depth layering bug: fish render behind seaweed/castle per `Depth`
-- [ ] Castle transparency: blanks should pass through; fish render behind castle
+- [x] Bottom anchoring bug: castle/seaweed must never render below screen bottom
+- [x] Depth layering bug: fish render behind seaweed/castle per `Depth`
+- [ ] Underwater compositing: interior spaces in fish should be opaque; implement alpha masks
