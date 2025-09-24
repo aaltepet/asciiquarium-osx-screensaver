@@ -98,14 +98,14 @@ class ASCIIRenderer {
         // Sort entities by depth (z-coordinate) for proper layering
         let sortedEntities = entities.sorted { $0.position.z < $1.position.z }
 
-        // Add entities to the scene
+        // Add entities to the scene (composited with transparency)
         for entity in sortedEntities {
             let y = entity.position.y
 
             if y >= 0 && y < gridHeight {
                 // Handle full-width entities
                 if entity.isFullWidth {
-                    // For full-width entities, generate current shape (allows for dynamic/random generation)
+                    // Preserve existing behavior for full-width entities (e.g., waterlines): replace entire line
                     if let fullWidthEntity = entity as? EntityFullWidth {
                         let entityShape = fullWidthEntity.getShape(for: gridWidth)
                         for (shapeLineIndex, shapeLine) in entityShape.enumerated() {
@@ -127,12 +127,45 @@ class ASCIIRenderer {
                                 let availableWidth = max(0, gridWidth - x)
                                 if availableWidth == 0 { continue }
                                 let croppedShape = String(shapeLine.prefix(availableWidth))
-
-                                // Replace exactly [x, x + croppedShape.count) with croppedShape
-                                let replaceStart = line.index(line.startIndex, offsetBy: x)
-                                let replaceEnd = line.index(
-                                    replaceStart, offsetBy: croppedShape.count)
-                                line.replaceSubrange(replaceStart..<replaceEnd, with: croppedShape)
+                                let transparent = entity.transparentChar
+                                // If an alphaMask is provided, use it to force opacity for masked pixels
+                                let maskLine: String? = {
+                                    if let alpha = (entity as? BaseEntity)?.alphaMask,
+                                        shapeLineIndex < alpha.count
+                                    {
+                                        return alpha[shapeLineIndex]
+                                    }
+                                    return nil
+                                }()
+                                if transparent == nil && maskLine == nil {
+                                    // Original fast path: replace substring
+                                    let replaceStart = line.index(line.startIndex, offsetBy: x)
+                                    let replaceEnd = line.index(
+                                        replaceStart, offsetBy: croppedShape.count)
+                                    line.replaceSubrange(
+                                        replaceStart..<replaceEnd, with: croppedShape)
+                                } else {
+                                    // Composite per character, skipping transparent characters
+                                    for (i, ch) in croppedShape.enumerated() {
+                                        if let t = transparent, ch == t {
+                                            // If alpha mask marks this pixel as opaque, draw even if it's a space
+                                            if let mask = maskLine, i < mask.count {
+                                                let idx = mask.index(mask.startIndex, offsetBy: i)
+                                                let maskCh = mask[idx]
+                                                if maskCh != " " {
+                                                    let targetIdx = line.index(
+                                                        line.startIndex, offsetBy: x + i)
+                                                    line.replaceSubrange(
+                                                        targetIdx...targetIdx, with: String(ch))
+                                                }
+                                            }
+                                            continue
+                                        }
+                                        let targetIdx = line.index(line.startIndex, offsetBy: x + i)
+                                        line.replaceSubrange(
+                                            targetIdx...targetIdx, with: String(ch))
+                                    }
+                                }
                                 lines[entityY] = line
                             }
                         }

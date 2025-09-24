@@ -25,6 +25,8 @@ class SeaweedEntity: BaseEntity {
         defaultColor = .green
         dieTime = Date().timeIntervalSince1970 + Double.random(in: 480...720)  // 8-12 minutes
         callbackArgs = [0.0, 0.0, 0.0, 0.25]  // Sway animation
+        // Seaweed should not treat spaces as transparent (solid glyphs only)
+        transparentChar = nil
     }
 
     private static func createSeaweedShape(height: Int) -> [String] {
@@ -57,6 +59,8 @@ class SeaweedEntity: BaseEntity {
     private func updateSwayAnimation() {
         // Simple swaying animation by alternating the seaweed shape
         shape = SeaweedEntity.createSeaweedShape(height: seaweedHeight)
+        // Maintain non-transparent behavior
+        transparentChar = nil
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {

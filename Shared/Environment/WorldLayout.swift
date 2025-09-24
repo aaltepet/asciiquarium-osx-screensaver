@@ -19,12 +19,12 @@ enum Depth {
     static let waterLine0: Int = 8
     static let waterGap0: Int = 9
 
-    // Underwater entities
+    // Underwater entities (back-to-front): castle < seaweed < fish
+    static let castle: Int = 1
+    static let seaweed: Int = 2
+    static let shark: Int = 2
     static let fishStart: Int = 3
     static let fishEnd: Int = 20
-    static let shark: Int = 2
-    static let seaweed: Int = 21
-    static let castle: Int = 22
 }
 
 // MARK: - Fixed Region Boundaries (y coordinates)
@@ -51,7 +51,7 @@ struct WorldLayout {
     }
 
     var bottomY: Int { max(0, gridHeight - 1) }
-    
+
     /// Safe bottom Y for anchoring entities - ensures entities don't extend below visible area
     /// Use gridHeight - 2 to provide a safety margin for entities that might extend beyond their anchor point
     var safeBottomY: Int { max(0, gridHeight - 2) }

@@ -125,7 +125,8 @@ struct EngineTests {
         #expect(weeds.count == expectedCount, "Seaweed count should reflow with width")
         for w in weeds {
             let bottomY = w.position.y + (w.size.height - 1)
-            #expect(bottomY == layout.safeBottomY, "Seaweed should be re-anchored to new safe bottom")
+            #expect(
+                bottomY == layout.safeBottomY, "Seaweed should be re-anchored to new safe bottom")
             #expect(w.position.z == Depth.seaweed)
         }
     }
