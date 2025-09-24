@@ -51,6 +51,10 @@ struct WorldLayout {
     }
 
     var bottomY: Int { max(0, gridHeight - 1) }
+    
+    /// Safe bottom Y for anchoring entities - ensures entities don't extend below visible area
+    /// Use gridHeight - 2 to provide a safety margin for entities that might extend beyond their anchor point
+    var safeBottomY: Int { max(0, gridHeight - 2) }
 
     var bottomRows: ClosedRange<Int> {
         return bottomY...bottomY

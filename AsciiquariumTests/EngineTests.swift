@@ -66,7 +66,7 @@ struct EngineTests {
         // Then
         #expect(castles.count == 1, "Exactly one castle should be spawned")
         if let castle = castles.first {
-            let expectedBottomY = layout.bottomY
+            let expectedBottomY = layout.safeBottomY
             let actualBottomY = castle.position.y + (castle.size.height - 1)
             #expect(actualBottomY == expectedBottomY, "Castle must sit on bottom row")
 
@@ -91,7 +91,7 @@ struct EngineTests {
 
         for w in weeds {
             let bottomY = w.position.y + (w.size.height - 1)
-            #expect(bottomY == layout.bottomY, "Seaweed should be anchored to bottom")
+            #expect(bottomY == layout.safeBottomY, "Seaweed should be anchored to safe bottom")
             #expect((3...6).contains(w.size.height), "Seaweed height should be in [3,6]")
             #expect(w.position.z == Depth.seaweed, "Seaweed z-depth mismatch")
             #expect((0..<engine.gridWidth).contains(w.position.x), "Seaweed x within bounds")
@@ -112,7 +112,7 @@ struct EngineTests {
         // Then: castle reflow
         if let castle = engine.entities.first(where: { $0.type == .castle }) {
             let bottomY = castle.position.y + (castle.size.height - 1)
-            #expect(bottomY == layout.bottomY, "Castle should sit on new bottom")
+            #expect(bottomY == layout.safeBottomY, "Castle should sit on new safe bottom")
             let expectedX = max(0, engine.gridWidth - castle.size.width)
             #expect(castle.position.x == expectedX, "Castle should be re-aligned right")
         } else {
@@ -125,7 +125,7 @@ struct EngineTests {
         #expect(weeds.count == expectedCount, "Seaweed count should reflow with width")
         for w in weeds {
             let bottomY = w.position.y + (w.size.height - 1)
-            #expect(bottomY == layout.bottomY, "Seaweed should be re-anchored to new bottom")
+            #expect(bottomY == layout.safeBottomY, "Seaweed should be re-anchored to new safe bottom")
             #expect(w.position.z == Depth.seaweed)
         }
     }
