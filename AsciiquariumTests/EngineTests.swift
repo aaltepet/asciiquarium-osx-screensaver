@@ -33,9 +33,10 @@ struct EngineTests {
         }
     }
 
-    @Test func testSpawnedFishRespectWaterRegionAndDepth() async throws {
+    @Test func testSpawnedFishRespectSpawnBoundsAndDepth() async throws {
         // Given
         let engine = TestHelpers.createTestEngine()
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
 
         // When
         // Force a few spawns
@@ -47,7 +48,20 @@ struct EngineTests {
 
         // Then
         for f in fish {
-            #expect(f.position.y >= 9, "Fish should spawn at y ≥ 9, got y=\(f.position.y)")
+            // Y within allowed top spawn band
+            #expect(
+                f.position.y >= layout.fishSpawnMinY,
+                "Fish y below min: y=\(f.position.y), min=\(layout.fishSpawnMinY)"
+            )
+
+            // Bottom respects required margin from bottom
+            let fishBottomY = f.position.y + (f.size.height - 1)
+            #expect(
+                fishBottomY <= layout.fishSpawnMaxBottomY,
+                "Fish bottom too low: bottomY=\(fishBottomY), maxAllowed=\(layout.fishSpawnMaxBottomY), topY=\(f.position.y), height=\(f.size.height)"
+            )
+
+            // Z depth within fish range
             #expect(
                 (Depth.fishStart...Depth.fishEnd).contains(f.position.z),
                 "Fish z should be within [\(Depth.fishStart), \(Depth.fishEnd)], got z=\(f.position.z)"
@@ -130,4 +144,5 @@ struct EngineTests {
             #expect(w.position.z == Depth.seaweed)
         }
     }
+
 }

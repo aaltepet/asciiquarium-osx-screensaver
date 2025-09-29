@@ -224,14 +224,23 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a new fish
     private func spawnFish() {
-        let position = Position3D(
+        // Initial random position (x, z). We'll compute the correct y after we know fish height
+        let initialPosition = Position3D(
             Int.random(in: 0..<gridWidth),
-            // must be below the waterline
-            Int.random(in: 9..<gridHeight),
-            Int.random(in: Depth.fishStart...Depth.fishEnd)  // Random depth for fish
+            0,
+            Int.random(in: Depth.fishStart...Depth.fishEnd)
         )
 
-        let fish = EntityFactory.create(from: .fish(position: position))
+        // Create fish to know its height, then choose a y within the allowed top range
+        let fish = EntityFactory.create(from: .fish(position: initialPosition))
+
+        let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)
+        let fishHeight = max(1, fish.size.height)
+        let minY = layout.fishSpawnMinY
+        let maxTopY = max(minY, layout.fishSpawnMaxBottomY - (fishHeight - 1))
+        let chosenY = Int.random(in: minY...maxTopY)
+        fish.position = Position3D(fish.position.x, chosenY, fish.position.z)
+
         entities.append(fish)
     }
 

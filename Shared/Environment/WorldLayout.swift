@@ -61,6 +61,15 @@ struct WorldLayout {
     }
 
     // Convenience spawn helpers
+    // Minimum Y (top) for fish spawning: below the surface
     var fishSpawnMinY: Int { max(waterRows.lowerBound, 9) }
-    var fishSpawnMaxY: Int { max(fishSpawnMinY, bottomY) }
+
+    // Keep fish at least this many rows above the very bottom when spawning
+    var fishSpawnBottomMarginRows: Int { 2 }
+
+    // Maximum allowed bottom Y for a fish (its bottom edge must be <= this)
+    var fishSpawnMaxBottomY: Int { max(0, bottomY - fishSpawnBottomMarginRows) }
+
+    // For 1-row tall entities, this is also the maximum top Y
+    var fishSpawnMaxY: Int { max(fishSpawnMinY, fishSpawnMaxBottomY) }
 }
