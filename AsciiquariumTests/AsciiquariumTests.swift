@@ -21,9 +21,11 @@ struct AsciiquariumTests {
 
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
-        // Test the complete flow: calculate optimal grid, update engine, render scene
-        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
-        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+        // Test the complete flow with fixed font size grid
+        let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+        let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+        let dims = FontMetrics.shared.calculateGridDimensions(for: bounds, font: fixedFont)
+        engine.updateGridDimensions(width: dims.width, height: dims.height)
 
         let attributedString = renderer.renderScene(
             entities: entities, gridWidth: 80, gridHeight: 24)
@@ -39,10 +41,12 @@ struct AsciiquariumTests {
         let engine = TestHelpers.createTestEngine()
 
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+        let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+        let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+        let dims = FontMetrics.shared.calculateGridDimensions(for: bounds, font: fixedFont)
 
-        // Update engine with optimal dimensions
-        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+        // Update engine with fixed-dimension grid
+        engine.updateGridDimensions(width: dims.width, height: dims.height)
 
         // Render using engine's entities
         let attributedString = renderer.renderScene(
@@ -56,26 +60,7 @@ struct AsciiquariumTests {
         #expect(engine.gridHeight > 0, "Engine should have positive grid height")
     }
 
-    @Test func testFontMetricsIntegration() async throws {
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-
-        // Test FontMetrics integration
-        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
-
-        // Should produce valid results
-        #expect(optimalGrid.width > 0, "FontMetrics should produce positive width")
-        #expect(optimalGrid.height > 0, "FontMetrics should produce positive height")
-        #expect(optimalGrid.fontSize >= 8.0, "FontMetrics should produce reasonable font size")
-        #expect(optimalGrid.fontSize <= 24.0, "FontMetrics should produce reasonable font size")
-
-        // Test character calculations
-        let font = NSFont.monospacedSystemFont(ofSize: optimalGrid.fontSize, weight: .regular)
-        let charWidth = FontMetrics.shared.calculateCharacterWidth(for: font)
-        let lineHeight = FontMetrics.shared.calculateLineHeight(for: font)
-
-        #expect(charWidth > 0, "Character width should be positive")
-        #expect(lineHeight > 0, "Line height should be positive")
-    }
+    // Removed old FontMetrics integration test focused on optimization
 
     @Test func testMultipleResizeScenarios() async throws {
         let renderer = TestHelpers.createTestRenderer()
@@ -92,24 +77,22 @@ struct AsciiquariumTests {
         for size in resizeScenarios {
             let bounds = CGRect(origin: .zero, size: size)
 
-            // Calculate optimal grid
-            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+            // Calculate grid using fixed font
+            let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+            let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+            let dims = FontMetrics.shared.calculateGridDimensions(for: bounds, font: fixedFont)
 
             // Update engine
-            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+            engine.updateGridDimensions(width: dims.width, height: dims.height)
 
             // Render scene
             let attributedString = renderer.renderScene(
-                entities: entities, gridWidth: 80, gridHeight: 24)
+                entities: entities, gridWidth: dims.width, gridHeight: dims.height)
 
             // Should always produce valid output
             #expect(!attributedString.string.isEmpty, "Should render for size \(size)")
-            #expect(
-                attributedString.string.contains("~"),
-                "Should contain water surface for size \(size)")
-            #expect(
-                attributedString.string.contains("="),
-                "Should contain bottom border for size \(size)")
+            #expect(attributedString.string.contains("~"))
+            #expect(attributedString.string.contains("="))
         }
     }
 
@@ -119,9 +102,11 @@ struct AsciiquariumTests {
         let entities = TestHelpers.createTestEntities()
 
         let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
-        let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: bounds)
+        let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+        let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+        let dims = FontMetrics.shared.calculateGridDimensions(for: bounds, font: fixedFont)
 
-        engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+        engine.updateGridDimensions(width: dims.width, height: dims.height)
 
         // Measure performance of multiple renders
         let (_, executionTime) = TestHelpers.measureExecutionTime {

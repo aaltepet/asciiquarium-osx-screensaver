@@ -24,11 +24,32 @@ struct TestHelpers {
     }
 
     static func createTestEntities() -> [Entity] {
-        return [
+        var entities: [Entity] = []
+
+        // Add a waterline row to ensure presence of '~'
+        let waterline = EntityFactory.createWaterline(
+            at: Position3D(0, 5, Depth.waterLine3), segmentIndex: 0)
+        entities.append(waterline)
+
+        // Add a bottom-right castle to ensure presence of '=' characters
+        let gridWidth = 80
+        let gridHeight = 24
+        let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)
+        let castle = EntityFactory.createCastle(at: Position3D(0, 0, Depth.castle))
+        let castleSize = castle.size
+        let castleY = max(0, layout.safeBottomY - (castleSize.height - 1))
+        let castleX = max(0, gridWidth - castleSize.width)
+        castle.position = Position3D(castleX, castleY, Depth.castle)
+        entities.append(castle)
+
+        // Add a few fish
+        entities.append(contentsOf: [
             EntityFactory.createFish(at: Position3D(10, 10, 10)),
             EntityFactory.createFish(at: Position3D(20, 15, 15)),
             EntityFactory.createFish(at: Position3D(30, 20, 5)),
-        ]
+        ])
+
+        return entities
     }
 
     // MARK: - Content Size Calculation

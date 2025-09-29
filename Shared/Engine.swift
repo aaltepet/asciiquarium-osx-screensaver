@@ -144,8 +144,8 @@ class AsciiquariumEngine: ObservableObject {
         // Castle at bottom-right
         let castle = EntityFactory.createCastle(at: Position3D(0, 0, 0))
         let castleSize = castle.size
-        // Anchor bottom-right: y such that castle's bottom sits on bottomY
-        let castleY = max(0, layout.bottomY - (castleSize.height - 1))
+        // Anchor bottom-right: y such that castle's bottom sits on safeBottomY
+        let castleY = max(0, layout.safeBottomY - (castleSize.height - 1))
         // Right-align within grid
         let castleX = max(0, gridWidth - castleSize.width)
         castle.position = Position3D(castleX, castleY, Depth.castle)
@@ -154,13 +154,14 @@ class AsciiquariumEngine: ObservableObject {
         // Seaweed along bottom
         let seaweedCount = max(1, gridWidth / 15)
         let step = max(1, gridWidth / seaweedCount)
-        var x = 1
+        var x = min(gridWidth - 1, step / 2)
         for _ in 0..<seaweedCount {
             let sea = EntityFactory.createSeaweed(at: Position3D(x, 0, Depth.seaweed))
-            // Anchor bottom: y so that seaweed bottom sits on bottomY
+            // Anchor bottom: y so that seaweed bottom sits on safeBottomY
             let h = sea.size.height
-            let y = max(0, layout.bottomY - (h - 1))
-            sea.position = Position3D(x, y, Depth.seaweed)
+            let y = max(0, layout.safeBottomY - (h - 1))
+            let clampedX = min(max(0, x), max(0, gridWidth - 1))
+            sea.position = Position3D(clampedX, y, Depth.seaweed)
             entities.append(sea)
             x += step
         }
@@ -173,13 +174,13 @@ class AsciiquariumEngine: ObservableObject {
         if let castleIndex = entities.firstIndex(where: { $0.type == .castle }) {
             let castle = entities[castleIndex]
             let size = castle.size
-            let newY = max(0, layout.bottomY - (size.height - 1))
+            let newY = max(0, layout.safeBottomY - (size.height - 1))
             let newX = max(0, gridWidth - size.width)
             castle.position = Position3D(newX, newY, Depth.castle)
         } else {
             let newCastle = EntityFactory.createCastle(at: Position3D(0, 0, Depth.castle))
             let size = newCastle.size
-            let newY = max(0, layout.bottomY - (size.height - 1))
+            let newY = max(0, layout.safeBottomY - (size.height - 1))
             let newX = max(0, gridWidth - size.width)
             newCastle.position = Position3D(newX, newY, Depth.castle)
             entities.append(newCastle)
@@ -215,7 +216,7 @@ class AsciiquariumEngine: ObservableObject {
         var x = min(gridWidth - 1, step / 2)
         for w in weeds {
             let h = w.size.height
-            let y = max(0, layout.bottomY - (h - 1))
+            let y = max(0, layout.safeBottomY - (h - 1))
             w.position = Position3D(min(max(0, x), max(0, gridWidth - 1)), y, Depth.seaweed)
             x += step
         }

@@ -87,13 +87,15 @@ struct ContentView: View {
                 attributedAsciiText = AttributedString(attributedString)
             }
 
-            // Calculate initial optimal grid dimensions and font size
-            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: displayBounds)
-            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+            // Use fixed font size and calculate grid based on it
+            let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+            let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+            let dims = FontMetrics.shared.calculateGridDimensions(
+                for: displayBounds, font: fixedFont)
+            engine.updateGridDimensions(width: dims.width, height: dims.height)
 
-            // Update renderer with the same font size calculated by FontMetrics
-            renderer.updateFont(size: optimalGrid.fontSize)
-            // Apply exact same font to the SwiftUI Text to avoid wrapping mismatches
+            // Ensure renderer uses the same fixed font size
+            renderer.updateFont(size: fixedFontSize)
             attributedAsciiText = AttributedString("")
         }
     }
@@ -112,19 +114,18 @@ struct ContentView: View {
         if newBounds != displayBounds {
             displayBounds = newBounds
 
-            // Calculate optimal grid dimensions and font size
-            let optimalGrid = FontMetrics.shared.calculateOptimalGridDimensions(for: newBounds)
+            // Recalculate grid using fixed font size
+            let fixedFontSize = FontMetrics.shared.getDefaultFontSize()
+            let fixedFont = NSFont.monospacedSystemFont(ofSize: fixedFontSize, weight: .regular)
+            let dims = FontMetrics.shared.calculateGridDimensions(for: newBounds, font: fixedFont)
 
-            print(
-                "Optimal grid: width=\(optimalGrid.width), height=\(optimalGrid.height), fontSize=\(optimalGrid.fontSize)"
-            )
+            print("Fixed font size: \(fixedFontSize)")
+            print("Grid dims: width=\(dims.width), height=\(dims.height)")
 
-            // Update engine with new grid dimensions
-            engine.updateGridDimensions(width: optimalGrid.width, height: optimalGrid.height)
+            engine.updateGridDimensions(width: dims.width, height: dims.height)
 
-            // Update renderer with the same font size calculated by FontMetrics
-            renderer.updateFont(size: optimalGrid.fontSize)
-            // Clear attributed text so next frame uses updated font
+            // Ensure renderer uses the same fixed font size
+            renderer.updateFont(size: fixedFontSize)
             attributedAsciiText = AttributedString("")
         }
         print("=================================")
