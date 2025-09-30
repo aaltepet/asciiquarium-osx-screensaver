@@ -94,11 +94,36 @@ class AsciiquariumEngine: ObservableObject {
         frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
     }
 
+    // MARK: - Test Helpers
+    #if DEBUG
+        /// Advance the engine by one frame duration for testing
+        func tickOnceForTests() {
+            let fakeDelta = frameInterval
+            updateEntities(deltaTime: fakeDelta)
+        }
+    #endif
+
     /// Update all entities
     private func updateEntities(deltaTime: CFTimeInterval) {
         // Update existing entities
         for entity in entities {
             entity.update(deltaTime: deltaTime)
+
+            // If entity should die when offscreen, check bounds against the grid and kill if fully out
+            if entity.dieOffscreen {
+                let bounds = entity.getBounds()
+                let left = bounds.x
+                let right = bounds.x + (bounds.width - 1)
+                let top = bounds.y
+                let bottom = bounds.y + (bounds.height - 1)
+
+                let isHorizontallyOut = right < 0 || left >= gridWidth
+                let isVerticallyOut = bottom < 0 || top >= gridHeight
+
+                if isHorizontallyOut || isVerticallyOut {
+                    entity.kill()
+                }
+            }
         }
 
         // Remove dead entities

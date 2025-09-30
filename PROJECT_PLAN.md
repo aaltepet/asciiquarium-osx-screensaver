@@ -413,7 +413,13 @@ The combination of terminal nostalgia, modern macOS integration, smooth animatio
 
 ## Known Issues / TODOs
 
-- [x] Bottom anchoring bug: castle/seaweed must never render below screen bottom
-- [x] Depth layering bug: fish render behind seaweed/castle per `Depth`
+- [X] Bottom anchoring bug: castle/seaweed must never render below screen bottom
+- [X] Depth layering bug: fish render behind seaweed/castle per `Depth`
+- [X] Entity death should remove the entity from the engine
 - [ ] Underwater compositing: interior spaces in fish should be opaque; implement alpha masks
-- [ ] Entity death should remove the entity from the engine
+- [ ] seaweed placement should be random
+- [ ] seaweed animation should be random
+- [ ] collision detection for shark
+- [ ] collision detection for bubbles
+- [ ] pirate ship
+- [ ] is 'tickOnceForTests' really necessary?  Doesn't engine have the ability to progress just once?

@@ -33,6 +33,30 @@ struct EngineTests {
         }
     }
 
+    @Test func testOffscreenFishDiesAndIsRemoved() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+        let initialCount = engine.entities.count
+
+        // A fish that will move fully off the right in one tick
+        var fish = EntityFactory.createFish(
+            at: Position3D(max(0, engine.gridWidth - 1), layout.fishSpawnMinY, Depth.fishStart))
+        fish.direction = 1  // move right
+        fish.speed = 1.0  // 1 cell per frame
+        engine.entities.append(fish)
+
+        // Sanity: count increased by one
+        #expect(engine.entities.count == initialCount + 1)
+
+        // When
+        engine.tickOnceForTests()
+
+        // Then: fish should be dead and removed from engine
+        #expect(fish.isAlive == false, "Fish should die when fully offscreen")
+        let stillPresent = engine.entities.contains { $0.id == fish.id }
+        #expect(stillPresent == false, "Dead entities must be removed from the engine")
+    }
     @Test func testSpawnedFishRespectSpawnBoundsAndDepth() async throws {
         // Given
         let engine = TestHelpers.createTestEngine()
