@@ -249,23 +249,35 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a new fish
     private func spawnFish() {
-        // Initial random position (x, z). We'll compute the correct y after we know fish height
-        let initialPosition = Position3D(
-            Int.random(in: 0..<gridWidth),
-            0,
-            Int.random(in: Depth.fishStart...Depth.fishEnd)
-        )
+        // Initial random z position. We'll compute x and y after we know fish direction, size, and height
+        let initialZ = Int.random(in: Depth.fishStart...Depth.fishEnd)
+        let initialPosition = Position3D(0, 0, initialZ)
 
-        // Create fish to know its height, then choose a y within the allowed top range
-        let fish = EntityFactory.create(from: .fish(position: initialPosition))
+        // Create fish to know its direction (set randomly in init), width, and height
+        let fish = EntityFactory.createFish(at: initialPosition)
 
         let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)
         let fishHeight = max(1, fish.size.height)
+        let fishWidth = max(1, fish.size.width)
+
+        // Choose y within the allowed range
         let minY = layout.fishSpawnMinY
         let maxTopY = max(minY, layout.fishSpawnMaxBottomY - (fishHeight - 1))
         let chosenY = Int.random(in: minY...maxTopY)
-        fish.position = Position3D(fish.position.x, chosenY, fish.position.z)
 
+        // Spawn off-screen based on direction:
+        // - Right-moving fish (direction == 1) spawn off the left edge
+        // - Left-moving fish (direction == -1) spawn off the right edge
+        let spawnX: Int
+        if fish.direction > 0 {
+            // Moving right: spawn completely off-screen to the left
+            spawnX = -fishWidth
+        } else {
+            // Moving left: spawn completely off-screen to the right
+            spawnX = gridWidth
+        }
+
+        fish.position = Position3D(spawnX, chosenY, initialZ)
         entities.append(fish)
     }
 

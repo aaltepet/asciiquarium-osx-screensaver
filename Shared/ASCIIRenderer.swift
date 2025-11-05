@@ -185,7 +185,15 @@ class ASCIIRenderer {
                                     }
 
                                     if shouldDraw {
-                                        let targetIdx = line.index(line.startIndex, offsetBy: x + i)
+                                        let targetX = x + i
+                                        // Bounds check: ensure we don't access out-of-bounds indices
+                                        guard
+                                            targetX >= 0 && targetX < gridWidth
+                                                && targetX < line.count
+                                        else { continue }
+
+                                        let targetIdx = line.index(
+                                            line.startIndex, offsetBy: targetX)
                                         line.replaceSubrange(
                                             targetIdx...targetIdx, with: String(ch))
 
@@ -209,7 +217,7 @@ class ASCIIRenderer {
                                         if pixelColor == nil {
                                             pixelColor = (entity as? BaseEntity)?.defaultColor
                                         }
-                                        colorGrid[entityY][x + i] = pixelColor
+                                        colorGrid[entityY][targetX] = pixelColor
                                     }
                                 }
                                 lines[entityY] = line

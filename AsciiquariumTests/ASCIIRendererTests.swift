@@ -9,8 +9,6 @@ import AppKit
 import CoreGraphics
 import Testing
 
-@testable import Asciiquarium
-
 /// Comprehensive tests for ASCIIRenderer functionality
 struct ASCIIRendererTests {
 
@@ -105,7 +103,7 @@ struct ASCIIRendererTests {
 
     @Test func testFontUpdateWithOptimalSizing() async throws {
         let renderer = TestHelpers.createTestRenderer()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
+        _ = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Update font with optimal sizing
         renderer.updateFont(size: 12.0)
@@ -226,14 +224,17 @@ struct ASCIIRendererTests {
 
         let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
 
-        // Extract foreground colors for first 5 chars
+        // Extract foreground colors for first 5 chars (one per character position)
         var colors: [NSColor] = []
-        out.enumerateAttributes(in: NSRange(location: 0, length: out.length)) { attrs, range, _ in
-            if range.location >= 5 { return }
-            if let c = attrs[.foregroundColor] as? NSColor { colors.append(c) }
+        for i in 0..<5 {
+            var effectiveRange = NSRange(location: 0, length: 0)
+            let attrs = out.attributes(at: i, effectiveRange: &effectiveRange)
+            if let c = attrs[.foregroundColor] as? NSColor {
+                colors.append(c)
+            }
         }
         // Expect background yellow where fg is space, and red for 'Z'
-        #expect(colors.count >= 5)
+        #expect(colors.count == 5)
         #expect(colors[0] == NSColor.yellow)
         #expect(colors[1] == NSColor.yellow)
         #expect(colors[2] == NSColor.red)
@@ -266,14 +267,17 @@ struct ASCIIRendererTests {
 
         let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
 
-        // Colors for first 5 chars
+        // Colors for first 5 chars (one per character position)
         var colors: [NSColor] = []
-        out.enumerateAttributes(in: NSRange(location: 0, length: out.length)) { attrs, range, _ in
-            if range.location >= 5 { return }
-            if let c = attrs[.foregroundColor] as? NSColor { colors.append(c) }
+        for i in 0..<5 {
+            var effectiveRange = NSRange(location: 0, length: 0)
+            let attrs = out.attributes(at: i, effectiveRange: &effectiveRange)
+            if let c = attrs[.foregroundColor] as? NSColor {
+                colors.append(c)
+            }
         }
         // Expect blue, blue, red (forced by alpha), blue, blue
-        #expect(colors.count >= 5)
+        #expect(colors.count == 5)
         #expect(colors[0] == NSColor.blue)
         #expect(colors[1] == NSColor.blue)
         #expect(colors[2] == NSColor.red)

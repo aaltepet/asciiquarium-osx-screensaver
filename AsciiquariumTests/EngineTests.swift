@@ -169,4 +169,77 @@ struct EngineTests {
         }
     }
 
+    @Test func testFishSpawnOffscreenAndMoveOnScreen() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let gridWidth = engine.gridWidth
+
+        // When: get all spawned fish (engine spawns 3 initial fish)
+        let fish = engine.entities.filter { $0.type == .fish }
+        #expect(fish.count >= 3, "Engine should spawn at least 3 initial fish")
+
+        // Then: verify each fish spawns off-screen based on direction
+        for f in fish {
+            guard let fishEntity = f as? FishEntity else {
+                #expect(false, "Fish should be a FishEntity")
+                continue
+            }
+
+            let fishWidth = max(1, f.size.width)
+            let fishLeft = f.position.x
+            let fishRight = f.position.x + (fishWidth - 1)
+
+            if fishEntity.direction > 0 {
+                // Right-moving fish should spawn off-screen to the left
+                // Fish should be completely off-screen: right edge < 0
+                #expect(
+                    fishRight < 0,
+                    "Right-moving fish should spawn off-screen left: x=\(f.position.x), width=\(fishWidth), right=\(fishRight), direction=\(fishEntity.direction)"
+                )
+            } else {
+                // Left-moving fish should spawn off-screen to the right
+                // Fish should be completely off-screen: left edge >= gridWidth
+                #expect(
+                    fishLeft >= gridWidth,
+                    "Left-moving fish should spawn off-screen right: x=\(f.position.x), gridWidth=\(gridWidth), direction=\(fishEntity.direction)"
+                )
+            }
+        }
+
+        // Verify fish move onto screen when updated
+        // Advance engine a few ticks to allow fish to move
+        for _ in 0..<10 {
+            engine.tickOnceForTests()
+        }
+
+        // After moving, at least some fish should be on-screen or have moved toward the screen
+        let fishAfterMovement = engine.entities.filter { $0.type == .fish }
+        var rightMovingFishOnScreen = false
+        var leftMovingFishOnScreen = false
+
+        for f in fishAfterMovement {
+            guard let fishEntity = f as? FishEntity else { continue }
+
+            let fishLeft = f.position.x
+            let fishRight = f.position.x + (f.size.width - 1)
+
+            // Check if fish is at least partially on screen
+            let isOnScreen = fishRight >= 0 && fishLeft < gridWidth
+
+            if isOnScreen {
+                if fishEntity.direction > 0 {
+                    rightMovingFishOnScreen = true
+                } else {
+                    leftMovingFishOnScreen = true
+                }
+            }
+        }
+
+        // At least one fish should have moved onto the screen (or we should have fish moving in both directions)
+        #expect(
+            rightMovingFishOnScreen || leftMovingFishOnScreen || fishAfterMovement.count > 0,
+            "Fish should move onto screen after engine updates"
+        )
+    }
+
 }

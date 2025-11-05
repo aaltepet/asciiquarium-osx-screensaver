@@ -147,6 +147,7 @@ Both formats share the same core asciiquarium engine:
     - Fish z-depth is randomized in `[fishStart, fishEnd]`.
     - No fish appear above the water surface rows.
     - Unit tests: newly spawned fish satisfy `y ≥ 9` and `z ∈ [fishStart, fishEnd]`; no fish with `y < 9`.
+    - fish spawn offscreen and move on screen
 
 - [x] Bottom placement: castle and seaweed
   - **Acceptance**:
