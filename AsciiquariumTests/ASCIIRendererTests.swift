@@ -285,6 +285,91 @@ struct ASCIIRendererTests {
         #expect(colors[4] == NSColor.blue)
     }
 
+    // MARK: - ColorMask Opacity Tests
+
+    @Test func testColorMaskBasicOpaqueTransparent() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        // Background: all 'X'
+        let bg = BaseEntity(
+            name: "bg",
+            type: .castle,
+            shape: ["XXXXX"],
+            position: Position3D(0, 0, 0)
+        )
+        bg.defaultColor = .blue
+
+        // Foreground: shape with spaces
+        // Shape: "  A  " (5 chars: 2 spaces, A, 2 spaces)
+        let fg = BaseEntity(
+            name: "fg",
+            type: .castle,
+            shape: ["  A  "],
+            position: Position3D(0, 0, 1)
+        )
+        fg.defaultColor = .red
+        // ColorMask: "  x  " means: spaces transparent, A opaque
+        fg.colorMask = ["  x  "]
+
+        let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
+        let renderedString = String(out.string.prefix(5))
+
+        // Expected: "XXAXX" (leading/trailing spaces transparent, A opaque)
+        #expect(renderedString == "XXAXX")
+    }
+
+    @Test func testColorMaskControlsOpacityInteriorSpacesOpaque() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        // Background entity: all '=' characters
+        let bg = BaseEntity(
+            name: "bg",
+            type: .castle,
+            shape: ["========="],
+            position: Position3D(0, 0, 0)  // z=0 (behind)
+        )
+        bg.defaultColor = .blue
+
+        // Foreground entity: shape with leading/trailing spaces and interior spaces
+        // Shape: "  >   <  " (9 chars: 2 leading spaces, >, 3 interior spaces, <, 2 trailing spaces)
+        let fg = BaseEntity(
+            name: "fg",
+            type: .castle,
+            shape: ["  >   <  "],
+            position: Position3D(0, 0, 1)  // z=1 (in front)
+        )
+        fg.defaultColor = .red
+        // ColorMask: spaces = transparent, non-space = opaque
+        // "  xxxxx  " means: leading spaces transparent, > and 3 interior spaces and < opaque (marked with x), trailing spaces transparent
+        // Shape: "  >   <  " (9 chars) -> ColorMask: "  xxxxx  " (9 chars: 2 spaces, 5 x's, 2 spaces)
+        fg.colorMask = ["  xxxxx  "]
+
+        let out = renderer.renderScene(entities: [bg, fg], gridWidth: 9, gridHeight: 1)
+
+        // Extract the rendered string (first 9 chars, ignoring newline)
+        let renderedString = String(out.string.prefix(9))
+
+        // Debug: print actual vs expected
+        let expected = "==>   <=="
+        if renderedString != expected {
+            print("Expected: '\(expected)' (length: \(expected.count))")
+            print("Actual:   '\(renderedString)' (length: \(renderedString.count))")
+            for (i, (e, a)) in zip(expected, renderedString).enumerated() {
+                if e != a {
+                    print(
+                        "  Position \(i): expected '\(e)' (code: \(e.unicodeScalars.first!.value)), got '\(a)' (code: \(a.unicodeScalars.first!.value))"
+                    )
+                }
+            }
+        }
+
+        // Expected: "==>   <=="
+        // - First 2 chars: background (==) - transparent leading spaces
+        // - Next 5 chars: foreground (">   <") - opaque including interior spaces
+        // - Last 2 chars: background (==) - transparent trailing spaces
+        #expect(renderedString == expected)
+    }
+
     @Test func testSceneDimensions() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()

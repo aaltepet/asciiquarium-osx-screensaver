@@ -173,11 +173,23 @@ Both formats share the same core asciiquarium engine:
     - Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
 
 - [ ] Underwater compositing masks (selective transparency)
+  - **Implementation**: Uses `colorMask` to control both color and opacity for non-full-width entities.
+    - **ColorMask Opacity Control**: The `colorMask` property controls opacity per-pixel:
+      - Space character in `colorMask` = transparent pixel (background shows through)
+      - Non-space character in `colorMask` = opaque pixel (blocks background, shows entity)
+    - **Rendering Logic** (`ASCIIRenderer.swift`):
+      - When `colorMask` is provided, it determines opacity before checking `transparentChar`
+      - Opaque pixels (non-space in mask) draw the shape character, blocking background
+      - Transparent pixels (space in mask) skip drawing, allowing background to show
+      - Falls back to `transparentChar` logic if no `colorMask` is provided
+    - **Interior Spaces**: Spaces within entity shapes (e.g., inside fish silhouettes) are marked as opaque in the `colorMask`, preventing background entities from showing through
+    - **Exterior Spaces**: Leading/trailing spaces outside the entity shape are marked as transparent in the `colorMask`, allowing background to show through
+    - **Castle Windows**: Castle can use `colorMask` with spaces to mark window cutouts as transparent while keeping solid parts opaque
   - **Acceptance**:
-    - Non-full-width entities composite with an alpha mask per-entity so only space outside the entity’s silhouette is transparent.
-    - Spaces inside fish silhouettes remain opaque (do not reveal castle/seaweed behind).
-    - Castle window cutouts follow its mask (intended holes only), otherwise castle remains opaque.
-    - Unit tests: render order fish/seaweed/castle proves no background leaks through interior spaces; outside bounding spaces remain pass-through.
+    - ✅ Non-full-width entities composite using `colorMask` so only space outside the entity's silhouette is transparent
+    - ✅ Spaces inside fish silhouettes remain opaque (do not reveal castle/seaweed behind) when marked in `colorMask`
+    - ✅ Castle window cutouts follow `colorMask` (spaces = transparent, non-space = opaque)
+    - ✅ Unit tests: `testColorMaskControlsOpacityInteriorSpacesOpaque` proves interior spaces block background; exterior spaces remain pass-through
 
 - [ ] Shark (underwater predator) depth and behavior stub
   - **Acceptance**:

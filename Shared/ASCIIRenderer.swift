@@ -162,26 +162,50 @@ class ASCIIRenderer {
                                 if availableWidth == 0 { continue }
                                 let croppedShape = String(shapeLine.prefix(availableWidth))
                                 let transparent = entity.transparentChar
+                                let baseEntity = entity as? BaseEntity
+
+                                // Get color mask line for opacity control
+                                let colorMaskLine: String? = {
+                                    if let cm = baseEntity?.colorMask,
+                                        shapeLineIndex < cm.count
+                                    {
+                                        return cm[shapeLineIndex]
+                                    }
+                                    return nil
+                                }()
+
                                 // If an alphaMask is provided, use it to force opacity for masked pixels
                                 let maskLine: String? = {
-                                    if let alpha = (entity as? BaseEntity)?.alphaMask,
+                                    if let alpha = baseEntity?.alphaMask,
                                         shapeLineIndex < alpha.count
                                     {
                                         return alpha[shapeLineIndex]
                                     }
                                     return nil
                                 }()
+
                                 // Composite per character, respecting transparency and color mask
                                 for (i, ch) in croppedShape.enumerated() {
-                                    let isTransparentChar =
-                                        (transparent != nil && ch == transparent!)
-                                    var shouldDraw = !isTransparentChar
+                                    // Determine if this pixel should be drawn based on colorMask opacity
+                                    var shouldDraw: Bool
 
-                                    // Alpha mask can force draw even for spaces
-                                    if isTransparentChar, let mask = maskLine, i < mask.count {
-                                        let idx = mask.index(mask.startIndex, offsetBy: i)
-                                        let maskCh = mask[idx]
-                                        if maskCh != " " { shouldDraw = true }
+                                    if let cmLine = colorMaskLine, i < cmLine.count {
+                                        // ColorMask controls opacity: space = transparent, non-space = opaque
+                                        let idx = cmLine.index(cmLine.startIndex, offsetBy: i)
+                                        let maskCh = cmLine[idx]
+                                        shouldDraw = (maskCh != " ")
+                                    } else {
+                                        // Fall back to transparentChar logic if no colorMask
+                                        let isTransparentChar =
+                                            (transparent != nil && ch == transparent!)
+                                        shouldDraw = !isTransparentChar
+
+                                        // Alpha mask can force draw even for spaces
+                                        if isTransparentChar, let mask = maskLine, i < mask.count {
+                                            let idx = mask.index(mask.startIndex, offsetBy: i)
+                                            let maskCh = mask[idx]
+                                            if maskCh != " " { shouldDraw = true }
+                                        }
                                     }
 
                                     if shouldDraw {
