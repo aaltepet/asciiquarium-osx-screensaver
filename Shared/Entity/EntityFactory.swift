@@ -25,6 +25,7 @@ class EntityFactory {
         case ducks(position: Position3D)
         case dolphins(position: Position3D)
         case swan(position: Position3D)
+        case splat(position: Position3D)
         case teeth(position: Position3D)
         case fishhook(position: Position3D)
         case fishline(position: Position3D)
@@ -62,6 +63,8 @@ class EntityFactory {
                 name: "dolphins_\(UUID().uuidString.prefix(8))", position: position)
         case let .swan(position):
             return SwanEntity(name: "swan_\(UUID().uuidString.prefix(8))", position: position)
+        case let .splat(position):
+            return SplatEntity(name: "splat_\(UUID().uuidString.prefix(8))", position: position)
         case let .teeth(position):
             return TeethEntity(name: "teeth_\(UUID().uuidString.prefix(8))", position: position)
         case let .fishhook(position):

@@ -9,6 +9,8 @@ import AppKit
 import CoreGraphics
 import Testing
 
+@testable import Asciiquarium
+
 /// Comprehensive tests for ASCIIRenderer functionality
 struct ASCIIRendererTests {
 
@@ -145,6 +147,138 @@ struct ASCIIRendererTests {
                 #expect(line.count == expectedWidth, "All lines should have same width")
             }
         }
+    }
+
+    // MARK: - Color Compositing Tests
+
+    @Test func testDefaultColorAppliedWhenNoColorMask() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        // Create a single static entity without colorMask
+        let e = BaseEntity(
+            name: "test",
+            type: .castle,
+            shape: ["ABCDE"],
+            position: Position3D(0, 0, 0)
+        )
+        e.defaultColor = .red
+
+        let out = renderer.renderScene(entities: [e], gridWidth: 5, gridHeight: 1)
+
+        // Verify all visible characters (first 5) colored red (ignore newline)
+        out.enumerateAttributes(in: NSRange(location: 0, length: 5)) { attrs, _, _ in
+            if let c = attrs[.foregroundColor] as? NSColor { #expect(c == NSColor.red) }
+        }
+    }
+
+    @Test func testColorMaskAppliedPerCharacter() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        let e = BaseEntity(
+            name: "test",
+            type: .castle,
+            shape: ["ABC"],
+            position: Position3D(0, 0, 0)
+        )
+        e.defaultColor = .blue
+        e.colorMask = [
+            String([
+                ColorCode.red.rawValue, ColorCode.greenBright.rawValue, ColorCode.cyan.rawValue,
+            ])
+        ]
+
+        let out = renderer.renderScene(entities: [e], gridWidth: 3, gridHeight: 1)
+
+        // Expect colors: r, G, c
+        var colors: [NSColor] = []
+        out.enumerateAttributes(in: NSRange(location: 0, length: out.length)) { attrs, range, _ in
+            // Skip trailing newline
+            if range.location >= 3 { return }
+            if let c = attrs[.foregroundColor] as? NSColor { colors.append(c) }
+        }
+        #expect(colors.count >= 3)
+        #expect(colors[0] == NSColor.red)
+        #expect(colors[1] == NSColor.systemGreen)
+        #expect(colors[2] == NSColor.cyan)
+    }
+
+    @Test func testTransparentCharSkipsCompositing() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        // Background line
+        let bg = BaseEntity(
+            name: "bg",
+            type: .castle,
+            shape: ["xxxxx"],
+            position: Position3D(0, 0, 0)
+        )
+        bg.defaultColor = .yellow
+
+        // Foreground with spaces as transparent
+        let fg = BaseEntity(
+            name: "fg",
+            type: .castle,
+            shape: ["  Z  "],
+            position: Position3D(0, 0, 1)
+        )
+        fg.defaultColor = .red
+        fg.transparentChar = " "
+
+        let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
+
+        // Extract foreground colors for first 5 chars
+        var colors: [NSColor] = []
+        out.enumerateAttributes(in: NSRange(location: 0, length: out.length)) { attrs, range, _ in
+            if range.location >= 5 { return }
+            if let c = attrs[.foregroundColor] as? NSColor { colors.append(c) }
+        }
+        // Expect background yellow where fg is space, and red for 'Z'
+        #expect(colors.count >= 5)
+        #expect(colors[0] == NSColor.yellow)
+        #expect(colors[1] == NSColor.yellow)
+        #expect(colors[2] == NSColor.red)
+        #expect(colors[3] == NSColor.yellow)
+        #expect(colors[4] == NSColor.yellow)
+    }
+
+    @Test func testAlphaMaskForcesOpaqueOnSpace() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+
+        // Background line
+        let bg = BaseEntity(
+            name: "bg",
+            type: .castle,
+            shape: ["xxxxx"],
+            position: Position3D(0, 0, 0)
+        )
+        bg.defaultColor = .blue
+
+        // Foreground: spaces with alpha mask marking center as opaque
+        let fg = BaseEntity(
+            name: "fg",
+            type: .castle,
+            shape: ["     "],
+            position: Position3D(0, 0, 1)
+        )
+        fg.defaultColor = .red
+        fg.transparentChar = " "
+        fg.alphaMask = ["  x  "]
+
+        let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
+
+        // Colors for first 5 chars
+        var colors: [NSColor] = []
+        out.enumerateAttributes(in: NSRange(location: 0, length: out.length)) { attrs, range, _ in
+            if range.location >= 5 { return }
+            if let c = attrs[.foregroundColor] as? NSColor { colors.append(c) }
+        }
+        // Expect blue, blue, red (forced by alpha), blue, blue
+        #expect(colors.count >= 5)
+        #expect(colors[0] == NSColor.blue)
+        #expect(colors[1] == NSColor.blue)
+        #expect(colors[2] == NSColor.red)
+        #expect(colors[3] == NSColor.blue)
+        #expect(colors[4] == NSColor.blue)
     }
 
     @Test func testSceneDimensions() async throws {

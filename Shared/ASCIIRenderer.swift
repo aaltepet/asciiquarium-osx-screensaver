@@ -5,6 +5,7 @@
 //  Created by Andy Altepeter on 9/10/25.
 //
 
+import AppKit
 import Cocoa
 import Foundation
 import SwiftUI
@@ -76,6 +77,28 @@ class ASCIIRenderer {
         )
     }
 
+    /// Map ColorCode to NSColor (upper-case variants are treated as brighter where possible)
+    private func nsColor(for code: ColorCode) -> NSColor {
+        switch code {
+        case .cyan: return NSColor.cyan
+        case .cyanBright: return NSColor.systemTeal
+        case .red: return NSColor.red
+        case .redBright: return NSColor.systemRed
+        case .yellow: return NSColor.yellow
+        case .yellowBright: return NSColor.systemYellow
+        case .blue: return NSColor.blue
+        case .blueBright: return NSColor.systemBlue
+        case .green: return NSColor.green
+        case .greenBright: return NSColor.systemGreen
+        case .magenta: return NSColor.magenta
+        case .magentaBright: return NSColor.systemPink
+        case .white: return NSColor.white
+        case .whiteBright: return NSColor.white
+        case .black: return NSColor.black
+        case .blackBright: return NSColor.darkGray
+        }
+    }
+
     /// Render the asciiquarium scene
     func renderScene(entities: [Entity], gridWidth: Int, gridHeight: Int) -> NSAttributedString {
         let mutableString = NSMutableAttributedString()
@@ -89,6 +112,9 @@ class ASCIIRenderer {
 
         // Create a simple text representation using grid dimensions
         var lines: [String] = []
+        // Parallel color grid matching text grid. Nil means use fallback color.
+        var colorGrid: [[ColorCode?]] = Array(
+            repeating: Array(repeating: nil, count: gridWidth), count: gridHeight)
 
         // Initialize empty lines
         for _ in 0..<gridHeight {
@@ -112,6 +138,14 @@ class ASCIIRenderer {
                             let entityY = y + shapeLineIndex
                             if entityY >= 0 && entityY < gridHeight {
                                 lines[entityY] = shapeLine
+                                // Apply a flat color for full-width lines if provided
+                                let defaultColor = (entity as? BaseEntity)?.defaultColor
+                                if let def = defaultColor {
+                                    let rowCount = min(gridWidth, shapeLine.count)
+                                    for i in 0..<rowCount {
+                                        colorGrid[entityY][i] = def
+                                    }
+                                }
                             }
                         }
                     }
@@ -137,33 +171,45 @@ class ASCIIRenderer {
                                     }
                                     return nil
                                 }()
-                                if transparent == nil && maskLine == nil {
-                                    // Original fast path: replace substring
-                                    let replaceStart = line.index(line.startIndex, offsetBy: x)
-                                    let replaceEnd = line.index(
-                                        replaceStart, offsetBy: croppedShape.count)
-                                    line.replaceSubrange(
-                                        replaceStart..<replaceEnd, with: croppedShape)
-                                } else {
-                                    // Composite per character, skipping transparent characters
-                                    for (i, ch) in croppedShape.enumerated() {
-                                        if let t = transparent, ch == t {
-                                            // If alpha mask marks this pixel as opaque, draw even if it's a space
-                                            if let mask = maskLine, i < mask.count {
-                                                let idx = mask.index(mask.startIndex, offsetBy: i)
-                                                let maskCh = mask[idx]
-                                                if maskCh != " " {
-                                                    let targetIdx = line.index(
-                                                        line.startIndex, offsetBy: x + i)
-                                                    line.replaceSubrange(
-                                                        targetIdx...targetIdx, with: String(ch))
-                                                }
-                                            }
-                                            continue
-                                        }
+                                // Composite per character, respecting transparency and color mask
+                                for (i, ch) in croppedShape.enumerated() {
+                                    let isTransparentChar =
+                                        (transparent != nil && ch == transparent!)
+                                    var shouldDraw = !isTransparentChar
+
+                                    // Alpha mask can force draw even for spaces
+                                    if isTransparentChar, let mask = maskLine, i < mask.count {
+                                        let idx = mask.index(mask.startIndex, offsetBy: i)
+                                        let maskCh = mask[idx]
+                                        if maskCh != " " { shouldDraw = true }
+                                    }
+
+                                    if shouldDraw {
                                         let targetIdx = line.index(line.startIndex, offsetBy: x + i)
                                         line.replaceSubrange(
                                             targetIdx...targetIdx, with: String(ch))
+
+                                        // Determine color for this pixel
+                                        var pixelColor: ColorCode? = nil
+                                        if let cm = (entity as? BaseEntity)?.colorMask,
+                                            shapeLineIndex < cm.count
+                                        {
+                                            let cmLine = cm[shapeLineIndex]
+                                            if i < cmLine.count {
+                                                let cIdx = cmLine.index(
+                                                    cmLine.startIndex, offsetBy: i)
+                                                let colorCh = cmLine[cIdx]
+                                                if colorCh != " " {
+                                                    if let code = ColorCode(rawValue: colorCh) {
+                                                        pixelColor = code
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if pixelColor == nil {
+                                            pixelColor = (entity as? BaseEntity)?.defaultColor
+                                        }
+                                        colorGrid[entityY][x + i] = pixelColor
                                     }
                                 }
                                 lines[entityY] = line
@@ -174,16 +220,19 @@ class ASCIIRenderer {
             }
         }
 
-        // Create attributed string
-        for (_, line) in lines.enumerated() {
-            let attributedLine = NSAttributedString(
-                string: line + "\n",
-                attributes: [
-                    .font: font,
-                    .foregroundColor: NSColor.blue,
-                ]
-            )
-            mutableString.append(attributedLine)
+        // Create attributed string with per-character colors
+        for y in 0..<lines.count {
+            let line = lines[y]
+            // Iterate characters and append with color
+            for (x, ch) in line.enumerated() {
+                let pixelNSColor = colorGrid[y][x].map { nsColor(for: $0) } ?? NSColor.blue
+                let attr = drawCharacter(String(ch), at: .zero, color: pixelNSColor)
+                mutableString.append(attr)
+            }
+            // Append newline
+            let nl = NSAttributedString(
+                string: "\n", attributes: [.font: font, .foregroundColor: NSColor.blue])
+            mutableString.append(nl)
         }
 
         return mutableString

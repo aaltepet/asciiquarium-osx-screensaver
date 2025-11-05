@@ -30,7 +30,8 @@ class CastleEntity: BaseEntity {
     }
 
     private func setupCastle() {
-        defaultColor = .black
+        // Use a visible default color for the castle silhouette
+        defaultColor = .white
         // Default transparency applies (spaces pass through)
         // Alpha mask: mark interior window holes as opaque blockers (any non-space)
         alphaMask = [
@@ -47,6 +48,21 @@ class CastleEntity: BaseEntity {
             "                                ",
             "                                ",
             "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        ]
+        colorMask = [
+            "                RR",
+            "",
+            "              yyy",
+            "             y   y",
+            "            y     y",
+            "           y       y",
+            "",
+            "",
+            "",
+            "              yyy",
+            "             yy yy",
+            "            y y y y",
+            "            yyyyyyy",
         ]
         // Castle is static
     }

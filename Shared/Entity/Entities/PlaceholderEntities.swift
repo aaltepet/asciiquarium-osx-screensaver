@@ -100,6 +100,20 @@ class SwanEntity: BaseEntity {
     }
 }
 
+class SplatEntity: BaseEntity {
+    init(name: String, position: Position3D) {
+        super.init(name: name, type: .splat, shape: [""], position: position)
+        setupSplat()
+    }
+
+    private func setupSplat() {
+        defaultColor = .red
+        callbackArgs = [0.0, 0.0, 0.0, 0.25]  // Animation speed
+        transparentChar = " "  // Spaces are transparent
+        dieFrame = 15  // Dies after 15 frames
+    }
+}
+
 class TeethEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .teeth, shape: ["*"], position: position)

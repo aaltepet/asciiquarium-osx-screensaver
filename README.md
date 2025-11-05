@@ -1,6 +1,6 @@
 # Asciiquarium macOS Screensaver
 
-A native macOS screensaver and application that brings the beloved asciiquarium terminal application to your screen saver and desktop.
+A native macOS screensaver and application that brings the charming and beloved asciiquarium terminal application to your screen saver and desktop.
 
 ## Overview
 

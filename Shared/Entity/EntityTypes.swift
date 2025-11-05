@@ -26,6 +26,7 @@ enum EntityType: String, CaseIterable {
     case ducks = "ducks"
     case dolphins = "dolphins"
     case swan = "swan"
+    case splat = "splat"
 }
 
 // MARK: - Position and Size
