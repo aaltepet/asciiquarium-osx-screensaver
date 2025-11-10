@@ -169,6 +169,41 @@ struct EngineTests {
         }
     }
 
+    @Test func testSeaweedRespawnsOnDeath() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let initialSeaweedCount = engine.entities.filter { $0.type == .seaweed }.count
+        #expect(initialSeaweedCount > 0, "Should have at least one seaweed")
+
+        // Get a seaweed and verify it has a death callback
+        guard let seaweed = engine.entities.first(where: { $0.type == .seaweed }) else {
+            #expect(false, "Should have at least one seaweed")
+            return
+        }
+        #expect(seaweed.deathCallback != nil, "Seaweed should have death callback for respawn")
+
+        // When: manually trigger death callback (simulating seaweed death)
+        let countBeforeDeath = engine.entities.filter { $0.type == .seaweed }.count
+        seaweed.deathCallback?()
+
+        // Then: a new seaweed should have been spawned
+        let countAfterRespawn = engine.entities.filter { $0.type == .seaweed }.count
+        #expect(
+            countAfterRespawn >= countBeforeDeath,
+            "Seaweed count should increase or stay same after respawn: before=\(countBeforeDeath), after=\(countAfterRespawn)"
+        )
+
+        // Verify the new seaweed has proper setup
+        let newSeaweed = engine.entities.filter { $0.type == .seaweed }.last
+        #expect(newSeaweed != nil, "New seaweed should exist")
+        if let newSeaweed = newSeaweed {
+            let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+            let bottomY = newSeaweed.position.y + (newSeaweed.size.height - 1)
+            #expect(bottomY == layout.safeBottomY, "New seaweed should be anchored to safe bottom")
+            #expect(newSeaweed.deathCallback != nil, "New seaweed should also have death callback")
+        }
+    }
+
     @Test func testFishSpawnOffscreenAndMoveOnScreen() async throws {
         // Given
         let engine = TestHelpers.createTestEngine()

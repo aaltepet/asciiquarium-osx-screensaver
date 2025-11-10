@@ -8,20 +8,20 @@
 import Testing
 
 struct SeaweedTests {
-    @Test func testSeaweedSwaysEveryTwentyFrames() async throws {
+    @Test func testSeaweedSwaysWithVariableTiming() async throws {
         // Given
         let pos = Position3D(10, 10, Depth.seaweed)
         let sea = EntityFactory.createSeaweed(at: pos)
         let initial = sea.shape
         #expect(initial.count >= 3 && initial.count <= 6)
 
-        // When: advance 19 frames (no sway expected)
-        for _ in 0..<19 { sea.update(deltaTime: 1.0 / 30.0) }
+        // When: advance 14 frames (no sway expected - interval is 17-20 frames based on animSpeed)
+        for _ in 0..<14 { sea.update(deltaTime: 1.0 / 30.0) }
         let shapeNoSway = sea.shape
-        #expect(shapeNoSway == initial, "Seaweed should not sway before 20 frames")
+        #expect(shapeNoSway == initial, "Seaweed should not sway too early")
 
-        // Advance to 20th frame (sway expected - new random pattern)
-        sea.update(deltaTime: 1.0 / 30.0)
+        // Advance to at least 20 frames: should have swayed by now (interval is max 20 frames)
+        for _ in 0..<6 { sea.update(deltaTime: 1.0 / 30.0) }
         let swayed = sea.shape
         #expect(swayed.count == initial.count, "Swayed shape should maintain same height")
         #expect(

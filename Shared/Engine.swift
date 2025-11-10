@@ -188,6 +188,10 @@ class AsciiquariumEngine: ObservableObject {
             let h = sea.size.height
             let y = max(0, layout.safeBottomY - (h - 1))
             sea.position = Position3D(randomX, y, Depth.seaweed)
+            // Set up death callback to respawn new seaweed (matching Perl: death_cb => \&add_seaweed)
+            sea.deathCallback = { [weak self] in
+                self?.spawnSeaweed()
+            }
             entities.append(sea)
         }
     }
@@ -220,6 +224,10 @@ class AsciiquariumEngine: ObservableObject {
             let toAdd = desiredCount - weeds.count
             for _ in 0..<toAdd {
                 let sea = EntityFactory.createSeaweed(at: Position3D(0, 0, Depth.seaweed))
+                // Set up death callback to respawn new seaweed (matching Perl: death_cb => \&add_seaweed)
+                sea.deathCallback = { [weak self] in
+                    self?.spawnSeaweed()
+                }
                 weeds.append(sea)
                 entities.append(sea)
             }
@@ -236,6 +244,7 @@ class AsciiquariumEngine: ObservableObject {
         }
 
         // Re-position with random x positions (matching Perl: int(rand($anim->width()-2)) + 1)
+        // Also ensure all seaweed have death callbacks set for respawn
         for w in weeds {
             // Random x from 1 to width-2 (inclusive), matching Perl behavior
             // Ensure we have at least width 3 for valid range (1 to width-2)
@@ -244,7 +253,31 @@ class AsciiquariumEngine: ObservableObject {
             let h = w.size.height
             let y = max(0, layout.safeBottomY - (h - 1))
             w.position = Position3D(randomX, y, Depth.seaweed)
+            // Ensure death callback is set for respawn (may have been lost during reflow)
+            if w.deathCallback == nil {
+                w.deathCallback = { [weak self] in
+                    self?.spawnSeaweed()
+                }
+            }
         }
+    }
+
+    /// Spawn a new seaweed (used for respawn on death)
+    private func spawnSeaweed() {
+        let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)
+        // Random x from 1 to width-2 (inclusive), matching Perl behavior
+        let maxX = max(1, gridWidth - 2)
+        let randomX = Int.random(in: 1...maxX)
+        let sea = EntityFactory.createSeaweed(at: Position3D(randomX, 0, Depth.seaweed))
+        // Anchor bottom: y so that seaweed bottom sits on safeBottomY
+        let h = sea.size.height
+        let y = max(0, layout.safeBottomY - (h - 1))
+        sea.position = Position3D(randomX, y, Depth.seaweed)
+        // Set up death callback to respawn new seaweed (matching Perl: death_cb => \&add_seaweed)
+        sea.deathCallback = { [weak self] in
+            self?.spawnSeaweed()
+        }
+        entities.append(sea)
     }
 
     /// Spawn a new fish

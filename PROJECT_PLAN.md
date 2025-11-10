@@ -220,12 +220,12 @@ Both formats share the same core asciiquarium engine:
 
 ### Animation Parity Tasks
 
-- [ ] Seaweed animation parity with Perl
+- [X] Seaweed animation parity with Perl (completed - all randomization features implemented)
   - **Current Issues** (see `docs/seaweed_parity_analysis.md` for details):
     - ✅ X position: Fixed - now uses random positions `Int.random(in: 1...max(1, gridWidth - 2))` matching Perl
-    - ❌ Animation speed: Fixed at 0.25; Perl uses `rand(.05) + .25` (0.25-0.30)
-    - ❌ Animation timing: Fixed 20-frame interval; Perl uses variable timing via anim_speed
-    - ❌ Respawn on death: Not implemented; Perl uses `death_cb => \&add_seaweed` to respawn
+    - ✅ Animation speed: Fixed - now uses random speed `Double.random(in: 0.25...0.30)` matching Perl
+    - ✅ Animation timing: Fixed - now uses variable timing based on animSpeed (17-20 frame intervals) matching Perl behavior
+    - ✅ Respawn on death: Fixed - implemented death callback that calls `spawnSeaweed()` matching Perl's `death_cb => \&add_seaweed`
   - **Acceptance**:
     - Seaweed spawns at random x positions (1 to width-2) instead of evenly spaced
     - Each seaweed has random animation speed (0.25-0.30) stored in `callbackArgs[3]`
@@ -243,6 +243,6 @@ Both formats share the same core asciiquarium engine:
 - [X] fish should only spawn off-screen (completed - verified: right-moving fish spawn at x=-fishWidth, left-moving at x=gridWidth; testFishSpawnOffscreenAndMoveOnScreen passes)
 - [X] Underwater compositing: interior spaces in fish should be opaque; implement color masks (completed - uses colorMask for opacity control)
 - [X] seaweed placement should be random (completed - see Animation Parity Tasks above for details)
-- [ ] seaweed animation should be random (see Animation Parity Tasks above for details)
+- [X] seaweed animation should be random (completed - speed and timing are now random; see Animation Parity Tasks above for details)
 - [ ] collision detection for shark
 - [ ] collision detection for bubbles

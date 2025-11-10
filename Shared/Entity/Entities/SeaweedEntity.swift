@@ -12,6 +12,8 @@ class SeaweedEntity: BaseEntity {
     var swayDirection: Int = 1
     private var swayFrame: Int = 0
     private let seaweedHeight: Int
+    private var animSpeed: Double = 0.25  // Store for timing calculations
+    private var lastSwayFrame: Int = 0
 
     init(name: String, position: Position3D) {
         let height = Int.random(in: 3...6)
@@ -24,7 +26,9 @@ class SeaweedEntity: BaseEntity {
     private func setupSeaweed() {
         defaultColor = .green
         dieTime = Date().timeIntervalSince1970 + Double.random(in: 480...720)  // 8-12 minutes
-        callbackArgs = [0.0, 0.0, 0.0, 0.25]  // Sway animation
+        // Random animation speed matching Perl: rand(.05) + .25 (0.25 to 0.30)
+        animSpeed = Double.random(in: 0.25...0.30)
+        callbackArgs = [0.0, 0.0, 0.0, animSpeed]  // Sway animation with random speed
         // Seaweed should not treat spaces as transparent (solid glyphs only)
         transparentChar = nil
     }
@@ -49,8 +53,17 @@ class SeaweedEntity: BaseEntity {
     override func update(deltaTime: TimeInterval) {
         super.update(deltaTime: deltaTime)
 
-        // Animate seaweed swaying
-        if frameCount % 20 == 0 {  // Change sway every 20 frames
+        // Animate seaweed swaying with variable timing based on animSpeed
+        // Higher animSpeed (0.30) = faster = more frequent updates (shorter interval)
+        // Lower animSpeed (0.25) = slower = less frequent updates (longer interval)
+        // Convert animSpeed to frame interval: base interval / animSpeed
+        // Base of 5 frames gives: 5/0.30 = ~17 frames, 5/0.25 = 20 frames
+        let baseInterval: Double = 5.0
+        let swayInterval = Int(baseInterval / animSpeed)
+
+        // Update sway animation when frame count matches the calculated interval
+        if frameCount - lastSwayFrame >= swayInterval {
+            lastSwayFrame = frameCount
             swayFrame += 1
             updateSwayAnimation()
         }
