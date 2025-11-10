@@ -66,7 +66,7 @@ Both formats share the same core asciiquarium engine:
    - Renders ASCII art with proper monospace font
    - Handles text positioning and scaling using grid-based coordinates
    - Manages color schemes and styling (color masks, default colors, per-character coloring)
-   - Supports transparency and alpha masking for compositing
+   - Supports transparency and color masking for compositing
    - Depth-based rendering order (z-sorting)
 
 3. **Entities** (objects rendered on screen)
@@ -216,21 +216,33 @@ Both formats share the same core asciiquarium engine:
     - Add a generalized color-map capability to the asciirenderer and entities
     - list the entities and add them to this todo list
     - proceed one entity at a time, I want to review each
+    - fish entity colors based on body parts (as in original perl code)
 
 ### Animation Parity Tasks
 
 - [ ] Seaweed animation parity with Perl
+  - **Current Issues** (see `docs/seaweed_parity_analysis.md` for details):
+    - ✅ X position: Fixed - now uses random positions `Int.random(in: 1...max(1, gridWidth - 2))` matching Perl
+    - ❌ Animation speed: Fixed at 0.25; Perl uses `rand(.05) + .25` (0.25-0.30)
+    - ❌ Animation timing: Fixed 20-frame interval; Perl uses variable timing via anim_speed
+    - ❌ Respawn on death: Not implemented; Perl uses `death_cb => \&add_seaweed` to respawn
   - **Acceptance**:
-    - Sway timing includes randomness comparable to Perl (interval jitter/phase differences).
-    - Visual check across multiple minutes shows non-uniform, organic swaying.
+    - Seaweed spawns at random x positions (1 to width-2) instead of evenly spaced
+    - Each seaweed has random animation speed (0.25-0.30) stored in `callbackArgs[3]`
+    - Sway timing includes randomness (interval jitter/phase differences) using anim_speed
+    - Visual check across multiple minutes shows non-uniform, organic swaying
+    - Seaweed respawns when it dies (after 8-12 minutes) to maintain scene density
     - Add unit/visual tests to validate timing variance bounds (not exact determinism).
-- [ ] Seaweed placement should be random
+- [X] Seaweed placement should be random (completed - changed from evenly spaced to random x positions 1 to width-2, matching Perl)
+  - **Previous**: Evenly spaced using `step = gridWidth / seaweedCount`
+  - **Perl**: `int(rand($anim->width()-2)) + 1` - random x from 1 to width-2
+  - **Fixed**: Updated `spawnBottomDecor()` and `reflowBottomDecorForCurrentGrid()` to use `Int.random(in: 1...max(1, gridWidth - 2))`
 
 ## Known Issues / TODOs
 
-- [ ] fish should only spawn off-screen
-- [ ] Underwater compositing: interior spaces in fish should be opaque; implement alpha masks
-- [ ] seaweed placement should be random
-- [ ] seaweed animation should be random
+- [X] fish should only spawn off-screen (completed - verified: right-moving fish spawn at x=-fishWidth, left-moving at x=gridWidth; testFishSpawnOffscreenAndMoveOnScreen passes)
+- [X] Underwater compositing: interior spaces in fish should be opaque; implement color masks (completed - uses colorMask for opacity control)
+- [X] seaweed placement should be random (completed - see Animation Parity Tasks above for details)
+- [ ] seaweed animation should be random (see Animation Parity Tasks above for details)
 - [ ] collision detection for shark
 - [ ] collision detection for bubbles

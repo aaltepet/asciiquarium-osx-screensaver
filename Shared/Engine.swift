@@ -176,19 +176,19 @@ class AsciiquariumEngine: ObservableObject {
         castle.position = Position3D(castleX, castleY, Depth.castle)
         entities.append(castle)
 
-        // Seaweed along bottom
+        // Seaweed along bottom - random x positions (matching Perl: int(rand($anim->width()-2)) + 1)
         let seaweedCount = max(1, gridWidth / 15)
-        let step = max(1, gridWidth / seaweedCount)
-        var x = min(gridWidth - 1, step / 2)
         for _ in 0..<seaweedCount {
-            let sea = EntityFactory.createSeaweed(at: Position3D(x, 0, Depth.seaweed))
+            // Random x from 1 to width-2 (inclusive), matching Perl behavior
+            // Ensure we have at least width 3 for valid range (1 to width-2)
+            let maxX = max(1, gridWidth - 2)
+            let randomX = Int.random(in: 1...maxX)
+            let sea = EntityFactory.createSeaweed(at: Position3D(randomX, 0, Depth.seaweed))
             // Anchor bottom: y so that seaweed bottom sits on safeBottomY
             let h = sea.size.height
             let y = max(0, layout.safeBottomY - (h - 1))
-            let clampedX = min(max(0, x), max(0, gridWidth - 1))
-            sea.position = Position3D(clampedX, y, Depth.seaweed)
+            sea.position = Position3D(randomX, y, Depth.seaweed)
             entities.append(sea)
-            x += step
         }
     }
 
@@ -235,15 +235,15 @@ class AsciiquariumEngine: ObservableObject {
             weeds.removeFirst(extras)
         }
 
-        // Re-position evenly across width
-        let count = max(1, weeds.count)
-        let step = max(1, gridWidth / count)
-        var x = min(gridWidth - 1, step / 2)
+        // Re-position with random x positions (matching Perl: int(rand($anim->width()-2)) + 1)
         for w in weeds {
+            // Random x from 1 to width-2 (inclusive), matching Perl behavior
+            // Ensure we have at least width 3 for valid range (1 to width-2)
+            let maxX = max(1, gridWidth - 2)
+            let randomX = Int.random(in: 1...maxX)
             let h = w.size.height
             let y = max(0, layout.safeBottomY - (h - 1))
-            w.position = Position3D(min(max(0, x), max(0, gridWidth - 1)), y, Depth.seaweed)
-            x += step
+            w.position = Position3D(randomX, y, Depth.seaweed)
         }
     }
 
