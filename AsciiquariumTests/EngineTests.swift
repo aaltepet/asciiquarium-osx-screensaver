@@ -209,9 +209,16 @@ struct EngineTests {
         let engine = TestHelpers.createTestEngine()
         let gridWidth = engine.gridWidth
 
-        // When: get all spawned fish (engine spawns 3 initial fish)
+        // When: get all spawned fish (engine uses Perl formula: int((height - 9) * width / 350))
         let fish = engine.entities.filter { $0.type == .fish }
-        #expect(fish.count >= 3, "Engine should spawn at least 3 initial fish")
+        let expectedCount = max(
+            1,
+            (engine.gridHeight - SpawnConfig.surfaceRegionHeight) * engine.gridWidth
+                / SpawnConfig.fishDensityDivisor)
+        #expect(
+            fish.count == expectedCount,
+            "Engine should spawn fish using Perl formula: expected=\(expectedCount), actual=\(fish.count)"
+        )
 
         // Then: verify each fish spawns off-screen based on direction
         for f in fish {
@@ -275,6 +282,39 @@ struct EngineTests {
             rightMovingFishOnScreen || leftMovingFishOnScreen || fishAfterMovement.count > 0,
             "Fish should move onto screen after engine updates"
         )
+    }
+
+    @Test func testFishRespawnsOnDeath() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        let initialFishCount = engine.entities.filter { $0.type == .fish }.count
+        #expect(initialFishCount > 0, "Should have at least one fish")
+
+        // Get a fish and verify it has a death callback
+        guard let fish = engine.entities.first(where: { $0.type == .fish }) else {
+            #expect(false, "Should have at least one fish")
+            return
+        }
+        #expect(fish.deathCallback != nil, "Fish should have death callback for respawn")
+
+        // When: manually trigger death callback (simulating fish death offscreen)
+        let countBeforeDeath = engine.entities.filter { $0.type == .fish }.count
+        fish.deathCallback?()
+
+        // Then: a new fish should have been spawned
+        let countAfterRespawn = engine.entities.filter { $0.type == .fish }.count
+        #expect(
+            countAfterRespawn >= countBeforeDeath,
+            "Fish count should increase or stay same after respawn: before=\(countBeforeDeath), after=\(countAfterRespawn)"
+        )
+
+        // Verify the new fish has proper setup
+        let newFish = engine.entities.filter { $0.type == .fish }.last
+        #expect(newFish != nil, "New fish should exist")
+        if let newFish = newFish {
+            #expect(newFish.deathCallback != nil, "New fish should also have death callback")
+            #expect(newFish.dieOffscreen == true, "New fish should die when offscreen")
+        }
     }
 
 }

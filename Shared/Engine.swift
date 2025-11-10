@@ -25,10 +25,6 @@ class AsciiquariumEngine: ObservableObject {
     private let targetFPS: Double = 30.0
     private let frameInterval: Double = 1.0 / 30.0
 
-    // Spawn settings
-    private var lastSpawnTime: CFTimeInterval = 0
-    private let spawnInterval: Double = 2.0  // Spawn new fish every 2 seconds
-
     init() {
         // Initialize with some basic entities for testing
         spawnInitialEntities()
@@ -88,7 +84,6 @@ class AsciiquariumEngine: ObservableObject {
         lastUpdateTime = currentTime
 
         updateEntities(deltaTime: deltaTime)
-        spawnNewEntities(currentTime: currentTime)
 
         // Notify that a new frame is ready - ContentView will handle the actual rendering
         frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
@@ -132,14 +127,6 @@ class AsciiquariumEngine: ObservableObject {
         }
     }
 
-    /// Spawn new entities
-    private func spawnNewEntities(currentTime: CFTimeInterval) {
-        if currentTime - lastSpawnTime >= spawnInterval {
-            spawnFish()
-            lastSpawnTime = currentTime
-        }
-    }
-
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
         // Create four waterline rows at y=5..8 using explicit (y,z,segmentIndex) tuples
@@ -157,8 +144,17 @@ class AsciiquariumEngine: ObservableObject {
         }
 
         spawnBottomDecor()
+        spawnAllFish()  // Use Perl formula for initial fish spawn
+    }
 
-        for _ in 0..<3 {
+    /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
+    private func spawnAllFish() {
+        // Perl: my $screen_size = ($anim->height() - 9) * $anim->width();
+        //       my $fish_count = int($screen_size / 350);
+        let screenSize = (gridHeight - SpawnConfig.surfaceRegionHeight) * gridWidth
+        let fishCount = max(1, screenSize / SpawnConfig.fishDensityDivisor)
+
+        for _ in 0..<fishCount {
             spawnFish()
         }
     }
@@ -177,7 +173,8 @@ class AsciiquariumEngine: ObservableObject {
         entities.append(castle)
 
         // Seaweed along bottom - random x positions (matching Perl: int(rand($anim->width()-2)) + 1)
-        let seaweedCount = max(1, gridWidth / 15)
+        // Perl: my $seaweed_count = int($anim->width() / 15);
+        let seaweedCount = max(1, gridWidth / SpawnConfig.seaweedCountDivisor)
         for _ in 0..<seaweedCount {
             // Random x from 1 to width-2 (inclusive), matching Perl behavior
             // Ensure we have at least width 3 for valid range (1 to width-2)
@@ -217,7 +214,8 @@ class AsciiquariumEngine: ObservableObject {
 
         // Reflow seaweed: adjust count and spacing
         var weeds = entities.filter { $0.type == .seaweed }
-        let desiredCount = max(1, gridWidth / 15)
+        // Perl: my $seaweed_count = int($anim->width() / 15);
+        let desiredCount = max(1, gridWidth / SpawnConfig.seaweedCountDivisor)
 
         if weeds.count < desiredCount {
             // Add more
@@ -311,6 +309,10 @@ class AsciiquariumEngine: ObservableObject {
         }
 
         fish.position = Position3D(spawnX, chosenY, initialZ)
+        // Set up death callback to respawn new fish (matching Perl: death_cb => \&add_fish)
+        fish.deathCallback = { [weak self] in
+            self?.spawnFish()
+        }
         entities.append(fish)
     }
 

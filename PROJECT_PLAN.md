@@ -196,15 +196,22 @@ Both formats share the same core asciiquarium engine:
     - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
     - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
 
-- [ ] Centralize configuration for spawn cadence and densities
+- [X] Fish spawn parity with Perl and centralize spawn configuration (completed)
+  - **Current State**:
+    - Swift spawns 3 initial fish (hardcoded) + continuous spawning every 2 seconds
+    - Perl spawns `int((height - 9) * width / 350)` initial fish, then only respawns via death callbacks
+    - Seaweed count: `max(1, gridWidth / 15)` in Swift, `int(width / 15)` in Perl (both hardcoded)
+  - **Perl Reference**:
+    - Fish: `my $screen_size = ($anim->height() - 9) * $anim->width(); my $fish_count = int($screen_size / 350);` (line 272-273)
+    - Fish respawn: `death_cb => \&add_fish` (line 511) - only respawns when fish die offscreen
+    - Seaweed: `my $seaweed_count = int($anim->width() / 15);` (line 197)
+    - No continuous spawn interval in Perl - entities only respawn via death callbacks
   - **Acceptance**:
-    - Constants exist for spawn intervals, fish density (analog of `screen_size/350`), and seaweed count per width.
+    - Remove continuous fish spawning (not in Perl)
+    - Initial fish spawn uses Perl formula: `int((gridHeight - 9) * gridWidth / 350)`
+    - Fish have death callbacks for respawn (matching Perl's `death_cb => \&add_fish`)
+    - Constants exist for spawn densities: `FISH_DENSITY_DIVISOR = 350`, `SEAWEED_COUNT_DIVISOR = 15`
     - Tuning values are grouped in a single config area used by the engine.
-
-- [ ] Documentation and tests for regions and spawners
-  - **Acceptance**:
-    - PROJECT_PLAN updated with region diagram and depth table reference.
-    - Unit tests (where feasible) or developer runbook describe manual verification steps for each region/spawner.
 
 - [ ] Fish placement refinement
     - Fish don't appear in the middle of the canvas.  They always spawn off-screen, moving onto the screen, 
@@ -218,31 +225,7 @@ Both formats share the same core asciiquarium engine:
     - proceed one entity at a time, I want to review each
     - fish entity colors based on body parts (as in original perl code)
 
-### Animation Parity Tasks
-
-- [X] Seaweed animation parity with Perl (completed - all randomization features implemented)
-  - **Current Issues** (see `docs/seaweed_parity_analysis.md` for details):
-    - ✅ X position: Fixed - now uses random positions `Int.random(in: 1...max(1, gridWidth - 2))` matching Perl
-    - ✅ Animation speed: Fixed - now uses random speed `Double.random(in: 0.25...0.30)` matching Perl
-    - ✅ Animation timing: Fixed - now uses variable timing based on animSpeed (17-20 frame intervals) matching Perl behavior
-    - ✅ Respawn on death: Fixed - implemented death callback that calls `spawnSeaweed()` matching Perl's `death_cb => \&add_seaweed`
-  - **Acceptance**:
-    - Seaweed spawns at random x positions (1 to width-2) instead of evenly spaced
-    - Each seaweed has random animation speed (0.25-0.30) stored in `callbackArgs[3]`
-    - Sway timing includes randomness (interval jitter/phase differences) using anim_speed
-    - Visual check across multiple minutes shows non-uniform, organic swaying
-    - Seaweed respawns when it dies (after 8-12 minutes) to maintain scene density
-    - Add unit/visual tests to validate timing variance bounds (not exact determinism).
-- [X] Seaweed placement should be random (completed - changed from evenly spaced to random x positions 1 to width-2, matching Perl)
-  - **Previous**: Evenly spaced using `step = gridWidth / seaweedCount`
-  - **Perl**: `int(rand($anim->width()-2)) + 1` - random x from 1 to width-2
-  - **Fixed**: Updated `spawnBottomDecor()` and `reflowBottomDecorForCurrentGrid()` to use `Int.random(in: 1...max(1, gridWidth - 2))`
-
 ## Known Issues / TODOs
 
-- [X] fish should only spawn off-screen (completed - verified: right-moving fish spawn at x=-fishWidth, left-moving at x=gridWidth; testFishSpawnOffscreenAndMoveOnScreen passes)
-- [X] Underwater compositing: interior spaces in fish should be opaque; implement color masks (completed - uses colorMask for opacity control)
-- [X] seaweed placement should be random (completed - see Animation Parity Tasks above for details)
-- [X] seaweed animation should be random (completed - speed and timing are now random; see Animation Parity Tasks above for details)
 - [ ] collision detection for shark
 - [ ] collision detection for bubbles
