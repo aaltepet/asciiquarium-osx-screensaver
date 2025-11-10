@@ -20,9 +20,6 @@ class BaseEntity: Entity {
     var colorMask: [String]?
     var defaultColor: ColorCode = .white
     var transparentChar: Character? = " "
-    // Optional alpha mask (same dimensions as shape). Any non-space in the mask
-    // indicates an opaque pixel even if the shape character is a space.
-    var alphaMask: [String]?
     var autoTransparent: Bool = false
 
     // MARK: - Behavioral Properties

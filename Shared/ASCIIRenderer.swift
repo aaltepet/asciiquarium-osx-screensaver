@@ -174,16 +174,6 @@ class ASCIIRenderer {
                                     return nil
                                 }()
 
-                                // If an alphaMask is provided, use it to force opacity for masked pixels
-                                let maskLine: String? = {
-                                    if let alpha = baseEntity?.alphaMask,
-                                        shapeLineIndex < alpha.count
-                                    {
-                                        return alpha[shapeLineIndex]
-                                    }
-                                    return nil
-                                }()
-
                                 // Composite per character, respecting transparency and color mask
                                 for (i, ch) in croppedShape.enumerated() {
                                     // Determine if this pixel should be drawn based on colorMask opacity
@@ -199,13 +189,6 @@ class ASCIIRenderer {
                                         let isTransparentChar =
                                             (transparent != nil && ch == transparent!)
                                         shouldDraw = !isTransparentChar
-
-                                        // Alpha mask can force draw even for spaces
-                                        if isTransparentChar, let mask = maskLine, i < mask.count {
-                                            let idx = mask.index(mask.startIndex, offsetBy: i)
-                                            let maskCh = mask[idx]
-                                            if maskCh != " " { shouldDraw = true }
-                                        }
                                     }
 
                                     if shouldDraw {

@@ -242,7 +242,7 @@ struct ASCIIRendererTests {
         #expect(colors[4] == NSColor.yellow)
     }
 
-    @Test func testAlphaMaskForcesOpaqueOnSpace() async throws {
+    @Test func testColorMaskForcesOpaqueOnSpace() async throws {
         let renderer = TestHelpers.createTestRenderer()
 
         // Background line
@@ -254,7 +254,8 @@ struct ASCIIRendererTests {
         )
         bg.defaultColor = .blue
 
-        // Foreground: spaces with alpha mask marking center as opaque
+        // Foreground: spaces with colorMask marking center as opaque
+        // colorMask: space = transparent, non-space = opaque
         let fg = BaseEntity(
             name: "fg",
             type: .castle,
@@ -262,8 +263,7 @@ struct ASCIIRendererTests {
             position: Position3D(0, 0, 1)
         )
         fg.defaultColor = .red
-        fg.transparentChar = " "
-        fg.alphaMask = ["  x  "]
+        fg.colorMask = ["  x  "]  // Center space marked as opaque with 'x'
 
         let out = renderer.renderScene(entities: [bg, fg], gridWidth: 5, gridHeight: 1)
 
@@ -276,7 +276,7 @@ struct ASCIIRendererTests {
                 colors.append(c)
             }
         }
-        // Expect blue, blue, red (forced by alpha), blue, blue
+        // Expect blue, blue, red (forced by colorMask), blue, blue
         #expect(colors.count == 5)
         #expect(colors[0] == NSColor.blue)
         #expect(colors[1] == NSColor.blue)

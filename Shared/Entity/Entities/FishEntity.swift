@@ -29,7 +29,8 @@ class FishEntity: BaseEntity {
     }
 
     private func setupRandomFishAppearance() {
-        // Right-facing shapes
+        // Right-facing shapes with their color masks
+        // ColorMask: space = transparent (exterior), non-space = opaque (interior + body)
         let rightFacingShapes: [[String]] = [
             [
                 "       \\",
@@ -48,7 +49,25 @@ class FishEntity: BaseEntity {
             ],
         ]
 
-        // Left-facing shapes
+        let rightFacingMasks: [[String]] = [
+            [
+                "       x",
+                "     xxxxxxx",
+                "x  xxxxxxxxxx",
+                " xxxxxxxxxxxxx",
+                "x  xxxxxxxxxx",
+                "    xxxxxxx",
+            ],
+            [
+                "    x",  // 5 chars: Leading spaces transparent, tail opaque
+                "x xxxx",  // 6 chars: All body parts and interior space opaque
+                "xxxxxxx",  // 7 chars: All body parts and interior spaces opaque
+                "x xxxx",  // 6 chars: All body parts and interior space opaque
+                "    x",  // 5 chars: Leading spaces transparent, fin opaque
+            ],
+        ]
+
+        // Left-facing shapes with their color masks
         let leftFacingShapes: [[String]] = [
             [
                 "      /",
@@ -67,9 +86,36 @@ class FishEntity: BaseEntity {
             ],
         ]
 
+        let leftFacingMasks: [[String]] = [
+            [
+                "      x",
+                "  xxxxxxx",
+                " xxxxxxxxxx  x",
+                "xxxxxxxxxxxxx",
+                " xxxxxxxxxx  x",
+                "  xxxxxxxx",
+
+            ],
+            [
+                "  x",
+                " xxxx x",
+                "xxxxxxx",
+                " xxxx x",
+                "  x",
+            ],
+        ]
+
         // Pick from the set matching our direction
-        let pool = direction > 0 ? rightFacingShapes : leftFacingShapes
-        shape = pool.randomElement() ?? (direction > 0 ? rightFacingShapes[0] : leftFacingShapes[0])
+        let shapeIndex: Int
+        if direction > 0 {
+            shapeIndex = Int.random(in: 0..<rightFacingShapes.count)
+            shape = rightFacingShapes[shapeIndex]
+            colorMask = rightFacingMasks[shapeIndex]
+        } else {
+            shapeIndex = Int.random(in: 0..<leftFacingShapes.count)
+            shape = leftFacingShapes[shapeIndex]
+            colorMask = leftFacingMasks[shapeIndex]
+        }
 
         // Random color
         let colors: [ColorCode] = [.cyan, .red, .yellow, .blue, .green, .magenta]
