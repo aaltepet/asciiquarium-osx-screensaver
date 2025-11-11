@@ -12,6 +12,7 @@ class FishEntity: BaseEntity {
     var speed: Double = 1.0
     var direction: Int = 1  // 1 for right, -1 for left
     var bubbleChance: Double = 0.03  // 3% chance per frame to generate bubble
+    private var accumulatedMovement: Double = 0.0  // Accumulate fractional movement to preserve speed differences
 
     init(name: String, position: Position3D) {
         super.init(name: name, type: .fish, shape: [""], position: position)
@@ -24,11 +25,11 @@ class FishEntity: BaseEntity {
         direction = Bool.random() ? 1 : -1
         setupRandomFishAppearance()
 
-        // Randomize speed matching Perl: rand(2) + .25 (0.25 to 2.25)
-        // Ensure speed is never 0 or too close to 0 - minimum 0.25
-        speed = Double.random(in: 0.25...2.25)
-        // Explicit safeguard: ensure speed is always at least 0.25 (defensive programming)
-        speed = max(0.25, speed)
+        // Randomize speed matching Perl: rand(2) + .05 (0.05 to 2.0)
+        // Ensure speed is never 0 or too close to 0 - minimum 0.05
+        speed = Double.random(in: 0.05...2.0)
+        // Explicit safeguard: ensure speed is always at least 0.05 (defensive programming)
+        speed = max(0.05, speed)
 
         // Sync movement args with randomized direction and speed
         // Perl stores: callback_args => [ $speed, 0, 0 ]
@@ -303,22 +304,22 @@ class FishEntity: BaseEntity {
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        // Fish-specific movement logic - speed is randomized (0.25 to 2.25) matching Perl
+        // Fish-specific movement logic - speed is randomized (0.05 to 2.0) matching Perl
         // Ensure speed is valid (safeguard against any edge cases)
-        if speed < 0.25 {
+        if speed < 0.05 {
             // If speed somehow became invalid, reset to minimum
-            speed = 0.25
+            speed = 0.05
         }
 
         // Convert speed to grid-based movement: speed * 30 FPS = cells per second
         let gridSpeed = speed * 30.0
-        var moveX = Int(gridSpeed * Double(direction) * deltaTime)
+        let movementThisFrame = gridSpeed * Double(direction) * deltaTime
 
-        // Ensure fish always moves at least 1 pixel if speed is valid and deltaTime is reasonable
-        // This prevents fish from getting stuck due to integer truncation with small deltaTime
-        if moveX == 0 && deltaTime > 0 && speed >= 0.25 {
-            moveX = direction  // Move at least 1 pixel in the direction
-        }
+        // Accumulate fractional movement to preserve speed differences
+        // This ensures slow fish move slower than fast fish, even with integer positions
+        accumulatedMovement += movementThisFrame
+        let moveX = Int(accumulatedMovement)
+        accumulatedMovement -= Double(moveX)  // Keep the fractional part for next frame
 
         return Position3D(
             position.x + moveX,
