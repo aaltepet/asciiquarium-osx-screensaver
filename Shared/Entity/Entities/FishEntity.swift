@@ -24,7 +24,13 @@ class FishEntity: BaseEntity {
         direction = Bool.random() ? 1 : -1
         setupRandomFishAppearance()
 
-        // Sync movement args with randomized direction
+        // Randomize speed matching Perl: rand(2) + .25 (0.25 to 2.25)
+        // Ensure speed is never 0 or too close to 0 - minimum 0.25
+        speed = max(0.25, Double.random(in: 0.25...2.25))
+
+        // Sync movement args with randomized direction and speed
+        // Perl stores: callback_args => [ $speed, 0, 0 ]
+        // Swift uses: [speed, dx, dy, dz] where dx is direction
         callbackArgs = [speed, Double(direction), 0.0, 0.0]
     }
 
@@ -47,6 +53,42 @@ class FishEntity: BaseEntity {
                 "/ \\__/",
                 "    /",
             ],
+            [
+                "       \\:.       ",
+                "\\;,   ,;\\\\\\\\\\,,  ",
+                "  \\\\\\\\\\;;:::::::o",
+                "  ///;;::::::::< ",
+                " /;` ``/////``   ",
+
+            ],
+            [
+                "  __ ",
+                "><_'>",
+                "   ' ",
+            ],
+            [
+                "   ..\\,  ",
+                ">='   ('>",
+                "  '''/'' ",
+            ],
+            [
+                "   \\  ",
+                "  / \\ ",
+                ">=_('>",
+                "  \\_/ ",
+                "   /  ",
+            ],
+            [
+                "  ,\\ ",
+                ">=('>",
+                "  '/ ",
+            ],
+            [
+                "  __ ",
+                "\\/ o\\",
+                "/\\__/",
+            ],
+
         ]
 
         let rightFacingMasks: [[String]] = [
@@ -59,11 +101,45 @@ class FishEntity: BaseEntity {
                 "    xxxxxxx",
             ],
             [
-                "    x",  // 5 chars: Leading spaces transparent, tail opaque
-                "x xxxx",  // 6 chars: All body parts and interior space opaque
-                "xxxxxxx",  // 7 chars: All body parts and interior spaces opaque
-                "x xxxx",  // 6 chars: All body parts and interior space opaque
-                "    x",  // 5 chars: Leading spaces transparent, fin opaque
+                "    x",
+                "x xxxx",
+                "xxxxxxx",
+                "x xxxx",
+                "    x",
+            ],
+            [
+                "       xxx       ",
+                "xxx   xxxxxxxxx  ",
+                " xxxxxxxxxxxxxxxx",
+                "  xxxxxxxxxxxxxx ",
+                " xxx xxxxxxxxx   ",
+            ],
+            [
+                "  xx ",
+                "xxxxx",
+                "   x ",
+            ],
+            [
+                "   xxxx  ",
+                "xxxxxxxxx",
+                "  xxxxxx ",
+            ],
+            [
+                "   x  ",
+                "  xxx ",
+                "xxxxxx",
+                "  xxx ",
+                "   x  ",
+            ],
+            [
+                "  xx ",
+                "xxxxx",
+                "  xx ",
+            ],
+            [
+                "  xx ",
+                "xxxxx",
+                "xxxxx",
             ],
         ]
 
@@ -84,6 +160,40 @@ class FishEntity: BaseEntity {
                 " \\__/ \\",
                 "  \\",
             ],
+            [
+                "      .:/          ",
+                "   ,,///;,   ,;/   ",
+                " o:::::::;;///     ",
+                ">::::::::;;\\\\\\\\\\   ",
+                "  ''\\\\\\\\\\\\\\\\\\'' ';\\",
+            ],
+            [
+                " __  ",
+                "<'_><",
+                " `   ",
+            ],
+            [
+                "  ,/..   ",
+                "<')   `=<",
+                " ``\\```  ",
+            ],
+            [
+                "  /   ",
+                " / \\  ",
+                "<')_=<",
+                " \\_/  ",
+                "  \\   ",
+            ],
+            [
+                " /,  ",
+                "<')=<",
+                " \\`  ",
+            ],
+            [
+                " __  ",
+                "/o \\/",
+                "\\__/\\",
+            ],
         ]
 
         let leftFacingMasks: [[String]] = [
@@ -102,6 +212,40 @@ class FishEntity: BaseEntity {
                 "xxxxxxx",
                 " xxxx x",
                 "  x",
+            ],
+            [
+                "      xxx          ",
+                "   xxxxxxx   xxx   ",
+                " xxxxxxxxxxxxx     ",
+                "xxxxxxxxxxxxxxxx   ",
+                "  xxxxxxxxxxxxx xxx",
+            ],
+            [
+                " xx  ",
+                "xxxxx",
+                " x   ",
+            ],
+            [
+                "  xxxx   ",
+                "xxxxxxxxx",
+                " xxxxxx  ",
+            ],
+            [
+                "  x   ",
+                " xxx  ",
+                "xxxxxx",
+                " xxx  ",
+                "  x   ",
+            ],
+            [
+                " xx  ",
+                "xxxxx",
+                " xx  ",
+            ],
+            [
+                " xx  ",
+                "xxxxx",
+                "xxxxx",
             ],
         ]
 
@@ -123,8 +267,9 @@ class FishEntity: BaseEntity {
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        // Fish-specific movement logic - move 1 grid cell per second
-        let gridSpeed = speed * 30.0  // 30 FPS * 1 cell/second = 1 cell per frame
+        // Fish-specific movement logic - speed is randomized (0.25 to 2.25) matching Perl
+        // Convert speed to grid-based movement: speed * 30 FPS = cells per second
+        let gridSpeed = speed * 30.0
         let moveX = Int(gridSpeed * Double(direction) * deltaTime)
 
         return Position3D(

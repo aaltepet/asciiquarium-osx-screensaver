@@ -150,7 +150,8 @@ Both formats share the same core asciiquarium engine:
     - proceed one entity at a time, I want to review each
     - fish entity colors based on body parts (as in original perl code)
 
-## Known Issues / TODOs
+## Collision detection
 
 - [ ] collision detection for shark
 - [ ] collision detection for bubbles
+- [X] do fish actually all move at the same speed? (completed - fish now have random speeds 0.25 to 2.25 matching Perl's `rand(2) + .25`) 
