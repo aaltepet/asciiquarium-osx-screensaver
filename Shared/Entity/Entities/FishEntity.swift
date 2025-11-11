@@ -26,7 +26,9 @@ class FishEntity: BaseEntity {
 
         // Randomize speed matching Perl: rand(2) + .25 (0.25 to 2.25)
         // Ensure speed is never 0 or too close to 0 - minimum 0.25
-        speed = max(0.25, Double.random(in: 0.25...2.25))
+        speed = Double.random(in: 0.25...2.25)
+        // Explicit safeguard: ensure speed is always at least 0.25 (defensive programming)
+        speed = max(0.25, speed)
 
         // Sync movement args with randomized direction and speed
         // Perl stores: callback_args => [ $speed, 0, 0 ]
@@ -91,55 +93,56 @@ class FishEntity: BaseEntity {
 
         ]
 
+        // Numbered color masks matching Perl (1=body, 2=dorsal fin, 3=flippers, 4=eye, 5=mouth, 6=tailfin, 7=gills)
         let rightFacingMasks: [[String]] = [
             [
-                "       x",
-                "     xxxxxxx",
-                "x  xxxxxxxxxx",
-                " xxxxxxxxxxxxx",
-                "x  xxxxxxxxxx",
-                "    xxxxxxx",
+                "       2      ",
+                "     1112111  ",
+                "6  11xxxxxxx1 ",
+                " 66xxxxx7xx4x5",
+                "6  1xxxxxx3x1 ",
+                "    11111311  ",
             ],
             [
-                "    x",
-                "x xxxx",
-                "xxxxxxx",
-                "x xxxx",
-                "    x",
+                "    2  ",
+                "6 1111 ",
+                "66xx745",
+                "6 1111 ",
+                "    3  ",
             ],
             [
-                "       xxx       ",
-                "xxx   xxxxxxxxx  ",
-                " xxxxxxxxxxxxxxxx",
-                "  xxxxxxxxxxxxxx ",
-                " xxx xxxxxxxxx   ",
+                "       222       ",
+                "666   1122211    ",
+                "  6661111111114  ",
+                "  66611111111115 ",
+                " 666 113333311   ",
             ],
             [
-                "  xx ",
-                "xxxxx",
-                "   x ",
+                "  11 ",
+                "61145",
+                "   3 ",
             ],
             [
-                "   xxxx  ",
-                "xxxxxxxxx",
-                "  xxxxxx ",
+                "   1121  ",
+                "661xxx745",
+                "  111311 ",
             ],
             [
-                "   x  ",
-                "  xxx ",
-                "xxxxxx",
-                "  xxx ",
-                "   x  ",
+                "   2  ",
+                "  1x1 ",
+                "661745",
+                "  111 ",
+                "   3  ",
             ],
             [
-                "  xx ",
-                "xxxxx",
-                "  xx ",
+                "  12 ",
+                "66745",
+                "  13 ",
             ],
             [
-                "  xx ",
-                "xxxxx",
-                "xxxxx",
+                "  11 ",
+                "61x41",
+                "61111",
             ],
         ]
 
@@ -165,7 +168,7 @@ class FishEntity: BaseEntity {
                 "   ,,///;,   ,;/   ",
                 " o:::::::;;///     ",
                 ">::::::::;;\\\\\\\\\\   ",
-                "  ''\\\\\\\\\\\\\\\\\\'' ';\\",
+                "  ''\\\\\\\\\\\\'' ';\\",
             ],
             [
                 " __  ",
@@ -196,81 +199,126 @@ class FishEntity: BaseEntity {
             ],
         ]
 
+        // Numbered color masks matching Perl (1=body, 2=dorsal fin, 3=flippers, 4=eye, 5=mouth, 6=tailfin, 7=gills)
         let leftFacingMasks: [[String]] = [
             [
-                "      x",
-                "  xxxxxxx",
-                " xxxxxxxxxx  x",
-                "xxxxxxxxxxxxx",
-                " xxxxxxxxxx  x",
-                "  xxxxxxxx",
-
+                "      2       ",
+                "  1112111     ",
+                " 1xxxxxxx11  6",
+                "5x4x7xxxxxx66 ",
+                " 1x3xxxxxx1  6",
+                "  11311111    ",
             ],
             [
-                "  x",
-                " xxxx x",
-                "xxxxxxx",
-                " xxxx x",
-                "  x",
+                "  2    ",
+                " 1111 6",
+                "547xx66",
+                " 1111 6",
+                "  3    ",
             ],
             [
-                "      xxx          ",
-                "   xxxxxxx   xxx   ",
-                " xxxxxxxxxxxxx     ",
-                "xxxxxxxxxxxxxxxx   ",
-                "  xxxxxxxxxxxxx xxx",
+                "      222       ",
+                "   1122211   666",
+                " 4111111111666  ",
+                "51111111111666  ",
+                "  113333311 666 ",
             ],
             [
-                " xx  ",
-                "xxxxx",
-                " x   ",
+                " 11  ",
+                "54116",
+                " 3   ",
             ],
             [
-                "  xxxx   ",
-                "xxxxxxxxx",
-                " xxxxxx  ",
+                "  1211",
+                "547xxx166",
+                " 113111",
             ],
             [
-                "  x   ",
-                " xxx  ",
-                "xxxxxx",
-                " xxx  ",
-                "  x   ",
+                "  2   ",
+                " 1x1  ",
+                "547166",
+                " 111  ",
+                "  3   ",
             ],
             [
-                " xx  ",
-                "xxxxx",
-                " xx  ",
+                " 21  ",
+                "54766",
+                " 31  ",
             ],
             [
-                " xx  ",
-                "xxxxx",
-                "xxxxx",
+                " 11  ",
+                "14x16",
+                "11116",
             ],
         ]
 
         // Pick from the set matching our direction
         let shapeIndex: Int
+        var selectedMask: [String]
         if direction > 0 {
             shapeIndex = Int.random(in: 0..<rightFacingShapes.count)
             shape = rightFacingShapes[shapeIndex]
-            colorMask = rightFacingMasks[shapeIndex]
+            selectedMask = rightFacingMasks[shapeIndex]
         } else {
             shapeIndex = Int.random(in: 0..<leftFacingShapes.count)
             shape = leftFacingShapes[shapeIndex]
-            colorMask = leftFacingMasks[shapeIndex]
+            selectedMask = leftFacingMasks[shapeIndex]
         }
 
-        // Random color
-        let colors: [ColorCode] = [.cyan, .red, .yellow, .blue, .green, .magenta]
-        defaultColor = colors.randomElement() ?? .cyan
+        // Replace eye (4) with white (W) before randomization, matching Perl line 496
+        selectedMask = selectedMask.map { line in
+            line.replacingOccurrences(of: "4", with: "W")
+        }
+
+        // Randomize colors matching Perl's rand_color() function
+        colorMask = randomizeFishColors(colorMask: selectedMask)
+
+        // Default color is no longer used for fish (using per-character colors), but keep for compatibility
+        defaultColor = .cyan
+    }
+
+    /// Randomize fish colors matching Perl's rand_color() function
+    /// Replaces numbers 1-9 in color mask with random colors from the palette
+    /// - Parameter colorMask: Color mask with numbers 1-9 representing body parts
+    /// - Returns: Color mask with numbers replaced by random color codes
+    /// - Note: Eye (4) should be replaced with 'W' (white) before calling this function
+    private func randomizeFishColors(colorMask: [String]) -> [String] {
+        // Perl colors: ('c','C','r','R','y','Y','b','B','g','G','m','M')
+        let colors: [ColorCode] = [
+            .cyan, .cyanBright, .red, .redBright, .yellow, .yellowBright,
+            .blue, .blueBright, .green, .greenBright, .magenta, .magentaBright,
+        ]
+
+        return colorMask.map { line in
+            var result = line
+            // Replace each number (1-9) with a random color, matching Perl's behavior
+            // Perl: foreach my $i (1..9) { $color_mask =~ s/$i/$color/gm; }
+            for num in 1...9 {
+                let numStr = String(num)
+                let randomColor = colors.randomElement() ?? .cyan
+                result = result.replacingOccurrences(of: numStr, with: String(randomColor.rawValue))
+            }
+            return result
+        }
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
         // Fish-specific movement logic - speed is randomized (0.25 to 2.25) matching Perl
+        // Ensure speed is valid (safeguard against any edge cases)
+        if speed < 0.25 {
+            // If speed somehow became invalid, reset to minimum
+            speed = 0.25
+        }
+
         // Convert speed to grid-based movement: speed * 30 FPS = cells per second
         let gridSpeed = speed * 30.0
-        let moveX = Int(gridSpeed * Double(direction) * deltaTime)
+        var moveX = Int(gridSpeed * Double(direction) * deltaTime)
+
+        // Ensure fish always moves at least 1 pixel if speed is valid and deltaTime is reasonable
+        // This prevents fish from getting stuck due to integer truncation with small deltaTime
+        if moveX == 0 && deltaTime > 0 && speed >= 0.25 {
+            moveX = direction  // Move at least 1 pixel in the direction
+        }
 
         return Position3D(
             position.x + moveX,

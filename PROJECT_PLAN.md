@@ -143,7 +143,7 @@ Both formats share the same core asciiquarium engine:
     - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
     - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
 
-- [ ] Fish entity colors based on body parts (Perl parity)
+- [x] Fish entity colors based on body parts (Perl parity)
     - **Perl Reference** (see `docs/fish_color_parity_plan.md` for details):
       - Color masks use numbers 1-7: `1=body, 2=dorsal fin, 3=flippers, 4=eye, 5=mouth, 6=tailfin, 7=gills`
       - `rand_color()` function replaces each number with random color from `('c','C','r','R','y','Y','b','B','g','G','m','M')`
