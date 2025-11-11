@@ -25,9 +25,9 @@ class FishEntity: BaseEntity {
         direction = Bool.random() ? 1 : -1
         setupRandomFishAppearance()
 
-        // Randomize speed matching Perl: rand(2) + .05 (0.05 to 2.0)
+        // Randomize speed matching Perl: rand(2) + .05 (0.05 to 1.5)
         // Ensure speed is never 0 or too close to 0 - minimum 0.05
-        speed = Double.random(in: 0.05...2.0)
+        speed = Double.random(in: 0.05...1.5)
         // Explicit safeguard: ensure speed is always at least 0.05 (defensive programming)
         speed = max(0.05, speed)
 
