@@ -143,12 +143,29 @@ Both formats share the same core asciiquarium engine:
     - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
     - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
 
-- [ ] Colors
-    - review the color capability of the the original perl source code
-    - Add a generalized color-map capability to the asciirenderer and entities
-    - list the entities and add them to this todo list
-    - proceed one entity at a time, I want to review each
-    - fish entity colors based on body parts (as in original perl code)
+- [ ] Fish entity colors based on body parts (Perl parity)
+    - **Perl Reference** (see `docs/fish_color_parity_plan.md` for details):
+      - Color masks use numbers 1-7: `1=body, 2=dorsal fin, 3=flippers, 4=eye, 5=mouth, 6=tailfin, 7=gills`
+      - `rand_color()` function replaces each number with random color from `('c','C','r','R','y','Y','b','B','g','G','m','M')`
+      - Eye (4) is replaced with 'W' (white) before randomization
+      - Each body part gets independent random color
+    - **Current Swift State**:
+      - Fish use single-color masks with 'x' for opacity only
+      - `defaultColor` is single random color for entire fish
+      - Renderer already supports per-character colors from `colorMask` (ASCIIRenderer.swift lines 208-227)
+    - **Implementation Plan**:
+      1. Create numbered color masks (1-7) for all fish shapes matching Perl structure
+      2. Implement `randomizeFishColors()` function (equivalent to Perl's `rand_color()`)
+      3. Replace '4' with 'W' (eye = white) before randomization
+      4. Replace numbers 1-9 with random colors during fish initialization
+      5. Maintain opacity system: spaces = transparent, colors = opaque
+    - **Acceptance**:
+      - Fish color masks use numbers 1-7 for body parts (matching Perl)
+      - Each body part gets random color from palette (c,C,r,R,y,Y,b,B,g,G,m,M)
+      - Eye is always white ('W')
+      - Each fish has unique, randomized multi-color appearance
+      - Opacity system preserved (spaces remain transparent)
+      - Visual parity with Perl: colorful, varied fish appearances
 
 ## Collision detection
 
