@@ -152,15 +152,48 @@ class ASCIIRenderer {
                 } else {
                     // Handle regular positioned entities - use shape directly for efficiency
                     let x = entity.position.x
-                    if x >= 0 && x < gridWidth {
+                    let entityWidth = entity.size.width
+                    let rightEdge = x + entityWidth - 1
+
+                    // Check if entity has any visible portion (not fully off-screen)
+                    // Entity is visible if: right edge >= 0 (not fully off left) AND left edge < gridWidth (not fully off right)
+                    if rightEdge >= 0 && x < gridWidth {
                         // Render each line of the entity's shape
                         for (shapeLineIndex, shapeLine) in entity.shape.enumerated() {
                             let entityY = y + shapeLineIndex
                             if entityY >= 0 && entityY < gridHeight {
                                 var line = lines[entityY]
-                                let availableWidth = max(0, gridWidth - x)
-                                if availableWidth == 0 { continue }
-                                let croppedShape = String(shapeLine.prefix(availableWidth))
+
+                                // Calculate which part of the shape to render
+                                let shapeStartOffset: Int
+                                let renderStartX: Int
+                                let availableWidth: Int
+
+                                if x < 0 {
+                                    // Entity is partially off the left edge - skip the off-screen portion
+                                    shapeStartOffset = -x  // Skip this many characters from the left
+                                    renderStartX = 0  // Start rendering at the left edge of screen
+                                    availableWidth = min(gridWidth, rightEdge + 1)  // Render from 0 to rightEdge (or gridWidth)
+                                } else {
+                                    // Entity is fully on-screen or partially off the right edge
+                                    shapeStartOffset = 0
+                                    renderStartX = x
+                                    availableWidth = max(0, min(gridWidth - x, entityWidth))
+                                }
+
+                                if availableWidth <= 0 { continue }
+
+                                // Extract the visible portion of the shape
+                                let shapeStart = shapeLine.index(
+                                    shapeLine.startIndex,
+                                    offsetBy: min(shapeStartOffset, shapeLine.count))
+                                let shapeEnd =
+                                    shapeLine.index(
+                                        shapeStart,
+                                        offsetBy: min(
+                                            availableWidth, shapeLine.count - shapeStartOffset),
+                                        limitedBy: shapeLine.endIndex) ?? shapeLine.endIndex
+                                let croppedShape = String(shapeLine[shapeStart..<shapeEnd])
                                 let transparent = entity.transparentChar
                                 let baseEntity = entity as? BaseEntity
 
@@ -179,9 +212,14 @@ class ASCIIRenderer {
                                     // Determine if this pixel should be drawn based on colorMask opacity
                                     var shouldDraw: Bool
 
-                                    if let cmLine = colorMaskLine, i < cmLine.count {
+                                    // Calculate the index in the original shape for color mask lookup
+                                    let originalShapeIndex = shapeStartOffset + i
+
+                                    if let cmLine = colorMaskLine, originalShapeIndex < cmLine.count
+                                    {
                                         // ColorMask controls opacity: space = transparent, non-space = opaque
-                                        let idx = cmLine.index(cmLine.startIndex, offsetBy: i)
+                                        let idx = cmLine.index(
+                                            cmLine.startIndex, offsetBy: originalShapeIndex)
                                         let maskCh = cmLine[idx]
                                         shouldDraw = (maskCh != " ")
                                     } else {
@@ -192,7 +230,7 @@ class ASCIIRenderer {
                                     }
 
                                     if shouldDraw {
-                                        let targetX = x + i
+                                        let targetX = renderStartX + i
                                         // Bounds check: ensure we don't access out-of-bounds indices
                                         guard
                                             targetX >= 0 && targetX < gridWidth
@@ -210,9 +248,9 @@ class ASCIIRenderer {
                                             shapeLineIndex < cm.count
                                         {
                                             let cmLine = cm[shapeLineIndex]
-                                            if i < cmLine.count {
+                                            if originalShapeIndex < cmLine.count {
                                                 let cIdx = cmLine.index(
-                                                    cmLine.startIndex, offsetBy: i)
+                                                    cmLine.startIndex, offsetBy: originalShapeIndex)
                                                 let colorCh = cmLine[cIdx]
                                                 if colorCh != " " {
                                                     if let code = ColorCode(rawValue: colorCh) {

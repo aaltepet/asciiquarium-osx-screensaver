@@ -117,32 +117,6 @@ class AsciiquariumEngine: ObservableObject {
                 let isHorizontallyOut = isFullyOffLeft || isFullyOffRight
                 let isVerticallyOut = bottom < 0 || top >= gridHeight
 
-                // Debug logging for fish entities to diagnose premature death
-                if entity.type == .fish {
-                    let fish = entity as? FishEntity
-                    let direction = fish?.direction ?? 0
-                    if direction < 0 && left <= 1 {  // Left-moving fish near left edge
-                        let shapeWidth = entity.shape.map { $0.count }.max() ?? 0
-                        let sizeWidth = entity.size.width
-                        print("🐟 Left-moving fish check:")
-                        print("   position.x=\(entity.position.x), bounds.x=\(left)")
-                        print(
-                            "   bounds.width=\(bounds.width), size.width=\(sizeWidth), shape.maxWidth=\(shapeWidth)"
-                        )
-                        print(
-                            "   left=\(left), right=\(right) (calculated as left + width - 1 = \(left) + \(bounds.width) - 1)"
-                        )
-                        print("   gridWidth=\(gridWidth)")
-                        print(
-                            "   isFullyOffLeft=\(isFullyOffLeft) (right < 0), isFullyOffRight=\(isFullyOffRight) (left >= gridWidth)"
-                        )
-                        print("   willDie=\(isHorizontallyOut)")
-                        if isHorizontallyOut {
-                            print("   ⚠️ FISH WILL DIE!")
-                        }
-                    }
-                }
-
                 if isHorizontallyOut || isVerticallyOut {
                     entity.kill()
                 }
