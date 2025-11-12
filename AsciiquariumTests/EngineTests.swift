@@ -330,6 +330,8 @@ struct EngineTests {
             at: Position3D(0, layout.fishSpawnMinY, Depth.fishStart))
         fish.direction = 1  // Moving right
         fish.speed = 1.0  // 1 cell per frame for predictable movement
+        // Sync callbackArgs with direction and speed (FishEntity.moveEntity uses these directly, but sync for consistency)
+        fish.callbackArgs = [fish.speed, Double(fish.direction), 0.0, 0.0]
 
         // Position fish near right edge (but still fully visible)
         let fishWidth = fish.size.width
@@ -444,6 +446,8 @@ struct EngineTests {
             at: Position3D(0, layout.fishSpawnMinY, Depth.fishStart))
         fish.direction = -1  // Moving left
         fish.speed = 1.0  // 1 cell per frame for predictable movement
+        // Sync callbackArgs with direction and speed (FishEntity.moveEntity uses these directly, but sync for consistency)
+        fish.callbackArgs = [fish.speed, Double(fish.direction), 0.0, 0.0]
 
         // Position fish near left edge (but still fully visible)
         let fishWidth = fish.size.width

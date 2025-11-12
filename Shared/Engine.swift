@@ -100,8 +100,14 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Update all entities
     private func updateEntities(deltaTime: CFTimeInterval) {
+        // Set spawn callback on all entities before updating
+        // This allows entities to spawn new entities during their update
+        let spawnCallback = createSpawnCallback()
+
         // Update existing entities
         for entity in entities {
+            // Ensure spawn callback is set (in case entity was created before callback was available)
+            entity.spawnCallback = spawnCallback
             entity.update(deltaTime: deltaTime)
 
             // If entity should die when offscreen, check bounds against the grid and kill if fully out
@@ -126,6 +132,15 @@ class AsciiquariumEngine: ObservableObject {
         // Remove dead entities
         entities.removeAll { entity in
             !entity.isAlive
+        }
+    }
+
+    /// Create a spawn callback closure that can be used by entities
+    private func createSpawnCallback() -> (Entity) -> Void {
+        return { [weak self] newEntity in
+            self?.entities.append(newEntity)
+            // Set spawn callback on newly spawned entity so it can also spawn things
+            newEntity.spawnCallback = self?.createSpawnCallback()
         }
     }
 
@@ -315,6 +330,8 @@ class AsciiquariumEngine: ObservableObject {
         fish.deathCallback = { [weak self] in
             self?.spawnFish()
         }
+        // Set spawn callback so fish can spawn bubbles
+        fish.spawnCallback = createSpawnCallback()
         entities.append(fish)
     }
 

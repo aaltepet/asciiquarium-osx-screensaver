@@ -11,7 +11,7 @@ import Foundation
 class FishEntity: BaseEntity {
     var speed: Double = 1.0
     var direction: Int = 1  // 1 for right, -1 for left
-    var bubbleChance: Double = 0.03  // 3% chance per frame to generate bubble
+    var bubbleChance: Double = 0.005  // 0.5% chance per frame to generate bubble (adjusted from 3% due to frame rate differences)
     private var accumulatedMovement: Double = 0.0  // Accumulate fractional movement to preserve speed differences
 
     init(name: String, position: Position3D) {
@@ -334,8 +334,26 @@ class FishEntity: BaseEntity {
 
     func generateBubblePosition() -> Position3D {
         // Bubble appears above the fish
+        // Perl: bubble_pos[0] += fish_size[0] if moving right
+        //       bubble_pos[1] += int(fish_size[1] / 2)
+        //       bubble_pos[2]-- (bubble always goes on top of the fish)
         let bubbleX = direction > 0 ? position.x + size.width : position.x
         let bubbleY = position.y + size.height / 2
         return Position3D(bubbleX, bubbleY, position.z - 1)
+    }
+
+    override func update(deltaTime: TimeInterval) {
+        super.update(deltaTime: deltaTime)
+
+        // Check if fish should generate a bubble
+        // Perl: if(int(rand(100)) > 97) { add_bubble($fish, $anim); } - 3% chance per frame
+        // However the movement timing in this implementation is different (Swift runs at 30 FPS vs Perl's lower frame rate),
+        // so we use 0.5% chance per frame to achieve similar visual bubble frequency as the Perl version.
+        if shouldGenerateBubble() {
+            let bubblePos = generateBubblePosition()
+            let bubble = EntityFactory.createBubble(at: bubblePos)
+            // Use spawn callback to add bubble to engine
+            spawnCallback?(bubble)
+        }
     }
 }

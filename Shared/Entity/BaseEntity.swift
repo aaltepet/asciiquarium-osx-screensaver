@@ -31,6 +31,9 @@ class BaseEntity: Entity {
     var dieTime: TimeInterval?
     var dieFrame: Int?
     var deathCallback: (() -> Void)?
+    
+    // MARK: - Spawning Properties
+    var spawnCallback: ((Entity) -> Void)?
 
     // MARK: - Collision Properties
     var isPhysical: Bool = false

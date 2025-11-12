@@ -32,6 +32,9 @@ protocol Entity: AnyObject {
     var dieFrame: Int? { get set }
     var deathCallback: (() -> Void)? { get set }
 
+    // MARK: - Spawning Properties
+    var spawnCallback: ((Entity) -> Void)? { get set }
+
     // MARK: - Collision Properties
     var isPhysical: Bool { get set }
     var collisionHandler: ((Entity) -> Void)? { get set }

@@ -143,32 +143,124 @@ Both formats share the same core asciiquarium engine:
     - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
     - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
 
-- [x] Fish entity colors based on body parts (Perl parity)
-    - **Perl Reference** (see `docs/fish_color_parity_plan.md` for details):
-      - Color masks use numbers 1-7: `1=body, 2=dorsal fin, 3=flippers, 4=eye, 5=mouth, 6=tailfin, 7=gills`
-      - `rand_color()` function replaces each number with random color from `('c','C','r','R','y','Y','b','B','g','G','m','M')`
-      - Eye (4) is replaced with 'W' (white) before randomization
-      - Each body part gets independent random color
-    - **Current Swift State**:
-      - Fish use single-color masks with 'x' for opacity only
-      - `defaultColor` is single random color for entire fish
-      - Renderer already supports per-character colors from `colorMask` (ASCIIRenderer.swift lines 208-227)
-    - **Implementation Plan**:
-      1. Create numbered color masks (1-7) for all fish shapes matching Perl structure
-      2. Implement `randomizeFishColors()` function (equivalent to Perl's `rand_color()`)
-      3. Replace '4' with 'W' (eye = white) before randomization
-      4. Replace numbers 1-9 with random colors during fish initialization
-      5. Maintain opacity system: spaces = transparent, colors = opaque
-    - **Acceptance**:
-      - Fish color masks use numbers 1-7 for body parts (matching Perl)
-      - Each body part gets random color from palette (c,C,r,R,y,Y,b,B,g,G,m,M)
-      - Eye is always white ('W')
-      - Each fish has unique, randomized multi-color appearance
-      - Opacity system preserved (spaces remain transparent)
-      - Visual parity with Perl: colorful, varied fish appearances
+## Collision Detection System
 
-## Collision detection
+### Overview
+The collision detection system needs to handle different types of collisions with different outcomes:
+- **Death collisions**: Entity is killed upon collision (e.g., bubble + waterline)
+- **Spawn collisions**: New entities are created upon collision (e.g., shark + fish → blood splat)
+- **Behavior collisions**: Entity behavior changes (e.g., fishhook + fish → retraction)
 
-- [ ] collision detection for shark
-- [ ] collision detection for bubbles
-- [X] do fish actually all move at the same speed? (completed - fish now have random speeds 0.25 to 2.25 matching Perl's `rand(2) + .25`) 
+### Current State
+- ✅ `BaseEntity.checkCollisions()` exists with bounding box overlap detection
+- ✅ `isPhysical` flag exists to mark entities that participate in collisions
+- ✅ `collisionHandler` property exists on entities
+- ❌ Engine does not execute collision detection during updates
+- ❌ Collision handlers are not set up on entities that need them
+- ❌ Collision handler signature may need adjustment (currently `((Entity) -> Void)?`)
+
+### Design Questions
+1. **Collision Handler Signature**: Should handlers receive:
+   - Just the colliding entity? `((Entity) -> Void)?`
+   - The colliding entity + all entities? `((Entity, [Entity]) -> Void)?`
+   - The colliding entity + collision list? `((Entity, [Entity]) -> Void)?`
+   
+2. **Collision Types**: Should we have typed collision events?
+   - `CollisionType.death` - kills the entity
+   - `CollisionType.spawn(entitySpec)` - spawns new entity
+   - `CollisionType.custom(handler)` - custom behavior
+   
+3. **Engine Integration**: Where should collision detection run?
+   - After position updates in `Engine.updateEntities()`?
+   - Before or after entity removal?
+   - How to handle collisions with entities that are about to die?
+
+### Implementation Tasks
+- [ ] Design collision handler signature and collision type system
+- [ ] Implement collision detection loop in `Engine.updateEntities()`
+- [ ] Set up bubble collision handler (bubble + waterline → death)
+- [ ] Set up shark collision handler (shark + fish → spawn splat)
+- [ ] Handle edge cases (collisions with dying entities, offscreen entities)
+- [X] Fish speed randomization (completed - fish now have random speeds 0.25 to 2.25 matching Perl's `rand(2) + .25`)
+
+## Entity Spawning System
+
+### Overview
+Entities need the ability to spawn other entities during their lifecycle. Examples:
+- **Fish spawn bubbles**: Fish have a 0.5% chance per frame to generate a bubble (adjusted from 3% due to frame rate differences)
+- **Shark spawns splat**: When shark collides with fish, spawn a blood splat at collision point
+- **Future**: Other entities may spawn things (e.g., fishhook spawning behavior)
+
+### Current State
+- ✅ `BubbleEntity` exists and is configured
+- ✅ `EntityFactory.createBubble()` exists
+- ✅ `FishEntity` has `shouldGenerateBubble()` and `generateBubblePosition()` methods
+- ✅ Entities can add new entities to the engine's entity list (via spawn callback)
+- ✅ Mechanism exists for entities to request spawning during updates (spawn callback system)
+
+### Proposed Design: Engine Spawn Callback
+
+**Option 1: Spawn Callback Closure**
+```swift
+// In Engine
+typealias SpawnCallback = (Entity) -> Void
+var spawnCallback: SpawnCallback?
+
+// Entities receive spawn callback during initialization or update
+// Fish can call: spawnCallback?(newBubble)
+```
+
+**Option 2: Weak Engine Reference**
+```swift
+// Entities hold weak reference to engine
+protocol EntitySpawner {
+    func spawn(_ entity: Entity)
+}
+
+// Engine conforms to EntitySpawner
+// Entities call: engine?.spawn(newBubble)
+```
+
+**Option 3: Spawn Request Queue**
+```swift
+// Entities add spawn requests to a queue
+// Engine processes queue after all entity updates
+struct SpawnRequest {
+    let entity: Entity
+    let position: Position3D?
+}
+
+// Engine processes spawn requests at end of update cycle
+```
+
+### Recommended Design: Spawn Callback (Option 1)
+
+**Rationale:**
+- Simple and explicit
+- No retain cycles (callback can be weak)
+- Entities don't need direct engine reference
+- Easy to test (can inject mock spawn callback)
+
+**Implementation:**
+1. Engine provides spawn callback to entities during initialization or update
+2. Entities call callback when they want to spawn something
+3. Engine adds spawned entities to its entity list
+4. Spawned entities are processed in the next update cycle
+
+**Example Usage:**
+```swift
+// In FishEntity.update()
+if shouldGenerateBubble() {
+    let bubblePos = generateBubblePosition()
+    let bubble = EntityFactory.createBubble(at: bubblePos)
+    spawnCallback?(bubble)  // Engine will add to entities list
+}
+```
+
+### Implementation Tasks
+- [X] Add `spawnCallback` property to `Entity` protocol (optional)
+- [X] Engine sets spawn callback on entities during initialization/update
+- [X] Implement fish bubble generation in `FishEntity.update()`
+- [X] Handle spawn timing (immediate - entities added during update cycle)
+- [X] Add unit tests for entity spawning (6 comprehensive tests in SpawnCallbackTests.swift)
+- [ ] Implement shark splat spawning in shark collision handler (blocked on collision detection system) 
