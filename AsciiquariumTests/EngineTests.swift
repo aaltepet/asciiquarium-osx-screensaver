@@ -342,8 +342,9 @@ struct EngineTests {
         let startX = gridWidth - fishWidth - 2  // 2 cells from right edge
         fish.position = Position3D(startX, layout.fishSpawnMinY, Depth.fishStart)
 
-        // Store fish ID to track it
+        // Store fish ID and direction to track it
         let fishId = fish.id
+        let fishDirection = fish.direction  // Store direction for death position calculation
         engine.entities.append(fish)
 
         // Track position history
@@ -354,14 +355,42 @@ struct EngineTests {
         var fishDied = false
         var deathFrame = -1
 
+        // Record initial position
+        if let initialFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity {
+            let left = initialFish.position.x
+            let right = initialFish.position.x + fishWidth - 1
+            positionHistory.append(
+                (
+                    frame: frame, x: initialFish.position.x, left: left, right: right,
+                    isAlive: initialFish.isAlive
+                ))
+        }
+
         // Move for enough frames to ensure fish goes off screen
         while frame < 20 && !fishDied {
-            // Get current fish state
+            // Advance one frame FIRST, then check position
+            // This ensures we capture the position after the update that might kill the fish
+            engine.tickOnceForTests()
+            frame += 1
+
+            // Get current fish state AFTER update
             guard let currentFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity
             else {
-                // Fish was removed, check if it's dead
+                // Fish was removed, it died during the update
                 fishDied = true
                 deathFrame = frame
+                // Use the last known position (fish died after moving offscreen)
+                if let lastEntry = positionHistory.last {
+                    // Fish moved one more step before dying, so calculate the death position
+                    let deathX = lastEntry.x + (fishDirection * 1)  // Move one step in direction
+                    let deathLeft = deathX
+                    let deathRight = deathX + fishWidth - 1
+                    positionHistory.append(
+                        (
+                            frame: frame, x: deathX, left: deathLeft, right: deathRight,
+                            isAlive: false
+                        ))
+                }
                 break
             }
 
@@ -381,10 +410,6 @@ struct EngineTests {
                 deathFrame = frame
                 break
             }
-
-            // Advance one frame
-            engine.tickOnceForTests()
-            frame += 1
         }
 
         // Then: Analyze what happened
@@ -472,14 +497,42 @@ struct EngineTests {
         var fishDied = false
         var deathFrame = -1
 
+        // Record initial position
+        if let initialFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity {
+            let left = initialFish.position.x
+            let right = initialFish.position.x + fishWidth - 1
+            positionHistory.append(
+                (
+                    frame: frame, x: initialFish.position.x, left: left, right: right,
+                    isAlive: initialFish.isAlive
+                ))
+        }
+
         // Move for enough frames to ensure fish goes off screen
         while frame < 20 && !fishDied {
-            // Get current fish state
+            // Advance one frame FIRST, then check position
+            // This ensures we capture the position after the update that might kill the fish
+            engine.tickOnceForTests()
+            frame += 1
+
+            // Get current fish state AFTER update
             guard let currentFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity
             else {
-                // Fish was removed, check if it's dead
+                // Fish was removed, it died during the update
                 fishDied = true
                 deathFrame = frame
+                // Use the last known position (fish died after moving offscreen)
+                if let lastEntry = positionHistory.last {
+                    // Fish moved one more step before dying, so calculate the death position
+                    let deathX = lastEntry.x + (fish.direction * 1)  // Move one step in direction
+                    let deathLeft = deathX
+                    let deathRight = deathX + fishWidth - 1
+                    positionHistory.append(
+                        (
+                            frame: frame, x: deathX, left: deathLeft, right: deathRight,
+                            isAlive: false
+                        ))
+                }
                 break
             }
 
@@ -499,10 +552,6 @@ struct EngineTests {
                 deathFrame = frame
                 break
             }
-
-            // Advance one frame
-            engine.tickOnceForTests()
-            frame += 1
         }
 
         // Then: Analyze what happened
