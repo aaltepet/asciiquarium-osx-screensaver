@@ -26,7 +26,6 @@ class AsciiquariumEngine: ObservableObject {
     private let frameInterval: Double = 1.0 / 30.0
 
     init() {
-        // Initialize with some basic entities for testing
         spawnInitialEntities()
     }
 
@@ -61,18 +60,10 @@ class AsciiquariumEngine: ObservableObject {
         frameCallback = callback
     }
 
-    /// Update grid dimensions - Engine only manages grid coordinates
+    // Grid dimensions can change when the controller (e.g. ContentView or screensaver) is resized.
     func updateGridDimensions(width: Int, height: Int) {
-        print("=== Engine Grid Dimensions Update ===")
-        print("Input: width=\(width), height=\(height)")
-        print("Previous grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
-
         self.gridWidth = width
         self.gridHeight = height
-
-        print("New grid: gridWidth=\(gridWidth), gridHeight=\(gridHeight)")
-        print("=====================================")
-
         // Reflow static decor to match new grid size
         reflowBottomDecorForCurrentGrid()
     }
@@ -189,7 +180,7 @@ class AsciiquariumEngine: ObservableObject {
         }
 
         spawnBottomDecor()
-        spawnAllFish()  // Use Perl formula for initial fish spawn
+        spawnAllFish()
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
