@@ -320,6 +320,9 @@ struct EngineTests {
     @Test func testFishDiesWhenMovingOffRightEdge() async throws {
         // Given: Create engine with known grid size
         let engine = TestHelpers.createTestEngine()
+        // Clear initial entities for test isolation
+        engine.entities.removeAll()
+
         let gridWidth = engine.gridWidth
         let gridHeight = engine.gridHeight
         let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)
@@ -437,6 +440,9 @@ struct EngineTests {
     @Test func testFishDiesWhenMovingOffLeftEdge() async throws {
         // Given: Create engine with known grid size
         let engine = TestHelpers.createTestEngine()
+        // Clear initial entities for test isolation
+        engine.entities.removeAll()
+
         let gridWidth = engine.gridWidth
         let gridHeight = engine.gridHeight
         let layout = WorldLayout(gridWidth: gridWidth, gridHeight: gridHeight)

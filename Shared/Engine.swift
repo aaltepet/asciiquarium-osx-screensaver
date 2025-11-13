@@ -104,8 +104,17 @@ class AsciiquariumEngine: ObservableObject {
         // This allows entities to spawn new entities during their update
         let spawnCallback = createSpawnCallback()
 
+        // Collect dead entity IDs to remove after iteration
+        // This prevents issues when death callbacks spawn new entities during iteration
+        var deadEntityIds: [UUID] = []
+
+        // Track initial count to detect newly spawned entities
+        let initialCount = entities.count
+
         // Update existing entities
-        for entity in entities {
+        for i in 0..<initialCount {
+            let entity = entities[i]
+
             // Ensure spawn callback is set (in case entity was created before callback was available)
             entity.spawnCallback = spawnCallback
             entity.update(deltaTime: deltaTime)
@@ -125,13 +134,32 @@ class AsciiquariumEngine: ObservableObject {
 
                 if isHorizontallyOut || isVerticallyOut {
                     entity.kill()
+                    // Death callback may spawn new entities, so collect ID for removal after iteration
+                    deadEntityIds.append(entity.id)
                 }
+            } else if !entity.isAlive {
+                // Entity died from other conditions (dieTime, dieFrame, etc.)
+                deadEntityIds.append(entity.id)
             }
         }
 
-        // Remove dead entities
+        // Process any newly spawned entities (from death callbacks) in the same frame
+        // This ensures they get updated and can move into view
+        if entities.count > initialCount {
+            for i in initialCount..<entities.count {
+                let newEntity = entities[i]
+                newEntity.spawnCallback = spawnCallback
+                newEntity.update(deltaTime: deltaTime)
+                // Don't check offscreen for newly spawned entities in their first frame
+                // They spawn offscreen by design and need a chance to move into view
+                // They'll be checked for offscreen in the next frame
+            }
+        }
+
+        // Remove dead entities after iteration completes
+        // This ensures death callbacks that spawn new entities work correctly
         entities.removeAll { entity in
-            !entity.isAlive
+            deadEntityIds.contains(entity.id)
         }
     }
 
