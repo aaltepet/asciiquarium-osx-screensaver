@@ -25,7 +25,7 @@ struct ContentView: View {
 
             // ASCII Aquarium Display
             VStack {
-                Text("Fish Count: \(engine.entities.count)")
+                Text("Fish Count: \(engine.entities.filter { $0.type == .fish }.count)")
                     .font(.headline)
                     .padding(.bottom, 5)
 
