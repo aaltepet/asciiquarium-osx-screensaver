@@ -110,6 +110,20 @@ class AsciiquariumEngine: ObservableObject {
             entity.spawnCallback = spawnCallback
             entity.update(deltaTime: deltaTime)
 
+            // Check for collisions after position update
+            // Only check collisions for physical entities that are still alive
+            if entity.isPhysical && entity.isAlive {
+                let collisions = entity.checkCollisions(with: entities)
+                if !collisions.isEmpty, let handler = entity.collisionHandler {
+                    // Call collision handler with entity and list of colliding entities
+                    handler(entity, collisions)
+                    // If entity was killed by collision handler, collect it for removal
+                    if !entity.isAlive {
+                        deadEntityIds.append(entity.id)
+                    }
+                }
+            }
+
             // If entity should die when offscreen, check bounds against the grid and kill if fully out
             if entity.dieOffscreen {
                 let bounds = entity.getBounds()

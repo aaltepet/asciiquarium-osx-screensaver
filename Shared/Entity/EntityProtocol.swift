@@ -37,7 +37,8 @@ protocol Entity: AnyObject {
 
     // MARK: - Collision Properties
     var isPhysical: Bool { get set }
-    var collisionHandler: ((Entity) -> Void)? { get set }
+    /// Collision handler receives: (self, [colliding entities])
+    var collisionHandler: ((Entity, [Entity]) -> Void)? { get set }
     var collisionDepth: Int? { get set }
 
     // MARK: - Layout Properties
@@ -53,4 +54,5 @@ protocol Entity: AnyObject {
     func kill()
     func moveEntity(deltaTime: TimeInterval) -> Position3D?
     func checkCollisions(with entities: [Entity]) -> [Entity]
+    func getBounds() -> BoundingBox
 }

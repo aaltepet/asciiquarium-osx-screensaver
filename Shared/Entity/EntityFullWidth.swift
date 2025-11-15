@@ -31,4 +31,21 @@ class EntityFullWidth: BaseEntity {
             return String(tiledShape.prefix(width))
         }
     }
+
+    // MARK: - Override Bounds for Collision Detection
+
+    /// Override getBounds to return full-width bounding box for collision detection
+    /// Full-width entities span the entire grid width, so we use a very large width
+    /// to ensure collisions are detected correctly
+    override func getBounds() -> BoundingBox {
+        // Full-width entities span from x=0 to x=gridWidth (or beyond)
+        // Use a very large width (10000) to ensure collision detection works
+        // This is safe because waterlines are at x=0 and span the full width
+        return BoundingBox(
+            x: position.x,
+            y: position.y,
+            width: 10000,  // Very large width for full-width entities
+            height: size.height
+        )
+    }
 }

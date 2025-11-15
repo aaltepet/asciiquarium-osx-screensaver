@@ -121,8 +121,11 @@ class ASCIIRenderer {
             lines.append(String(repeating: " ", count: gridWidth))
         }
 
+        // Filter out dead entities before rendering
+        let aliveEntities = entities.filter { $0.isAlive }
+
         // Sort entities by depth (z-coordinate) for proper layering
-        let sortedEntities = entities.sorted { $0.position.z < $1.position.z }
+        let sortedEntities = aliveEntities.sorted { $0.position.z < $1.position.z }
 
         // Add entities to the scene (composited with transparency)
         for entity in sortedEntities {

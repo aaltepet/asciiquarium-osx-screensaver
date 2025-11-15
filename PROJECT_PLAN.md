@@ -132,11 +132,12 @@ Both formats share the same core asciiquarium engine:
     - Renderer sorts by `position.z` so surface entities appear visually between adjacent waterline rows.
     - Unit tests: a (stub or real) surface entity at a gap depth renders between adjacent waterline rows in the final buffer (z-order verified).
 
-- [ ] Bubble pops when reaching water surface
+- [X] Bubble pops when reaching water surface
   - **Acceptance**:
-    - Bubbles rise and are killed when colliding with any `waterline` row.
-    - Verified via unit or visual test that bubbles never render above the surface.
-    - Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
+    - ✅ Bubbles rise and are killed when colliding with any `waterline` row.
+    - ✅ Verified via unit tests that bubbles never render above the surface.
+    - ✅ Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
+    - **Implementation**: Collision detection system implemented with bubble collision handler that kills bubbles on waterline collision. 6 comprehensive tests in CollisionTests.swift verify behavior.
 
 - [ ] Shark (underwater predator) depth and behavior stub
   - **Acceptance**:
@@ -155,9 +156,11 @@ The collision detection system needs to handle different types of collisions wit
 - ✅ `BaseEntity.checkCollisions()` exists with bounding box overlap detection
 - ✅ `isPhysical` flag exists to mark entities that participate in collisions
 - ✅ `collisionHandler` property exists on entities
-- ❌ Engine does not execute collision detection during updates
-- ❌ Collision handlers are not set up on entities that need them
-- ❌ Collision handler signature may need adjustment (currently `((Entity) -> Void)?`)
+- ✅ Engine executes collision detection during updates (after position updates)
+- ✅ Collision handler signature updated to `((Entity, [Entity]) -> Void)?` (entity + collision partners)
+- ✅ Bubble collision handler set up (bubble + waterline → death)
+- ✅ Full-width entity bounds handling (EntityFullWidth overrides getBounds() for proper collision detection)
+- ❌ Shark collision handler not yet set up (shark + fish → spawn splat)
 
 ### Design Questions
 1. **Collision Handler Signature**: Should handlers receive:
@@ -176,11 +179,13 @@ The collision detection system needs to handle different types of collisions wit
    - How to handle collisions with entities that are about to die?
 
 ### Implementation Tasks
-- [ ] Design collision handler signature and collision type system
-- [ ] Implement collision detection loop in `Engine.updateEntities()`
-- [ ] Set up bubble collision handler (bubble + waterline → death)
+- [X] Design collision handler signature and collision type system (using `((Entity, [Entity]) -> Void)?`)
+- [X] Implement collision detection loop in `Engine.updateEntities()` (runs after position updates, before entity removal)
+- [X] Set up bubble collision handler (bubble + waterline → death)
+- [X] Fix full-width entity bounds for collision detection (EntityFullWidth overrides getBounds())
+- [X] Add comprehensive tests for bubble collision (6 tests in CollisionTests.swift)
 - [ ] Set up shark collision handler (shark + fish → spawn splat)
-- [ ] Handle edge cases (collisions with dying entities, offscreen entities)
+- [ ] Handle edge cases (collisions with dying entities, offscreen entities) - basic handling in place
 - [X] Fish speed randomization (completed - fish now have random speeds 0.25 to 2.25 matching Perl's `rand(2) + .25`)
 
 ## Entity Spawning System

@@ -23,6 +23,18 @@ class BubbleEntity: BaseEntity {
         defaultColor = .cyan
         callbackArgs = [0.0, 0.0, -1.0, 0.1]  // Move upward
         transparentChar = " "
+
+        // Set up collision handler: bubble dies when it collides with waterline
+        collisionHandler = { [weak self] bubble, collidingEntities in
+            // Check if any colliding entity is a waterline
+            for entity in collidingEntities {
+                if entity.type == .waterline {
+                    // Bubble pops when it reaches the water surface
+                    self?.kill()
+                    return  // Only need to kill once
+                }
+            }
+        }
     }
 
     override func update(deltaTime: TimeInterval) {

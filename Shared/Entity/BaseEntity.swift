@@ -31,13 +31,14 @@ class BaseEntity: Entity {
     var dieTime: TimeInterval?
     var dieFrame: Int?
     var deathCallback: (() -> Void)?
-    
+
     // MARK: - Spawning Properties
     var spawnCallback: ((Entity) -> Void)?
 
     // MARK: - Collision Properties
     var isPhysical: Bool = false
-    var collisionHandler: ((Entity) -> Void)?
+    /// Collision handler receives: (self, [colliding entities])
+    var collisionHandler: ((Entity, [Entity]) -> Void)?
     var collisionDepth: Int?
 
     // MARK: - Layout Properties
@@ -144,19 +145,8 @@ class BaseEntity: Entity {
         return myBounds.overlaps(with: otherBounds)
     }
 
-    private func getBounds() -> BoundingBox {
-        return BoundingBox(
-            x: position.x,
-            y: position.y,
-            width: size.width,
-            height: size.height
-        )
-    }
-
-}
-
-// MARK: - Entity Extension for Bounds
-extension Entity {
+    /// Get bounding box for collision detection
+    /// Can be overridden by subclasses (e.g., EntityFullWidth for full-width entities)
     func getBounds() -> BoundingBox {
         return BoundingBox(
             x: position.x,
@@ -165,4 +155,5 @@ extension Entity {
             height: size.height
         )
     }
+
 }
