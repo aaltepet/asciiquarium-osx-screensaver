@@ -101,16 +101,57 @@ class SwanEntity: BaseEntity {
 }
 
 class SplatEntity: BaseEntity {
+    private var animationFrame: Int = 0
+
+    // Splat animation frames (matching Perl: 4 frames that cycle)
+    private static let splatFrames = [
+        [
+            "   .",
+            "  ***",
+            "   '",
+        ],
+        [
+            " \",*;`",
+            " \"*,**",
+            " *\"'~'",
+        ],
+        [
+            "  , ,",
+            " \" \",\"'",
+            " *\" *'\"",
+            "  \" ; .",
+        ],
+        [
+            "* ' , ' `",
+            "' ` * . '",
+            " ' `' \",'",
+            "* ' \" * .",
+            "\" * ', '",
+        ],
+    ]
+
     init(name: String, position: Position3D) {
-        super.init(name: name, type: .splat, shape: [""], position: position)
+        // Start with first frame
+        super.init(name: name, type: .splat, shape: SplatEntity.splatFrames[0], position: position)
         setupSplat()
     }
 
     private func setupSplat() {
         defaultColor = .red
-        callbackArgs = [0.0, 0.0, 0.0, 0.25]  // Animation speed
         transparentChar = " "  // Spaces are transparent
-        dieFrame = 15  // Dies after 15 frames
+        dieFrame = 15  // Dies after 15 frames (matching Perl: die_frame => 15)
+    }
+
+    override func update(deltaTime: TimeInterval) {
+        super.update(deltaTime: deltaTime)
+
+        // Animate splat growth (cycle through frames)
+        if frameCount < SplatEntity.splatFrames.count {
+            shape = SplatEntity.splatFrames[frameCount]
+        } else {
+            // After all frames, keep last frame
+            shape = SplatEntity.splatFrames.last ?? SplatEntity.splatFrames[0]
+        }
     }
 }
 

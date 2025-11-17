@@ -26,17 +26,31 @@ struct SpawnCallbackTests {
     @Test func testFishCanSpawnBubbles() async throws {
         // Given
         let engine = TestHelpers.createTestEngine()
+        engine.entities.removeAll()  // Clear initial entities for test isolation
 
-        // Find a fish entity
-        let fish = engine.entities.first { $0.type == .fish } as? FishEntity
-        #expect(fish != nil, "Engine should have at least one fish")
+        // Create a test fish at a safe on-screen position
+        let layout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
+        let testFish = EntityFactory.createFish(
+            at: Position3D(10, layout.fishSpawnMinY, Depth.fishStart))
+        testFish.direction = 1  // Moving right
+        testFish.speed = 1.0
+        testFish.callbackArgs = [testFish.speed, Double(testFish.direction), 0.0, 0.0]
+        testFish.dieOffscreen = false  // Disable offscreen death for testing
 
-        // Ensure fish has spawn callback (it should be set during engine updates, but ensure it's set)
-        // The engine's updateEntities sets spawn callbacks, so we need to do one update first
+        // Set up spawn callback
+        testFish.spawnCallback = { [weak engine] newEntity in
+            engine?.entities.append(newEntity)
+            newEntity.spawnCallback = testFish.spawnCallback
+        }
+
+        engine.entities.append(testFish)
+        let fishId = testFish.id
+
+        // Ensure fish has spawn callback set by engine
         engine.tickOnceForTests()
 
-        // Now get the fish again to ensure it has the spawn callback
-        let updatedFish = engine.entities.first { $0.type == .fish } as? FishEntity
+        // Get the same fish by ID to ensure we're modifying the correct instance
+        let updatedFish = engine.entities.first { $0.id == fishId } as? FishEntity
         #expect(updatedFish != nil, "Fish should still exist after update")
         #expect(updatedFish!.spawnCallback != nil, "Fish should have spawn callback set")
 

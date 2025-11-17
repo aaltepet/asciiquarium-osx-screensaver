@@ -195,6 +195,7 @@ class AsciiquariumEngine: ObservableObject {
 
         spawnBottomDecor()
         spawnAllFish()
+        spawnShark()  // Spawn initial shark
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -366,6 +367,42 @@ class AsciiquariumEngine: ObservableObject {
         // Set spawn callback so fish can spawn bubbles
         fish.spawnCallback = createSpawnCallback()
         entities.append(fish)
+    }
+
+    /// Spawn a new shark (matching Perl: add_shark)
+    private func spawnShark() {
+        // Spawn y position: int(rand($anim->height() - (10 + 9))) + 9
+        // This spawns between y=9 and y=height-10 (below surface region)
+        let minY = 9
+        let maxY = max(minY, gridHeight - 10)
+        let spawnY = Int.random(in: minY...maxY)
+
+        // Create shark (direction is randomized in SharkEntity.init)
+        let shark = EntityFactory.createShark(at: Position3D(0, spawnY, Depth.shark))
+        let sharkWidth = shark.size.width
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -53
+        // Left: $x = $anim->width()-2
+        let spawnX: Int
+        if shark.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -sharkWidth
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth
+        }
+
+        shark.position = Position3D(spawnX, spawnY, Depth.shark)
+
+        // Set up death callback to respawn new shark (matching Perl: death_cb => \&random_object)
+        // For now, just respawn shark (we'll implement random_object later)
+        shark.deathCallback = { [weak self] in
+            self?.spawnShark()
+        }
+
+        shark.spawnCallback = createSpawnCallback()
+        entities.append(shark)
     }
 
 }

@@ -329,7 +329,8 @@ class FishEntity: BaseEntity {
     }
 
     func shouldGenerateBubble() -> Bool {
-        return Double.random(in: 0...1) < bubbleChance
+        // Use <= to ensure bubbleChance = 1.0 always generates (random can be 1.0)
+        return Double.random(in: 0...1) <= bubbleChance
     }
 
     func generateBubblePosition() -> Position3D {

@@ -34,46 +34,46 @@ class EntityFactory {
 
     static func create(from spec: EntitySpec) -> Entity {
         switch spec {
-        case let .fish(position):
+        case .fish(let position):
             return FishEntity(name: "fish_\(UUID().uuidString.prefix(8))", position: position)
-        case let .bubble(position):
+        case .bubble(let position):
             return BubbleEntity(name: "bubble_\(UUID().uuidString.prefix(8))", position: position)
-        case let .shark(position):
+        case .shark(let position):
             return SharkEntity(name: "shark_\(UUID().uuidString.prefix(8))", position: position)
-        case let .waterline(position, segmentIndex):
+        case .waterline(let position, let segmentIndex):
             return WaterlineEntity(
                 name: "waterline_\(UUID().uuidString.prefix(8))", position: position,
                 segmentIndex: segmentIndex)
-        case let .castle(position):
+        case .castle(let position):
             return CastleEntity(name: "castle", position: position)
-        case let .seaweed(position):
+        case .seaweed(let position):
             return SeaweedEntity(name: "seaweed_\(UUID().uuidString.prefix(8))", position: position)
-        case let .ship(position):
+        case .ship(let position):
             return ShipEntity(name: "ship_\(UUID().uuidString.prefix(8))", position: position)
-        case let .whale(position):
+        case .whale(let position):
             return WhaleEntity(name: "whale_\(UUID().uuidString.prefix(8))", position: position)
-        case let .monster(position):
+        case .monster(let position):
             return MonsterEntity(name: "monster_\(UUID().uuidString.prefix(8))", position: position)
-        case let .bigFish(position):
+        case .bigFish(let position):
             return BigFishEntity(name: "bigfish_\(UUID().uuidString.prefix(8))", position: position)
-        case let .ducks(position):
+        case .ducks(let position):
             return DucksEntity(name: "ducks_\(UUID().uuidString.prefix(8))", position: position)
-        case let .dolphins(position):
+        case .dolphins(let position):
             return DolphinsEntity(
                 name: "dolphins_\(UUID().uuidString.prefix(8))", position: position)
-        case let .swan(position):
+        case .swan(let position):
             return SwanEntity(name: "swan_\(UUID().uuidString.prefix(8))", position: position)
-        case let .splat(position):
+        case .splat(let position):
             return SplatEntity(name: "splat_\(UUID().uuidString.prefix(8))", position: position)
-        case let .teeth(position):
+        case .teeth(let position):
             return TeethEntity(name: "teeth_\(UUID().uuidString.prefix(8))", position: position)
-        case let .fishhook(position):
+        case .fishhook(let position):
             return FishhookEntity(
                 name: "fishhook_\(UUID().uuidString.prefix(8))", position: position)
-        case let .fishline(position):
+        case .fishline(let position):
             return FishlineEntity(
                 name: "fishline_\(UUID().uuidString.prefix(8))", position: position)
-        case let .hookPoint(position):
+        case .hookPoint(let position):
             return HookPointEntity(
                 name: "hookpoint_\(UUID().uuidString.prefix(8))", position: position)
         }
@@ -100,5 +100,13 @@ class EntityFactory {
 
     static func createSeaweed(at position: Position3D) -> SeaweedEntity {
         return SeaweedEntity(name: "seaweed_\(UUID().uuidString.prefix(8))", position: position)
+    }
+
+    static func createShark(at position: Position3D) -> SharkEntity {
+        return SharkEntity(name: "shark_\(UUID().uuidString.prefix(8))", position: position)
+    }
+
+    static func createSplat(at position: Position3D) -> SplatEntity {
+        return SplatEntity(name: "splat_\(UUID().uuidString.prefix(8))", position: position)
     }
 }
