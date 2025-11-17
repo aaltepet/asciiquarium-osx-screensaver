@@ -82,6 +82,17 @@ enum ColorCode: Character, CaseIterable {
     case blackBright = "K"
 }
 
+// MARK: - Point for Pixel-Level Collision Detection
+struct IntPoint: Hashable {
+    let x: Int
+    let y: Int
+
+    init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
+}
+
 // MARK: - Bounding Box for Collision Detection
 struct BoundingBox: Equatable {
     let x: Int

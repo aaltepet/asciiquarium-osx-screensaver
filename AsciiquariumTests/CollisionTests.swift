@@ -175,7 +175,8 @@ struct CollisionTests {
         let engine = TestHelpers.createTestEngine()
         engine.entities.removeAll()
 
-        // Create a shark and fish at the same position (will collide immediately)
+        // Create a shark and position fish so their visible pixels overlap
+        // Shark has leading spaces, so we position fish inside shark's visible area
         let shark = EntityFactory.createShark(at: Position3D(10, 10, Depth.shark))
         shark.spawnCallback = { [weak engine] newEntity in
             engine?.entities.append(newEntity)
@@ -183,7 +184,8 @@ struct CollisionTests {
         }
         engine.entities.append(shark)
 
-        let fish = EntityFactory.createFish(at: Position3D(10, 10, Depth.shark))
+        // Position fish so it overlaps with shark's visible pixels (shark's visible area starts around x=40)
+        let fish = EntityFactory.createFish(at: Position3D(35, 12, Depth.shark))
         fish.spawnCallback = { [weak engine] newEntity in
             engine?.entities.append(newEntity)
             newEntity.spawnCallback = fish.spawnCallback
@@ -215,7 +217,7 @@ struct CollisionTests {
         let engine = TestHelpers.createTestEngine()
         engine.entities.removeAll()
 
-        // Create a shark and fish at the same position (will collide immediately)
+        // Create a shark and position fish so their visible pixels overlap
         let shark = EntityFactory.createShark(at: Position3D(10, 10, Depth.shark))
         shark.spawnCallback = { [weak engine] newEntity in
             engine?.entities.append(newEntity)
@@ -223,7 +225,8 @@ struct CollisionTests {
         }
         engine.entities.append(shark)
 
-        let fish = EntityFactory.createFish(at: Position3D(10, 10, Depth.shark))
+        // Position fish so it overlaps with shark's visible pixels
+        let fish = EntityFactory.createFish(at: Position3D(35, 12, Depth.shark))
         fish.spawnCallback = { [weak engine] newEntity in
             engine?.entities.append(newEntity)
             newEntity.spawnCallback = fish.spawnCallback
@@ -254,12 +257,14 @@ struct CollisionTests {
         let engine = TestHelpers.createTestEngine()
         engine.entities.removeAll()
 
-        let fishX = 20
-        let fishY = 15
+        let sharkX = 10
+        let sharkY = 15
+        let fishX = 45  // Position fish so it overlaps with shark's visible pixels
+        let fishY = 17  // Slightly offset vertically to ensure overlap
         let fishZ = Depth.shark
 
-        // Create a shark and fish at known positions
-        let shark = EntityFactory.createShark(at: Position3D(fishX, fishY, fishZ))
+        // Create a shark and fish at positions where their visible pixels overlap
+        let shark = EntityFactory.createShark(at: Position3D(sharkX, sharkY, fishZ))
         shark.spawnCallback = { [weak engine] newEntity in
             engine?.entities.append(newEntity)
             newEntity.spawnCallback = shark.spawnCallback

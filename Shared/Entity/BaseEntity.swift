@@ -138,11 +138,79 @@ class BaseEntity: Entity {
     }
 
     private func isColliding(with other: Entity) -> Bool {
-        // Simple bounding box collision detection
+        // Two-phase collision detection:
+        // 1. Fast rejection: check bounding box overlap
         let myBounds = getBounds()
         let otherBounds = other.getBounds()
 
-        return myBounds.overlaps(with: otherBounds)
+        guard myBounds.overlaps(with: otherBounds) else {
+            return false
+        }
+
+        // 2. Accurate check: mask-based pixel-level collision
+        // Special case: if either entity is full-width, use simplified check
+        // (full-width entities span entire width, so just check Y overlap)
+        if isFullWidth || (other as? BaseEntity)?.isFullWidth == true {
+            // For full-width entities, if Y coordinates overlap, it's a collision
+            // since they span the entire width
+            let myTop = position.y
+            let myBottom = position.y + size.height - 1
+            let otherTop = other.position.y
+            let otherBottom = other.position.y + other.size.height - 1
+            return myTop <= otherBottom && myBottom >= otherTop
+        }
+
+        // For regular entities, use pixel-level mask collision
+        let myPixels = getVisiblePixels()
+        let otherPixels = (other as? BaseEntity)?.getVisiblePixels() ?? Set<IntPoint>()
+
+        // Check if any pixels overlap
+        return !myPixels.isDisjoint(with: otherPixels)
+    }
+
+    /// Get set of world coordinates for all visible pixels in this entity
+    /// Uses colorMask if available, otherwise uses shape + transparentChar
+    func getVisiblePixels() -> Set<IntPoint> {
+        var pixels = Set<IntPoint>()
+
+        // Determine which lines to use (mask or shape)
+        let linesToCheck: [String]
+        if let mask = colorMask {
+            linesToCheck = mask
+        } else {
+            linesToCheck = shape
+        }
+
+        // Iterate through each line of the mask/shape
+        for (rowIndex, line) in linesToCheck.enumerated() {
+            let worldY = position.y + rowIndex
+
+            // Iterate through each character in the line
+            for (colIndex, char) in line.enumerated() {
+                let worldX = position.x + colIndex
+
+                // Determine if this pixel is visible
+                let isVisible: Bool
+                if colorMask != nil {
+                    // In mask: space = transparent, non-space = visible
+                    isVisible = (char != " ")
+                } else {
+                    // In shape: check against transparentChar
+                    if let transparentChar = transparentChar {
+                        isVisible = (char != transparentChar)
+                    } else {
+                        // Default: space is transparent
+                        isVisible = (char != " ")
+                    }
+                }
+
+                if isVisible {
+                    pixels.insert(IntPoint(x: worldX, y: worldY))
+                }
+            }
+        }
+
+        return pixels
     }
 
     /// Get bounding box for collision detection
