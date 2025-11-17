@@ -198,20 +198,39 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a random object (matching Perl: random_object)
     /// Perl has 8 random object types: ship, whale, monster, big_fish, shark, fishhook, swan, ducks, dolphins
-    /// Currently only shark is implemented, so we use probability to match spawn frequency
+    /// Each has 1/8 chance of being selected
     private func spawnRandomObject() {
         // Perl: my $sub = int(rand(scalar(@random_objects)));
         // There are 8 random object types, so each has 1/8 chance
-        // For now, only shark is implemented, so we use 1/8 probability
-        spawnShark()
-        /*let randomValue = Double.random(in: 0...1)
-        if randomValue < (1.0 / 8.0) {
-            spawnShark()
-        }*/
-        // When other random objects are implemented, add them here:
-        // else if randomValue < (2.0 / 8.0) { spawnShip() }
-        // else if randomValue < (3.0 / 8.0) { spawnWhale() }
-        // etc.
+        let randomValue = Double.random(in: 0...1)
+        let slot = randomValue * 8.0
+
+        if slot < 1.0 {
+            spawnShip()  // 0.0 - 1.0 (1/8)
+        } else if slot < 2.0 {
+            // spawnWhale()  // 1.0 - 2.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else if slot < 3.0 {
+            // spawnMonster()  // 2.0 - 3.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else if slot < 4.0 {
+            // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else if slot < 5.0 {
+            spawnShark()  // 4.0 - 5.0 (1/8)
+        } else if slot < 6.0 {
+            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else if slot < 7.0 {
+            // spawnSwan()  // 6.0 - 7.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else if slot < 8.0 {
+            // spawnDucks()  // 7.0 - 8.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        } else {
+            // spawnDolphins()  // 8.0 (1/8) - not yet implemented
+            spawnShip()  // Fallback to ship for now
+        }
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -419,6 +438,37 @@ class AsciiquariumEngine: ObservableObject {
 
         shark.spawnCallback = createSpawnCallback()
         entities.append(shark)
+    }
+
+    /// Spawn a new ship (matching Perl: add_ship)
+    private func spawnShip() {
+        // Perl: position => [ $x, 0, $depth{'water_gap1'} ]
+        // Ship spawns at y=0 (surface) at water_gap1 depth
+        // Create ship (direction is randomized in ShipEntity.init)
+        let ship = EntityFactory.createShip(at: Position3D(0, 0, Depth.waterGap1))
+        let shipWidth = ship.size.width
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -24
+        // Left: $x = $anim->width()-2
+        let spawnX: Int
+        if ship.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -shipWidth
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth
+        }
+
+        ship.position = Position3D(spawnX, 0, Depth.waterGap1)
+
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        ship.deathCallback = { [weak self] in
+            self?.spawnRandomObject()
+        }
+
+        ship.spawnCallback = createSpawnCallback()
+        entities.append(ship)
     }
 
 }

@@ -9,19 +9,6 @@ import Foundation
 
 // MARK: - Placeholder Entities (to be implemented)
 
-class ShipEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .ship, shape: [""], position: position)
-        setupShip()
-    }
-
-    private func setupShip() {
-        dieOffscreen = true
-        defaultColor = .white
-        callbackArgs = [1.0, 1.0, 0.0, 0.0]
-    }
-}
-
 class WhaleEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .whale, shape: [""], position: position)

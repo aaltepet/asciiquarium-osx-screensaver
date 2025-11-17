@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Shark Entity
 class SharkEntity: BaseEntity {
     var direction: Int = 1  // 1 for right, -1 for left
-    var speed: Double = 2.0  // Speed matching Perl: $speed = 2
+    var speed: Double = 1.6  // Speed matching Perl: $speed = 2
 
     // Shark shapes (left and right facing) - matching Perl
     private static let sharkShapeRight = [
