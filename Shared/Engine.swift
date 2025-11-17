@@ -205,31 +205,33 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        if slot < 1.0 {
-            spawnShip()  // 0.0 - 1.0 (1/8)
-        } else if slot < 2.0 {
-            spawnWhale()  // 1.0 - 2.0 (1/8)
-        } else if slot < 3.0 {
-            // spawnMonster()  // 2.0 - 3.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 4.0 {
-            // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 5.0 {
-            spawnShark()  // 4.0 - 5.0 (1/8)
-        } else if slot < 6.0 {
-            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 7.0 {
-            // spawnSwan()  // 6.0 - 7.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 8.0 {
-            // spawnDucks()  // 7.0 - 8.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else {
-            // spawnDolphins()  // 8.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        }
+        spawnMonster()
+        return
+        /*
+                if slot < 1.0 {
+                    spawnShip()  // 0.0 - 1.0 (1/8)
+                } else if slot < 2.0 {
+                    spawnWhale()  // 1.0 - 2.0 (1/8)
+                } else if slot < 3.0 {
+                    spawnMonster()  // 2.0 - 3.0 (1/8)
+                } else if slot < 4.0 {
+                    // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else if slot < 5.0 {
+                    spawnShark()  // 4.0 - 5.0 (1/8)
+                } else if slot < 6.0 {
+                    // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else if slot < 7.0 {
+                    // spawnSwan()  // 6.0 - 7.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else if slot < 8.0 {
+                    // spawnDucks()  // 7.0 - 8.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else {
+                    // spawnDolphins()  // 8.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                }*/
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -499,6 +501,37 @@ class AsciiquariumEngine: ObservableObject {
 
         whale.spawnCallback = createSpawnCallback()
         entities.append(whale)
+    }
+
+    /// Spawn a new monster (matching Perl: add_monster)
+    private func spawnMonster() {
+        // Perl: position => [ $x, 2, $depth{'water_gap2'} ]
+        // Monster spawns at y=2 (surface region) at water_gap2 depth
+        // Create monster (direction is randomized in MonsterEntity.init)
+        let monster = EntityFactory.createMonster(at: Position3D(0, 2, Depth.waterGap2))
+        let monsterWidth = monster.size.width
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -64
+        // Left: $x = $anim->width()-2
+        let spawnX: Int
+        if monster.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -monsterWidth
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth
+        }
+
+        monster.position = Position3D(spawnX, 2, Depth.waterGap2)
+
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        monster.deathCallback = { [weak self] in
+            self?.spawnRandomObject()
+        }
+
+        monster.spawnCallback = createSpawnCallback()
+        entities.append(monster)
     }
 
 }

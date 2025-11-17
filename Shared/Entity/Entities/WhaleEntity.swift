@@ -34,7 +34,7 @@ class WhaleEntity: BaseEntity {
         "    :-----.",  // Whale line 1
         "  .'       `.",  // Whale line 2
         " / (o)       \\    ,",  // Whale line 3
-        "(__,          \\_.'/)",  // Whale line 4
+        "(__,          \\_.'/",  // Whale line 4
     ]
 
     // Whale color masks (matching Perl: @whale_mask)
