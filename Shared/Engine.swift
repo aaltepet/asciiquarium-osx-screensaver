@@ -117,15 +117,11 @@ class AsciiquariumEngine: ObservableObject {
                 if !collisions.isEmpty, let handler = entity.collisionHandler {
                     // Call collision handler with entity and list of colliding entities
                     handler(entity, collisions)
-                    // If entity was killed by collision handler, collect it for removal
-                    if !entity.isAlive {
-                        deadEntityIds.append(entity.id)
-                    }
                 }
             }
 
             // If entity should die when offscreen, check bounds against the grid and kill if fully out
-            if entity.dieOffscreen {
+            if entity.dieOffscreen && entity.isAlive {
                 let bounds = entity.getBounds()
                 let left = bounds.x
                 let right = bounds.x + bounds.width - 1
@@ -139,11 +135,12 @@ class AsciiquariumEngine: ObservableObject {
 
                 if isHorizontallyOut || isVerticallyOut {
                     entity.kill()
-                    // Death callback may spawn new entities, so collect ID for removal after iteration
-                    deadEntityIds.append(entity.id)
                 }
-            } else if !entity.isAlive {
-                // Entity died from other conditions (dieTime, dieFrame, etc.)
+            }
+
+            // Collect all dead entities for removal (regardless of how they died)
+            // This catches entities killed by collisions, offscreen, dieTime, dieFrame, etc.
+            if !entity.isAlive {
                 deadEntityIds.append(entity.id)
             }
         }
@@ -195,7 +192,7 @@ class AsciiquariumEngine: ObservableObject {
 
         spawnBottomDecor()
         spawnAllFish()
-        spawnShark()  // Spawn initial shark
+        spawnShark()
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
