@@ -56,9 +56,9 @@ Both formats share the same core asciiquarium engine:
 1. **Engine** (Core animation engine)
 
    - Manages entity lifecycle: spawning, updating, and removal
-   - Handles fish, seaweed, waterline, castle, bubble, shark, and other entity types
+   - Handles fish, seaweed, waterline, castle, bubble, shark, splat, and other entity types
    - Handles animation timing and physics (deltaTime-based updates)
-   - Collision detection system with bounding box overlaps
+   - **Mask-based pixel-level collision detection** (two-phase: bounding box rejection + pixel overlap)
    - Entity death management (offscreen, time-based, frame-based)
 
 2. **ASCIIRenderer** (Text rendering system)
@@ -139,10 +139,13 @@ Both formats share the same core asciiquarium engine:
     - ✅ Unit tests: bubble rises frame-by-frame; last alive position is immediately below the topmost waterline row; bubble is killed upon intersection; no frames show bubble above surface.
     - **Implementation**: Collision detection system implemented with bubble collision handler that kills bubbles on waterline collision. 6 comprehensive tests in CollisionTests.swift verify behavior.
 
-- [ ] Shark (underwater predator) depth and behavior stub
+- [X] Shark (underwater predator) depth and behavior
   - **Acceptance**:
-    - Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
-    - Teeth/collision helpers may be stubbed for later; shark remains underwater only.
+    - ✅ Shark entities spawn with `z = shark`, move horizontally below the surface region, and die offscreen.
+    - ✅ Shark collision handler implemented: shark kills fish on collision and spawns splat entity.
+    - ✅ Shark has color masks for proper rendering (left and right facing).
+    - ✅ SplatEntity moved to its own file (no longer placeholder).
+    - **Implementation**: SharkEntity with collision detection, SplatEntity with animation frames, comprehensive unit tests.
 
 ## Collision Detection System
 
@@ -153,14 +156,17 @@ The collision detection system needs to handle different types of collisions wit
 - **Behavior collisions**: Entity behavior changes (e.g., fishhook + fish → retraction)
 
 ### Current State
-- ✅ `BaseEntity.checkCollisions()` exists with bounding box overlap detection
+- ✅ `BaseEntity.checkCollisions()` exists with **mask-based pixel-level collision detection**
+- ✅ Two-phase collision detection: bounding box rejection + mask-based pixel overlap
 - ✅ `isPhysical` flag exists to mark entities that participate in collisions
 - ✅ `collisionHandler` property exists on entities
 - ✅ Engine executes collision detection during updates (after position updates)
 - ✅ Collision handler signature updated to `((Entity, [Entity]) -> Void)?` (entity + collision partners)
 - ✅ Bubble collision handler set up (bubble + waterline → death)
 - ✅ Full-width entity bounds handling (EntityFullWidth overrides getBounds() for proper collision detection)
-- ❌ Shark collision handler not yet set up (shark + fish → spawn splat)
+- ✅ **Mask-based collision detection**: Uses `colorMask` or `shape` + `transparentChar` to determine visible pixels
+- ✅ **Shark collision handler**: Shark kills fish on collision and spawns splat entity
+- ✅ Special handling for full-width entities (waterlines) - Y-coordinate overlap check
 
 ### Design Questions
 1. **Collision Handler Signature**: Should handlers receive:
@@ -184,9 +190,12 @@ The collision detection system needs to handle different types of collisions wit
 - [X] Set up bubble collision handler (bubble + waterline → death)
 - [X] Fix full-width entity bounds for collision detection (EntityFullWidth overrides getBounds())
 - [X] Add comprehensive tests for bubble collision (6 tests in CollisionTests.swift)
-- [ ] Set up shark collision handler (shark + fish → spawn splat)
-- [ ] Handle edge cases (collisions with dying entities, offscreen entities) - basic handling in place
+- [X] **Implement mask-based pixel-level collision detection** (replaces bounding box-only detection)
+- [X] **Set up shark collision handler** (shark + fish → spawn splat)
+- [X] **Handle edge cases** (collisions with dying entities, offscreen entities) - dead entities collected and removed correctly
 - [X] Fish speed randomization (completed - fish now have random speeds 0.25 to 2.25 matching Perl's `rand(2) + .25`)
+- [X] **Add `IntPoint` type** for pixel coordinate tracking
+- [X] **Add `getVisiblePixels()` method** to convert mask/shape to world coordinates
 
 ## Entity Spawning System
 
@@ -268,4 +277,105 @@ if shouldGenerateBubble() {
 - [X] Implement fish bubble generation in `FishEntity.update()`
 - [X] Handle spawn timing (immediate - entities added during update cycle)
 - [X] Add unit tests for entity spawning (6 comprehensive tests in SpawnCallbackTests.swift)
-- [ ] Implement shark splat spawning in shark collision handler (blocked on collision detection system) 
+- [X] **Implement shark splat spawning** in shark collision handler (spawns SplatEntity at collision point)
+- [X] **SplatEntity moved to its own file** (no longer in PlaceholderEntities.swift)
+
+## Next Steps & Recommendations
+
+### Completed Systems ✅
+1. **Core Entity System**: Entity protocol, BaseEntity, EntityFactory
+2. **Collision Detection**: Mask-based pixel-level collision detection (two-phase: bounding box + pixel overlap)
+3. **Entity Spawning**: Spawn callback system for entities to create other entities
+4. **Environment Entities**: Waterline, Castle, Seaweed
+5. **Marine Life**: Fish (with bubble spawning), Shark (with collision handler), Bubble, Splat
+
+### Recommended Next Steps
+
+#### Priority 1: Surface Entities (High Impact, Medium Complexity)
+**Why**: Surface entities add visual variety and complete the "aquarium" experience. They're visible and engaging.
+
+**Tasks**:
+- [ ] Implement **Ship** entity
+  - Spawns at surface region (y ∈ 0…8) at `water_gap1` depth
+  - Moves horizontally, dies offscreen, respawns
+  - ASCII art ship shape
+- [ ] Implement **Ducks** entity
+  - Spawns at surface region at `water_gap3` depth
+  - Moves horizontally, dies offscreen, respawns
+  - Animated duck shapes
+- [ ] Implement **Swan** entity
+  - Similar to ducks but with swan-specific shape
+  - Spawns at `water_gap3` depth
+- [ ] Implement **Dolphins** entity
+  - Surface entity at `water_gap3` depth
+  - May have jumping animation
+- [ ] Implement **Whale** entity
+  - Large surface entity at `water_gap2` depth
+  - Spawns occasionally
+- [ ] Implement **Monster** entity
+  - Sea monster at surface region, `water_gap2` depth
+  - Only appears in surface region (never underwater)
+
+**Acceptance Criteria**:
+- All surface entities spawn in correct region (y ∈ 0…8)
+- Entities use correct depth gaps (water_gap1/2/3)
+- Entities render between waterline rows (z-order verified)
+- Entities move horizontally and respawn offscreen
+- Unit tests verify spawn positions and depth layers
+
+#### Priority 2: Teeth Entity (Low Complexity, Completes Shark)
+**Why**: The shark in Perl has a "teeth" helper entity that moves with it. This completes the shark implementation.
+
+**Tasks**:
+- [ ] Implement **TeethEntity**
+  - Spawns with shark at slightly different z-depth
+  - Moves in sync with shark
+  - Simple shape (asterisk `*`)
+  - Collision detection (or just visual)
+
+**Acceptance Criteria**:
+- Teeth spawn with shark
+- Teeth move in sync with shark
+- Teeth positioned correctly relative to shark
+
+#### Priority 3: Fishing Equipment (Medium Complexity, Interactive Feature)
+**Why**: Adds interactive gameplay element (fishing mechanics).
+
+**Tasks**:
+- [ ] Implement **Fishhook** entity
+  - Drops from surface
+  - Collision with fish triggers retraction
+- [ ] Implement **Fishline** entity
+  - Connects hook to surface
+  - Visual line representation
+- [ ] Implement **HookPoint** entity
+  - Anchor point at surface
+
+**Acceptance Criteria**:
+- Hook drops and retracts on fish collision
+- Line connects hook to surface
+- Proper collision detection with fish
+
+#### Priority 4: Big Fish Entity (Low Priority, Visual Enhancement)
+**Why**: Adds variety to fish types.
+
+**Tasks**:
+- [ ] Implement **BigFish** entity
+  - Larger fish shape
+  - Different movement pattern
+  - Spawns less frequently than regular fish
+
+### Implementation Notes
+
+1. **Surface Entity Spawning**: Use `WorldLayout` helpers to ensure correct spawn regions and depths
+2. **Depth Gaps**: Ensure entities use correct `water_gap` depths to render between waterline rows
+3. **Z-Order**: Renderer sorts by `position.z`, so entities at gap depths will render correctly
+4. **Collision Detection**: Surface entities may not need collision detection (or only specific types)
+5. **Animation**: Some entities (ducks, dolphins) may need frame-based animation
+
+### Testing Strategy
+
+- Unit tests for each entity type (spawn position, movement, death)
+- Integration tests for surface region spawning
+- Visual tests for z-order rendering (entities between waterlines)
+- Collision tests for interactive entities (fishhook + fish)

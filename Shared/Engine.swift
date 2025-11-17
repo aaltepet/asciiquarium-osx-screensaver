@@ -192,7 +192,26 @@ class AsciiquariumEngine: ObservableObject {
 
         spawnBottomDecor()
         spawnAllFish()
+        // Spawn one random object at startup (matching Perl: random_object(undef, $anim))
+        spawnRandomObject()
+    }
+
+    /// Spawn a random object (matching Perl: random_object)
+    /// Perl has 8 random object types: ship, whale, monster, big_fish, shark, fishhook, swan, ducks, dolphins
+    /// Currently only shark is implemented, so we use probability to match spawn frequency
+    private func spawnRandomObject() {
+        // Perl: my $sub = int(rand(scalar(@random_objects)));
+        // There are 8 random object types, so each has 1/8 chance
+        // For now, only shark is implemented, so we use 1/8 probability
         spawnShark()
+        /*let randomValue = Double.random(in: 0...1)
+        if randomValue < (1.0 / 8.0) {
+            spawnShark()
+        }*/
+        // When other random objects are implemented, add them here:
+        // else if randomValue < (2.0 / 8.0) { spawnShip() }
+        // else if randomValue < (3.0 / 8.0) { spawnWhale() }
+        // etc.
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -392,10 +411,10 @@ class AsciiquariumEngine: ObservableObject {
 
         shark.position = Position3D(spawnX, spawnY, Depth.shark)
 
-        // Set up death callback to respawn new shark (matching Perl: death_cb => \&random_object)
-        // For now, just respawn shark (we'll implement random_object later)
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        // Perl has 8 random object types, so shark has 1/8 chance of respawning
         shark.deathCallback = { [weak self] in
-            self?.spawnShark()
+            self?.spawnRandomObject()
         }
 
         shark.spawnCallback = createSpawnCallback()
