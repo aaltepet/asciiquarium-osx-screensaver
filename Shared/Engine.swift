@@ -208,28 +208,27 @@ class AsciiquariumEngine: ObservableObject {
         if slot < 1.0 {
             spawnShip()  // 0.0 - 1.0 (1/8)
         } else if slot < 2.0 {
-            // spawnWhale()  // 1.0 - 2.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // 1.0 - 2.0 (1/8)
         } else if slot < 3.0 {
             // spawnMonster()  // 2.0 - 3.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         } else if slot < 4.0 {
             // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         } else if slot < 5.0 {
             spawnShark()  // 4.0 - 5.0 (1/8)
         } else if slot < 6.0 {
             // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         } else if slot < 7.0 {
             // spawnSwan()  // 6.0 - 7.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         } else if slot < 8.0 {
             // spawnDucks()  // 7.0 - 8.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         } else {
             // spawnDolphins()  // 8.0 (1/8) - not yet implemented
-            spawnShip()  // Fallback to ship for now
+            spawnWhale()  // Fallback to whale for now
         }
     }
 
@@ -469,6 +468,37 @@ class AsciiquariumEngine: ObservableObject {
 
         ship.spawnCallback = createSpawnCallback()
         entities.append(ship)
+    }
+
+    /// Spawn a new whale (matching Perl: add_whale)
+    private func spawnWhale() {
+        // Perl: position => [ $x, 0, $depth{'water_gap2'} ]
+        // Whale spawns at y=0 (surface) at water_gap2 depth
+        // Create whale (direction is randomized in WhaleEntity.init)
+        let whale = EntityFactory.createWhale(at: Position3D(0, 0, Depth.waterGap2))
+        let whaleWidth = whale.size.width
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -18
+        // Left: $x = $anim->width()-2
+        let spawnX: Int
+        if whale.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -whaleWidth
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth
+        }
+
+        whale.position = Position3D(spawnX, 0, Depth.waterGap2)
+
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        whale.deathCallback = { [weak self] in
+            self?.spawnRandomObject()
+        }
+
+        whale.spawnCallback = createSpawnCallback()
+        entities.append(whale)
     }
 
 }
