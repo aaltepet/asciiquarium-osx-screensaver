@@ -12,6 +12,8 @@ class MonsterEntity: BaseEntity {
     var direction: Int = 1  // 1 for right, -1 for left
     var speed: Double = 1  // Speed matching Perl: $speed = 2
     private var fractionalX: Double = 0.0  // Accumulate fractional movement
+    private var previousIntegerX: Int = 0  // Track previous integer X position for animation
+    private var animationFrameIndex: Int = 0  // Current animation frame index
 
     // Monster shapes (left and right facing) - matching Perl
     // Note: In Perl, $monster_image[0] is right-facing (4 frames), $monster_image[1] is left-facing (4 frames)
@@ -47,6 +49,19 @@ class MonsterEntity: BaseEntity {
         ],
     ]
 
+    // Monster color masks (matching Perl: @monster_mask)
+    // Spaces in mask = transparent, color codes = visible
+    // 'W' = white (for the eye)
+    // Note: Perl uses a very simple mask - just 'W' for the eye position
+    // We'll use a full mask based on the shape for proper collision detection
+    private static let monsterMaskRight = [
+        "                                                          gggg",
+        "                                             gg         gxxxoxxg",
+        "            g                    g         gxxxxg     gxxxxxggggxw",
+        "  g       gxxxg       g        gxxxg      gxxggxxg   gxxxxxg",
+        " gxg     gxxxxxg    gxxxg     gxxxxxg     gxxggxxg   gxxxxxg",
+    ]
+
     private static let monsterShapeLeftFrames = [
         [
             "    ____",
@@ -78,25 +93,12 @@ class MonsterEntity: BaseEntity {
         ],
     ]
 
-    // Monster color masks (matching Perl: @monster_mask)
-    // Spaces in mask = transparent, color codes = visible
-    // 'W' = white (for the eye)
-    // Note: Perl uses a very simple mask - just 'W' for the eye position
-    // We'll use a full mask based on the shape for proper collision detection
-    private static let monsterMaskRight = [
-        "                                                          ____",
-        "                                             gg         /   o  \\",
-        "             _                     _       gxxxxg     /     ____ >",
-        "   _       /xxx\\        _        /xxx\\    |xx__xx|   |xxxxx|",
-        "  |x\\     |xxxxx|     /xxx\\     |xxxxx|   |xx||xx|   |xxxxx|",
-    ]
-
     private static let monsterMaskLeft = [
-        "    ____",
-        "  /  o   \\                                          __",
-        "< ____     \\        _                     _       /    \\",
-        "      |     |     /   \\        _        /   \\    |  __  |",
-        "      |     |    |     |     /   \\     |     |   |  ||  |",
+        "    gggg",
+        "  gxxgxxxg                                          gg",
+        "gxggggxxxxxg        g                     g       gxxxxg",
+        "      gxxxxxg     gxxxg        g        gxxxg    gxxggxxg",
+        "      gxxxxxg    gxxxxxg     gxxxg     gxxxxxg   gxxggxxg",
     ]
 
     init(name: String, position: Position3D) {
@@ -111,6 +113,7 @@ class MonsterEntity: BaseEntity {
         super.init(name: name, type: .monster, shape: frames[0], position: position)
         self.direction = randomDir
         self.colorMask = mask
+        self.previousIntegerX = position.x
         setupMonster()
     }
 
@@ -125,14 +128,19 @@ class MonsterEntity: BaseEntity {
     override func update(deltaTime: TimeInterval) {
         super.update(deltaTime: deltaTime)
 
-        // Animate monster (cycle through 4 frames)
-        // Slow down animation: change frame every 3 frames (10 FPS animation at 30 FPS)
-        // This matches the movement speed better and prevents flickering
-        let frames =
-            direction > 0
-            ? MonsterEntity.monsterShapeRightFrames : MonsterEntity.monsterShapeLeftFrames
-        let animationFrame = (frameCount / 3) % frames.count
-        shape = frames[animationFrame]
+        // Animate monster: only advance frame when integer position changes
+        // This ensures animation is tied to actual grid movement, not frame count
+        let currentIntegerX = position.x
+        if currentIntegerX != previousIntegerX {
+            // Position changed by an integer amount - advance animation frame
+            let frames =
+                direction > 0
+                ? MonsterEntity.monsterShapeRightFrames : MonsterEntity.monsterShapeLeftFrames
+            animationFrameIndex = (animationFrameIndex + 1) % frames.count
+            //shape = frames[animationFrameIndex]
+            shape = frames[0]
+            previousIntegerX = currentIntegerX
+        }
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {

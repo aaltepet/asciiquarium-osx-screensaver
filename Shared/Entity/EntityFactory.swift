@@ -125,4 +125,8 @@ class EntityFactory {
     static func createSwan(at position: Position3D) -> SwanEntity {
         return SwanEntity(name: "swan_\(UUID().uuidString.prefix(8))", position: position)
     }
+
+    static func createDucks(at position: Position3D) -> DucksEntity {
+        return DucksEntity(name: "ducks_\(UUID().uuidString.prefix(8))", position: position)
+    }
 }

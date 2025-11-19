@@ -22,19 +22,6 @@ class BigFishEntity: BaseEntity {
     }
 }
 
-class DucksEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .ducks, shape: [""], position: position)
-        setupDucks()
-    }
-
-    private func setupDucks() {
-        dieOffscreen = true
-        defaultColor = .white
-        callbackArgs = [1.0, 1.0, 0.0, 0.25]
-    }
-}
-
 class DolphinsEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .dolphins, shape: [""], position: position)

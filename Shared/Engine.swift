@@ -205,31 +205,31 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        //spawnMonster()
-        //return
-        if slot < 1.0 {
-            spawnShip()  // 0.0 - 1.0 (1/8)
-        } else if slot < 2.0 {
-            spawnWhale()  // 1.0 - 2.0 (1/8)
-        } else if slot < 3.0 {
-            spawnMonster()  // 2.0 - 3.0 (1/8)
-        } else if slot < 4.0 {
-            // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
-            spawnShark()  // Fallback to whale for now
-        } else if slot < 5.0 {
-            spawnShip()  // 4.0 - 5.0 (1/8)
-        } else if slot < 6.0 {
-            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 7.0 {
-            spawnSwan()  // 6.0 - 7.0 (1/8)
-        } else if slot < 8.0 {
-            // spawnDucks()  // 7.0 - 8.0 (1/8) - not yet implemented
-            spawnShark()  // Fallback to whale for now
-        } else {
-            // spawnDolphins()  // 8.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        }
+        spawnMonster()
+        return
+        /*            if slot < 1.0
+                {
+                    spawnShip()  // 0.0 - 1.0 (1/8)
+                } else if slot < 2.0 {
+                    spawnWhale()  // 1.0 - 2.0 (1/8)
+                } else if slot < 3.0 {
+                    spawnMonster()  // 2.0 - 3.0 (1/8)
+                } else if slot < 4.0 {
+                    // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
+                    spawnShark()  // Fallback to whale for now
+                } else if slot < 5.0 {
+                    spawnShip()  // 4.0 - 5.0 (1/8)
+                } else if slot < 6.0 {
+                    // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else if slot < 7.0 {
+                    spawnSwan()  // 6.0 - 7.0 (1/8)
+                } else if slot < 8.0 {
+                    spawnDucks()  // 7.0 - 8.0 (1/8)
+                } else {
+                    // spawnDolphins()  // 8.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                }*/
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -560,6 +560,39 @@ class AsciiquariumEngine: ObservableObject {
 
         swan.spawnCallback = createSpawnCallback()
         entities.append(swan)
+    }
+
+    /// Spawn a new ducks (matching Perl: add_ducks)
+    private func spawnDucks() {
+        // Perl: position => [ $x, 5, $depth{'water_gap3'} ]
+        // Ducks spawn at y=5 (surface) at water_gap3 depth
+        // However, since ducks span rows 5-7 and waterlines at y=6 (depth 4) and y=7 (depth 6)
+        // would overwrite them, we need to use a higher depth to render ducks on top
+        // Using water_gap1 (depth 7) ensures ducks render above all waterlines
+        // Create ducks (direction is randomized in DucksEntity.init)
+        let ducks = EntityFactory.createDucks(at: Position3D(0, 5, Depth.waterGap1))
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -30
+        // Left: $x = $anim->width()-2
+        let spawnX: Int
+        if ducks.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -30
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth - 2
+        }
+
+        ducks.position = Position3D(spawnX, 5, Depth.waterGap1)
+
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        ducks.deathCallback = { [weak self] in
+            self?.spawnRandomObject()
+        }
+
+        ducks.spawnCallback = createSpawnCallback()
+        entities.append(ducks)
     }
 
 }
