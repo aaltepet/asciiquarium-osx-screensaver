@@ -48,19 +48,6 @@ class DolphinsEntity: BaseEntity {
     }
 }
 
-class SwanEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .swan, shape: [""], position: position)
-        setupSwan()
-    }
-
-    private func setupSwan() {
-        dieOffscreen = true
-        defaultColor = .white
-        callbackArgs = [1.0, 1.0, 0.0, 0.25]
-    }
-}
-
 class TeethEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .teeth, shape: ["*"], position: position)

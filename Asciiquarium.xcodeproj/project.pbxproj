@@ -22,6 +22,7 @@
 		831152AD2E773B2600E05698 /* ShipEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AC2E773B2600E05698 /* ShipEntity.swift */; };
 		831152B02E773B2600E05699 /* WhaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AF2E773B2600E05699 /* WhaleEntity.swift */; };
 		831152B32E773B2600E0569A /* MonsterEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B22E773B2600E0569A /* MonsterEntity.swift */; };
+		831152B52E773B2600E0569B /* SwanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B42E773B2600E0569B /* SwanEntity.swift */; };
 		831152902E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
 		831152912E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
 		831152922E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
@@ -38,6 +39,7 @@
 		831152AE2E773B2600E05698 /* ShipEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AC2E773B2600E05698 /* ShipEntity.swift */; };
 		831152B12E773B2600E05699 /* WhaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AF2E773B2600E05699 /* WhaleEntity.swift */; };
 		831152B42E773B2600E0569A /* MonsterEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B22E773B2600E0569A /* MonsterEntity.swift */; };
+		831152B62E773B2600E0569B /* SwanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B42E773B2600E0569B /* SwanEntity.swift */; };
 		8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
 		8311529D2E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
 		8311529E2E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
@@ -101,6 +103,7 @@
 		831152AC2E773B2600E05698 /* ShipEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipEntity.swift; sourceTree = "<group>"; };
 		831152AF2E773B2600E05699 /* WhaleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhaleEntity.swift; sourceTree = "<group>"; };
 		831152B22E773B2600E0569A /* MonsterEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterEntity.swift; sourceTree = "<group>"; };
+		831152B42E773B2600E0569B /* SwanEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwanEntity.swift; sourceTree = "<group>"; };
 		8311527F2E773B2600E05696 /* BaseEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEntity.swift; sourceTree = "<group>"; };
 		831152802E773B2600E05696 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		831152812E773B2600E05696 /* EntityFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFactory.swift; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 				831152AC2E773B2600E05698 /* ShipEntity.swift */,
 				831152AF2E773B2600E05699 /* WhaleEntity.swift */,
 				831152B22E773B2600E0569A /* MonsterEntity.swift */,
+				831152B42E773B2600E0569B /* SwanEntity.swift */,
 				8311527D2E773B2600E05696 /* WaterlineEntity.swift */,
 			);
 			path = Entities;
@@ -472,6 +476,7 @@
 				831152AE2E773B2600E05698 /* ShipEntity.swift in Sources */,
 				831152B12E773B2600E05699 /* WhaleEntity.swift in Sources */,
 				831152B42E773B2600E0569A /* MonsterEntity.swift in Sources */,
+				831152B62E773B2600E0569B /* SwanEntity.swift in Sources */,
 				8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */,
 				83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
 				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
@@ -536,6 +541,7 @@
 				831152AD2E773B2600E05698 /* ShipEntity.swift in Sources */,
 				831152B02E773B2600E05699 /* WhaleEntity.swift in Sources */,
 				831152B32E773B2600E0569A /* MonsterEntity.swift in Sources */,
+				831152B52E773B2600E0569B /* SwanEntity.swift in Sources */,
 				831152902E773B2600E05696 /* BaseEntity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
