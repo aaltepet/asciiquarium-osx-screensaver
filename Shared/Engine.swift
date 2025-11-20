@@ -205,7 +205,7 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        spawnMonster()
+        spawnBigFish()
         return
         /*            if slot < 1.0
                 {
@@ -215,8 +215,7 @@ class AsciiquariumEngine: ObservableObject {
                 } else if slot < 3.0 {
                     spawnMonster()  // 2.0 - 3.0 (1/8)
                 } else if slot < 4.0 {
-                    // spawnBigFish()  // 3.0 - 4.0 (1/8) - not yet implemented
-                    spawnShark()  // Fallback to whale for now
+                    spawnBigFish()  // 3.0 - 4.0 (1/8)
                 } else if slot < 5.0 {
                     spawnShip()  // 4.0 - 5.0 (1/8)
                 } else if slot < 6.0 {
@@ -593,6 +592,41 @@ class AsciiquariumEngine: ObservableObject {
 
         ducks.spawnCallback = createSpawnCallback()
         entities.append(ducks)
+    }
+
+    /// Spawn a new big fish (matching Perl: add_big_fish)
+    private func spawnBigFish() {
+        // Perl: position => [ $x, $y, $depth{'shark'} ]
+        // Big fish spawns at random y between max_height (9) and min_height (height - 15)
+        // at shark depth (depth 2)
+        let maxHeight = 9
+        let minHeight = max(maxHeight, gridHeight - 15)
+        let spawnY = Int.random(in: maxHeight...minHeight)
+
+        // Create big fish (direction is randomized in BigFishEntity.init)
+        let bigFish = EntityFactory.createBigFish(at: Position3D(0, spawnY, Depth.shark))
+
+        // Spawn off-screen based on direction - matching Perl:
+        // Right: $x = -34
+        // Left: $x = $anim->width()-1
+        let spawnX: Int
+        if bigFish.direction > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -34
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth - 1
+        }
+
+        bigFish.position = Position3D(spawnX, spawnY, Depth.shark)
+
+        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        bigFish.deathCallback = { [weak self] in
+            self?.spawnRandomObject()
+        }
+
+        bigFish.spawnCallback = createSpawnCallback()
+        entities.append(bigFish)
     }
 
 }

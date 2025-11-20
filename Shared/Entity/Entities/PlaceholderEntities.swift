@@ -9,19 +9,6 @@ import Foundation
 
 // MARK: - Placeholder Entities (to be implemented)
 
-class BigFishEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .bigFish, shape: [""], position: position)
-        setupBigFish()
-    }
-
-    private func setupBigFish() {
-        dieOffscreen = true
-        defaultColor = .yellow
-        callbackArgs = [3.0, 1.0, 0.0, 0.0]
-    }
-}
-
 class DolphinsEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .dolphins, shape: [""], position: position)
