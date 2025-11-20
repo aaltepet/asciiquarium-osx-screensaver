@@ -205,7 +205,7 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        spawnBigFish()
+        spawnDolphins()
         return
         /*            if slot < 1.0
                 {
@@ -226,8 +226,7 @@ class AsciiquariumEngine: ObservableObject {
                 } else if slot < 8.0 {
                     spawnDucks()  // 7.0 - 8.0 (1/8)
                 } else {
-                    // spawnDolphins()  // 8.0 (1/8) - not yet implemented
-                    spawnWhale()  // Fallback to whale for now
+                    spawnDolphins()  // 8.0 (1/8)
                 }*/
     }
 
@@ -627,6 +626,99 @@ class AsciiquariumEngine: ObservableObject {
 
         bigFish.spawnCallback = createSpawnCallback()
         entities.append(bigFish)
+    }
+
+    /// Spawn a group of 3 dolphins (matching Perl: add_dolphins)
+    private func spawnDolphins() {
+        // Perl: creates 3 dolphins that follow the same path with different delays
+        let randomDir = Bool.random() ? 1 : -1
+        let speed = 1.0
+        let distance = 15  // How far apart the dolphins are
+
+        // Build the path: 14 up, 2 glide, 14 down, 6 glide
+        // Path steps: [speed, dx, dy, dz]
+        var path: [[Double]] = []
+
+        // 14 up moves: [speed, dx, -0.5, 0.5]
+        for _ in 1...14 {
+            path.append([speed, Double(randomDir), -0.5, 0.5])
+        }
+
+        // 2 glides: [speed, dx, 0, 0.5]
+        for _ in 1...2 {
+            path.append([speed, Double(randomDir), 0.0, 0.5])
+        }
+
+        // 14 down moves: [speed, dx, 0.5, 0.5]
+        for _ in 1...14 {
+            path.append([speed, Double(randomDir), 0.5, 0.5])
+        }
+
+        // 6 glides: [speed, dx, 0, 0.5]
+        for _ in 1...6 {
+            path.append([speed, Double(randomDir), 0.0, 0.5])
+        }
+
+        // Determine spawn X position
+        let spawnX: Int
+        if randomDir > 0 {
+            // Moving right: spawn off-screen to the left
+            spawnX = -13
+        } else {
+            // Moving left: spawn off-screen to the right
+            spawnX = gridWidth - 2
+        }
+
+        // Create 3 dolphins with different positions and path offsets
+        // Dolphin 3 (trailing): x - (distance * 2), y=8, offset=0
+        let dolphin3 = DolphinEntity(
+            name: "dolphin3_\(UUID().uuidString.prefix(8))",
+            position: Position3D(spawnX - (distance * 2), 8, Depth.waterGap3),
+            direction: randomDir,
+            pathOffset: 0,
+            path: path
+        )
+        dolphin3.defaultColor = .blue
+        dolphin3.dieOffscreen = false
+
+        // Dolphin 2 (middle): x - distance, y=2, offset=12
+        let dolphin2 = DolphinEntity(
+            name: "dolphin2_\(UUID().uuidString.prefix(8))",
+            position: Position3D(spawnX - distance, 2, Depth.waterGap3),
+            direction: randomDir,
+            pathOffset: 12,
+            path: path
+        )
+        dolphin2.defaultColor = .blueBright
+        dolphin2.dieOffscreen = false
+
+        // Dolphin 1 (lead): x, y=5, offset=24
+        let dolphin1 = DolphinEntity(
+            name: "dolphin1_\(UUID().uuidString.prefix(8))",
+            position: Position3D(spawnX, 5, Depth.waterGap3),
+            direction: randomDir,
+            pathOffset: 24,
+            path: path
+        )
+        dolphin1.defaultColor = .cyan
+        dolphin1.dieOffscreen = true
+
+        // Lead dolphin's death callback tells others to die offscreen, then spawns random object
+        dolphin1.deathCallback = { [weak self] in
+            dolphin2.dieOffscreen = true
+            dolphin3.dieOffscreen = true
+            self?.spawnRandomObject()
+        }
+
+        // Set spawn callbacks
+        dolphin1.spawnCallback = createSpawnCallback()
+        dolphin2.spawnCallback = createSpawnCallback()
+        dolphin3.spawnCallback = createSpawnCallback()
+
+        // Add all dolphins to entities
+        entities.append(dolphin1)
+        entities.append(dolphin2)
+        entities.append(dolphin3)
     }
 
 }

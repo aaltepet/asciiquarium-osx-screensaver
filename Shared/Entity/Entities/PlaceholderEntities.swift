@@ -9,19 +9,6 @@ import Foundation
 
 // MARK: - Placeholder Entities (to be implemented)
 
-class DolphinsEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .dolphins, shape: [""], position: position)
-        setupDolphins()
-    }
-
-    private func setupDolphins() {
-        dieOffscreen = true
-        defaultColor = .blue
-        callbackArgs = [1.0, 1.0, 0.0, 0.5]
-    }
-}
-
 class TeethEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .teeth, shape: ["*"], position: position)

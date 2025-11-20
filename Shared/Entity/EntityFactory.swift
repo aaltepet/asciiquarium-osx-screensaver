@@ -59,8 +59,15 @@ class EntityFactory {
         case .ducks(let position):
             return DucksEntity(name: "ducks_\(UUID().uuidString.prefix(8))", position: position)
         case .dolphins(let position):
-            return DolphinsEntity(
-                name: "dolphins_\(UUID().uuidString.prefix(8))", position: position)
+            // Dolphins are created specially via spawnDolphins() in Engine
+            // This is a fallback that shouldn't normally be used
+            return DolphinEntity(
+                name: "dolphin_\(UUID().uuidString.prefix(8))",
+                position: position,
+                direction: 1,
+                pathOffset: 0,
+                path: []
+            )
         case .swan(let position):
             return SwanEntity(name: "swan_\(UUID().uuidString.prefix(8))", position: position)
         case .splat(let position):
