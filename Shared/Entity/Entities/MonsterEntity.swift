@@ -56,10 +56,10 @@ class MonsterEntity: BaseEntity {
     // We'll use a full mask based on the shape for proper collision detection
     private static let monsterMaskRight = [
         "                                                          gggg",
-        "                                             gg         gxxxoxxg",
-        "            g                    g         gxxxxg     gxxxxxggggxw",
-        "  g       gxxxg       g        gxxxg      gxxggxxg   gxxxxxg",
-        " gxg     gxxxxxg    gxxxg     gxxxxxg     gxxggxxg   gxxxxxg",
+        "            gg                                          gxxxoxxg",
+        "          gxxxxg        g                     g       gxxxxxggggxg",
+        "  g      gxxggxxg     gxxxg        g        gxxxg    gxxxxxg",
+        " gxg     gxxggxxg    gxxxxxg     gxxxg     gxxxxxg   gxxxxxg",
     ]
 
     private static let monsterShapeLeftFrames = [
