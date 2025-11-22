@@ -35,70 +35,114 @@ class MonsterEntity: BaseEntity {
         ],
         [
             "                                                          ____",
-            "                                  __                     /   o  \\",
-            "_                     _       /    \\        _          /     ____ >",
-            "| \\        _        /   \\    |  __  |     /   \\       |     |",
-            " \\ \\     /   \\     |     |   |  ||  |    |     |      |     |",
+            "                                  __                    /   o  \\",
+            " _                      _       /    \\        _       /     ____ >",
+            "| \\          _        /   \\    |  __  |     /   \\    |     |",
+            " \\ \\       /   \\     |     |   |  ||  |    |     |   |     |",
         ],
         [
             "                                                          ____",
             "                       __                               /   o  \\",
-            "  _       /    \\        _                     _       /     ____ >",
-            " | \\     |  __  |     /   \\        _        /   \\    |     |",
-            "  \\ \\    |  ||  |    |     |     /   \\     |     |   |     |",
+            "  _          _       /    \\        _                  /     ____ >",
+            " | \\       /   \\    |  __  |     /   \\        _      |     |",
+            "  \\ \\     |     |   |  ||  |    |     |     /   \\    |     |",
         ],
     ]
-
     // Monster color masks (matching Perl: @monster_mask)
     // Spaces in mask = transparent, color codes = visible
-    // 'W' = white (for the eye)
-    // Note: Perl uses a very simple mask - just 'W' for the eye position
-    // We'll use a full mask based on the shape for proper collision detection
-    private static let monsterMaskRight = [
-        "                                                          gggg",
-        "            gg                                          gxxxoxxg",
-        "          gxxxxg        g                     g       gxxxxxggggxg",
-        "  g      gxxggxxg     gxxxg        g        gxxxg    gxxxxxg",
-        " gxg     gxxggxxg    gxxxxxg     gxxxg     gxxxxxg   gxxxxxg",
+    // 'g' = green (body), 'W' = white (eye), 'o' = eye
+    // Each frame needs its own mask to match the shape
+    private static let monsterMaskRightFrames = [
+        [
+            "                                                          gggg",
+            "            gg                                          gxxxWxxg",
+            "          gxxxxg        g                     g       gxxxxxggggxg",
+            "  g      gxxggxxg     gxxxg        g        gxxxg    gxxxxxg",
+            " gxg     gxxggxxg    gxxxxxg     gxxxg     gxxxxxg   gxxxxxg",
+        ],
+        [
+            "                                                          gggg",
+            "                                             gg         gxxxWxxg",
+            "             g                     g       gxxxxg     gxxxxxggggxg",
+            "   g       gxxxg        g        gxxxg    gxxggxxg   gxxxxxg",
+            "  gxg     gxxxxxg     gxxxg     gxxxxxg   gxxggxxg   gxxxxxg",
+        ],
+        [
+            "                                                          gggg",
+            "                                  gg                    gxxxWxxg",
+            " g                      g       gxxxxg        g       gxxxxxggggxg",
+            "gxg          g        gxxxg    gxxggxxg     gxxxg    gxxxxxg",
+            " gxg       gxxxg     gxxxxxg   gxxggxxg    gxxxxxg   gxxxxxg",
+        ],
+        [
+            "                                                          gggg",
+            "                       gg                               gxxxoxxg",
+            "  g          g       gxxxxg        g                  gxxxxxggggxg",
+            " gxg       gxxxg    gxxggxxg     gxxxg        g      gxxxxxg",
+            "  gxg     gxxxxxg   gxxggxxg    gxxxxxg     gxxxg    gxxxxxg",
+        ],
     ]
 
     private static let monsterShapeLeftFrames = [
         [
             "    ____",
             "  /  o   \\                                          __",
-            "< ____     \\        _                     _       /    \\",
-            "      |     |     /   \\        _        /   \\    |  __  |",
-            "      |     |    |     |     /   \\     |     |   |  ||  |",
+            "< ____     \\       _                     _        /    \\",
+            "      |     |    /   \\        _        /   \\     |  __  |      _",
+            "      |     |   |     |     /   \\     |     |    |  ||  |     / |",
         ],
         [
             "    ____",
             "  /  o   \\         __",
-            "< ____     \\     /    \\        _                     _",
-            "      |     |    |  __  |     /   \\        _        /   \\",
-            "      |     |    |  ||  |    |     |     /   \\     |     |",
+            "< ____     \\     /    \\       _                     _",
+            "      |     |   |  __  |    /   \\        _        /   \\       _",
+            "      |     |   |  ||  |   |     |     /   \\     |     |     / |",
         ],
         [
             "    ____",
-            "  /  o   \\                     __",
-            "< ____     \\        _       /    \\        _          _",
-            "      |     |     /   \\    |  __  |     /   \\       | \\",
-            "      |     |    |     |   |  ||  |    |     |      \\ \\",
+            "  /  o   \\                    __",
+            "< ____     \\       _        /    \\       _                      _",
+            "      |     |    /   \\     |  __  |    /   \\        _          / |",
+            "      |     |   |     |    |  ||  |   |     |     /   \\       / /",
         ],
         [
             "    ____",
             "  /  o   \\                               __",
-            "< ____     \\        _                     _       /    \\",
-            "      |     |     /   \\        _        /   \\    |  __  |",
-            "      |     |    |     |     /   \\     |     |   |  ||  |",
+            "< ____     \\                  _        /    \\       _          _",
+            "      |     |      _        /   \\     |  __  |    /   \\       / |",
+            "      |     |    /   \\     |     |    |  ||  |   |     |     / /",
         ],
     ]
 
-    private static let monsterMaskLeft = [
-        "    gggg",
-        "  gxxgxxxg                                          gg",
-        "gxggggxxxxxg        g                     g       gxxxxg",
-        "      gxxxxxg     gxxxg        g        gxxxg    gxxggxxg",
-        "      gxxxxxg    gxxxxxg     gxxxg     gxxxxxg   gxxggxxg",
+    private static let monsterMaskLeftFrames = [
+        [
+            "    gggg",
+            "  gxxWxxxg                                          gg",
+            "gxggggxxxxxg       g                     g        gxxxxg",
+            "      gxxxxxg    gxxxg        g        gxxxg     gxxggxxg      g",
+            "      gxxxxxg   gxxxxxg     gxxxg     gxxxxxg    gxxggxxg     gxg",
+        ],
+        [
+            "    gggg",
+            "  gxxWxxxg         gg",
+            "gxggggxxxxxg     gxxxxg       g                     g",
+            "      gxxxxxg   gxxggxxg    gxxxg        g        gxxxg       g",
+            "      gxxxxxg   gxxggxxg   gxxxxxg     gxxxg     gxxxxxg     gxg",
+        ],
+        [
+            "    gggg",
+            "  gxxWxxxg                    gg",
+            "gxggggxxxxxg       g        gxxxxg       g                      g",
+            "      gxxxxxg    gxxxg     gxxggxxg    gxxxg        g          gxg",
+            "      gxxxxxg   gxxxxxg    gxxggxxg   gxxxxxg     gxxxg       gxg",
+        ],
+        [
+            "    gggg",
+            "  gxxWxxxg                               gg",
+            "gxggggxxxxxg                  g        gxxxxg       g          g",
+            "      gxxxxxg      g        gxxxg     gxxggxxg    gxxxg       gxg",
+            "      gxxxxxg    gxxxg     gxxxxxg    gxxggxxg   gxxxxxg     gxg",
+        ],
     ]
 
     init(name: String, position: Position3D) {
@@ -107,12 +151,14 @@ class MonsterEntity: BaseEntity {
         let frames =
             randomDir > 0
             ? MonsterEntity.monsterShapeRightFrames : MonsterEntity.monsterShapeLeftFrames
-        let mask = randomDir > 0 ? MonsterEntity.monsterMaskRight : MonsterEntity.monsterMaskLeft
+        let maskFrames =
+            randomDir > 0
+            ? MonsterEntity.monsterMaskRightFrames : MonsterEntity.monsterMaskLeftFrames
 
         // Start with first frame
         super.init(name: name, type: .monster, shape: frames[0], position: position)
         self.direction = randomDir
-        self.colorMask = mask
+        self.colorMask = maskFrames[0]  // Start with first frame's mask
         self.previousIntegerX = position.x
         setupMonster()
     }
@@ -136,9 +182,12 @@ class MonsterEntity: BaseEntity {
             let frames =
                 direction > 0
                 ? MonsterEntity.monsterShapeRightFrames : MonsterEntity.monsterShapeLeftFrames
+            let maskFrames =
+                direction > 0
+                ? MonsterEntity.monsterMaskRightFrames : MonsterEntity.monsterMaskLeftFrames
             animationFrameIndex = (animationFrameIndex + 1) % frames.count
-            //shape = frames[animationFrameIndex]
-            shape = frames[0]
+            shape = frames[animationFrameIndex]
+            colorMask = maskFrames[animationFrameIndex]  // Update mask to match current frame
             previousIntegerX = currentIntegerX
         }
     }

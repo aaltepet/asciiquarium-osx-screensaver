@@ -80,6 +80,27 @@ class AsciiquariumEngine: ObservableObject {
         frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
     }
 
+    /// Step forward one tick (one frame duration)
+    /// This allows manual stepping through the animation when paused
+    func stepForward() {
+        updateEntities(deltaTime: frameInterval)
+
+        // Notify that a new frame is ready - ContentView will handle the actual rendering
+        frameCallback?(CGRect.zero)
+    }
+
+    /// Restart the simulation by clearing all entities and respawning initial entities
+    func restart() {
+        // Clear all existing entities
+        entities.removeAll()
+
+        // Respawn initial entities
+        spawnInitialEntities()
+
+        // Notify that a new frame is ready - ContentView will handle the actual rendering
+        frameCallback?(CGRect.zero)
+    }
+
     // MARK: - Test Helpers
     #if DEBUG
         /// Advance the engine by one frame duration for testing
@@ -205,7 +226,8 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        spawnDolphins()
+        //spawnDolphins()
+        spawnMonster()
         return
         /*            if slot < 1.0
                 {
@@ -631,7 +653,7 @@ class AsciiquariumEngine: ObservableObject {
     /// Spawn a group of 3 dolphins (matching Perl: add_dolphins)
     private func spawnDolphins() {
         // Perl: creates 3 dolphins that follow the same path with different delays
-        let randomDir = Bool.random() ? 1 : -1
+        let randomDir = 1  //Bool.random() ? 1 : -1
         let speed = 1.0
         let distance = 15  // How far apart the dolphins are
 
@@ -669,11 +691,39 @@ class AsciiquariumEngine: ObservableObject {
             spawnX = gridWidth - 2
         }
 
+        // Calculate starting y positions based on path offset
+        // All dolphins should follow the same vertical range, just offset in time
+        // Path: 14 up (-0.5 each), 2 glide (0), 14 down (+0.5 each), 6 glide (0)
+        // Base dolphin3 starts at y=8 with offset 0 (step 0)
+        // We need to calculate where each dolphin should be based on their path offset
+
+        // Calculate cumulative y position for each path step
+        // Step 0: y = 8 (base starting position for dolphin3)
+        // For each step, add the dy value to get the y position
+        func calculateYAtStep(_ step: Int, baseY: Double) -> Double {
+            var y = baseY
+            for i in 0..<step {
+                if i < path.count {
+                    let stepData = path[i]
+                    if stepData.count >= 3 {
+                        let dy = stepData[2]  // Vertical movement per step
+                        y += dy
+                    }
+                }
+            }
+            return y
+        }
+
+        let baseY: Double = 8.0  // Dolphin3's starting y
+        let dolphin3Y = baseY
+        let dolphin2Y = calculateYAtStep(12, baseY: baseY)  // Where dolphin3 would be at step 12
+        let dolphin1Y = calculateYAtStep(24, baseY: baseY)  // Where dolphin3 would be at step 24
+
         // Create 3 dolphins with different positions and path offsets
-        // Dolphin 3 (trailing): x - (distance * 2), y=8, offset=0
+        // Dolphin 3 (trailing): x - (distance * 2), calculated y, offset=0
         let dolphin3 = DolphinEntity(
             name: "dolphin3_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX - (distance * 2), 8, Depth.waterGap3),
+            position: Position3D(spawnX - (distance * 2), Int(dolphin3Y), Depth.waterGap3),
             direction: randomDir,
             pathOffset: 0,
             path: path
@@ -681,10 +731,10 @@ class AsciiquariumEngine: ObservableObject {
         dolphin3.defaultColor = .blue
         dolphin3.dieOffscreen = false
 
-        // Dolphin 2 (middle): x - distance, y=2, offset=12
+        // Dolphin 2 (middle): x - distance, calculated y, offset=12
         let dolphin2 = DolphinEntity(
             name: "dolphin2_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX - distance, 2, Depth.waterGap3),
+            position: Position3D(spawnX - distance, Int(dolphin2Y), Depth.waterGap3),
             direction: randomDir,
             pathOffset: 12,
             path: path
@@ -692,26 +742,23 @@ class AsciiquariumEngine: ObservableObject {
         dolphin2.defaultColor = .blueBright
         dolphin2.dieOffscreen = false
 
-        // Dolphin 1 (lead): x, y=5, offset=24
+        // Dolphin 1 (lead): x, calculated y, offset=24
         let dolphin1 = DolphinEntity(
             name: "dolphin1_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX, 5, Depth.waterGap3),
+            position: Position3D(spawnX, Int(dolphin1Y), Depth.waterGap3),
             direction: randomDir,
             pathOffset: 24,
             path: path
         )
         dolphin1.defaultColor = .cyan
-        dolphin1.dieOffscreen = true
 
         // Lead dolphin's death callback tells others to die offscreen, then spawns random object
         dolphin1.deathCallback = { [weak self] in
-            dolphin2.dieOffscreen = true
-            dolphin3.dieOffscreen = true
             self?.spawnRandomObject()
         }
 
         // Set spawn callbacks
-        dolphin1.spawnCallback = createSpawnCallback()
+        //dolphin1.spawnCallback = createSpawnCallback()
         dolphin2.spawnCallback = createSpawnCallback()
         dolphin3.spawnCallback = createSpawnCallback()
 

@@ -63,6 +63,17 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
+                Button("Step Forward") {
+                    engine.stepForward()
+                }
+                .buttonStyle(.bordered)
+                .disabled(isAnimating)
+
+                Button("Restart") {
+                    engine.restart()
+                }
+                .buttonStyle(.bordered)
+
                 Button("Add Fish") {
                     // Add a new fish to the aquarium using grid coordinates
                     let randomX = Int.random(in: 0..<engine.gridWidth)

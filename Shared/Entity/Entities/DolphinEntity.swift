@@ -34,6 +34,25 @@ class DolphinEntity: BaseEntity {
         ],
     ]
 
+    // Dolphin color masks (matching Perl: @dolphin_mask)
+    // Spaces in mask = transparent, color codes = visible
+    // 'W' = white (for the eye)
+    // Each frame needs its own mask to match the shape
+    private static let dolphinMaskRightFrames = [
+        [
+            "        x",
+            "      xxxxx",
+            "xxxxxxxxxxWxxx",
+            "xxxxxxxxxxxxxx",
+        ],
+        [
+            "        x",
+            "xxxx  xxxxx",
+            "xxxxxxxxxxWxxx",
+            "    xxxxxxxxxx",
+        ],
+    ]
+
     private static let dolphinShapeLeftFrames = [
         [
             "     ,",
@@ -49,21 +68,19 @@ class DolphinEntity: BaseEntity {
         ],
     ]
 
-    // Dolphin color masks (matching Perl: @dolphin_mask)
-    // Spaces in mask = transparent, color codes = visible
-    // 'W' = white (for the eye)
-    private static let dolphinMaskRight = [
-        "        x",
-        "      xxxxxx",
-        "xxxxxxxxxxxWxxx",
-        "xxxxxxxxxxxxxx",
-    ]
-
-    private static let dolphinMaskLeft = [
-        "     x          ",
-        "   xxxxx        ",
-        "xxxWxxxxxxxxxx  ",
-        "xxxxxxxxxxxxxxxx",
+    private static let dolphinMaskLeftFrames = [
+        [
+            "     x        ",
+            "   xxxxx      ",
+            "xxxWxxxxxxxxxx",
+            "xxxxxxxxxxxxxx",
+        ],
+        [
+            "     x        ",
+            "   xxxxx  xxxx",
+            "xxxWxxxxxxxxxx",
+            "xxxxxxxxxx",
+        ],
     ]
 
     init(name: String, position: Position3D, direction: Int, pathOffset: Int, path: [[Double]]) {
@@ -71,20 +88,20 @@ class DolphinEntity: BaseEntity {
         let frames =
             direction > 0
             ? DolphinEntity.dolphinShapeRightFrames : DolphinEntity.dolphinShapeLeftFrames
-        let mask = direction > 0 ? DolphinEntity.dolphinMaskRight : DolphinEntity.dolphinMaskLeft
+        let maskFrames =
+            direction > 0
+            ? DolphinEntity.dolphinMaskRightFrames : DolphinEntity.dolphinMaskLeftFrames
 
         super.init(name: name, type: .dolphins, shape: frames[0], position: position)
         self.direction = direction
-        self.colorMask = mask
+        self.colorMask = maskFrames[0]  // Start with first frame's mask
         self.pathOffset = pathOffset
         self.path = path
+        self.dieOffscreen = true
         setupDolphin()
     }
 
     private func setupDolphin() {
-        // Lead dolphin dies offscreen, others don't initially
-        // (they'll be set to die offscreen by the lead dolphin's death callback)
-        dieOffscreen = false
         defaultColor = .blue
         autoTransparent = true
     }
@@ -92,19 +109,17 @@ class DolphinEntity: BaseEntity {
     override func update(deltaTime: TimeInterval) {
         super.update(deltaTime: deltaTime)
 
-        // Wait for path offset before starting to follow path
-        if frameCount < pathOffset {
-            return
-        }
-
-        // Determine current path step (accounting for offset)
-        let effectiveFrame = frameCount - pathOffset
-        let stepIndex = effectiveFrame % path.count
+        // Determine current path step
+        // The pathOffset is the step index to start at, so we add it to frameCount
+        let stepIndex = (frameCount + pathOffset) % path.count
 
         // Update animation frame based on vertical movement direction
         let frames =
             direction > 0
             ? DolphinEntity.dolphinShapeRightFrames : DolphinEntity.dolphinShapeLeftFrames
+        let maskFrames =
+            direction > 0
+            ? DolphinEntity.dolphinMaskRightFrames : DolphinEntity.dolphinMaskLeftFrames
         if stepIndex < path.count {
             let step = path[stepIndex]
             if step.count >= 3 {
@@ -112,6 +127,7 @@ class DolphinEntity: BaseEntity {
                 // Use frame 0 for up movement (dy < 0), frame 1 for down/glide (dy >= 0)
                 let frameIndex = dy < 0 ? 0 : 1
                 shape = frames[frameIndex]
+                colorMask = maskFrames[frameIndex]  // Update mask to match current frame
             }
         }
     }
@@ -128,8 +144,9 @@ class DolphinEntity: BaseEntity {
         }
 
         // Follow the path
-        let effectiveFrame = frameCount - pathOffset
-        let stepIndex = effectiveFrame % path.count
+        // The pathOffset is the step index to start at, not a delay
+        // So dolphin2 with offset 12 starts at step 12 of the path
+        let stepIndex = (frameCount + pathOffset) % path.count
 
         guard stepIndex < path.count else {
             return nil
