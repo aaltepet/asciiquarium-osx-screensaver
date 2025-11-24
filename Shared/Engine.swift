@@ -198,7 +198,7 @@ class AsciiquariumEngine: ObservableObject {
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
         // Create four waterline rows at y=5..8 using explicit (y,z,segmentIndex) tuples
-        let waterlineRows: [(y: Int, z: Int, segmentIndex: Int)] = [
+        /*let waterlineRows: [(y: Int, z: Int, segmentIndex: Int)] = [
             (5, Depth.waterLine3, 0),
             (6, Depth.waterLine2, 1),
             (7, Depth.waterLine1, 2),
@@ -209,10 +209,10 @@ class AsciiquariumEngine: ObservableObject {
             let wl = EntityFactory.create(
                 from: .waterline(position: pos, segmentIndex: row.segmentIndex))
             entities.append(wl)
-        }
+        }*/
 
-        spawnBottomDecor()
-        spawnAllFish()
+        //spawnBottomDecor()
+        //spawnAllFish()
         // Spawn one random object at startup (matching Perl: random_object(undef, $anim))
         spawnRandomObject()
     }
@@ -259,9 +259,9 @@ class AsciiquariumEngine: ObservableObject {
         let screenSize = (gridHeight - SpawnConfig.surfaceRegionHeight) * gridWidth
         let fishCount = max(1, screenSize / SpawnConfig.fishDensityDivisor)
 
-        for _ in 0..<fishCount {
-            spawnFish()
-        }
+        /*        for _ in 0..<fishCount {
+                    spawnFish()
+                }*/
     }
 
     private func spawnBottomDecor() {
@@ -732,6 +732,15 @@ class AsciiquariumEngine: ObservableObject {
         dolphin3.defaultColor = .blue
         dolphin3.dieOffscreen = false
 
+        // Create path visualization entity (full-width, positioned at min y)
+        let pathEntity = DolphinPathEntity(
+            name: "dolphin_path_\(UUID().uuidString.prefix(8))",
+            position: Position3D(spawnX - (distance * 2), Int(dolphin3Y), 1),
+            path: path,
+        )
+        // Update position to the calculated min Y
+        // pathEntity.position.y = pathEntity.calculateMinY()
+
         // Dolphin 2 (middle): x - distance, calculated y, offset=12
         let dolphin2 = DolphinEntity(
             name: "dolphin2_\(UUID().uuidString.prefix(8))",
@@ -753,17 +762,19 @@ class AsciiquariumEngine: ObservableObject {
         )
         dolphin1.defaultColor = .cyan
 
-        // Lead dolphin's death callback tells others to die offscreen, then spawns random object
+        // Lead dolphin's death callback kills path entity, tells others to die offscreen, then spawns random object
         dolphin1.deathCallback = { [weak self] in
+            pathEntity.kill()  // Kill the path visualization when dolphins die
             self?.spawnRandomObject()
         }
 
         // Set spawn callbacks
-        //dolphin1.spawnCallback = createSpawnCallback()
+        dolphin1.spawnCallback = createSpawnCallback()
         dolphin2.spawnCallback = createSpawnCallback()
         dolphin3.spawnCallback = createSpawnCallback()
 
-        // Add all dolphins to entities
+        // Add path visualization and all dolphins to entities
+        entities.append(pathEntity)
         entities.append(dolphin1)
         entities.append(dolphin2)
         entities.append(dolphin3)

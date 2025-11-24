@@ -26,6 +26,7 @@
 		831152B72E773B2600E0569C /* DucksEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B62E773B2600E0569C /* DucksEntity.swift */; };
 		831152B92E773B2600E0569D /* BigFishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B82E773B2600E0569D /* BigFishEntity.swift */; };
 		831152BB2E773B2600E0569E /* DolphinEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BA2E773B2600E0569E /* DolphinEntity.swift */; };
+		831152BD2E773B2600E0569F /* DolphinPathEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BC2E773B2600E0569F /* DolphinPathEntity.swift */; };
 		831152902E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
 		831152912E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
 		831152922E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
@@ -46,6 +47,7 @@
 		831152B82E773B2600E0569C /* DucksEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B62E773B2600E0569C /* DucksEntity.swift */; };
 		831152BA2E773B2600E0569D /* BigFishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B82E773B2600E0569D /* BigFishEntity.swift */; };
 		831152BC2E773B2600E0569E /* DolphinEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BA2E773B2600E0569E /* DolphinEntity.swift */; };
+		831152BE2E773B2600E0569F /* DolphinPathEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BC2E773B2600E0569F /* DolphinPathEntity.swift */; };
 		8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
 		8311529D2E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
 		8311529E2E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
@@ -113,6 +115,7 @@
 		831152B62E773B2600E0569C /* DucksEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DucksEntity.swift; sourceTree = "<group>"; };
 		831152B82E773B2600E0569D /* BigFishEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigFishEntity.swift; sourceTree = "<group>"; };
 		831152BA2E773B2600E0569E /* DolphinEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DolphinEntity.swift; sourceTree = "<group>"; };
+		831152BC2E773B2600E0569F /* DolphinPathEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DolphinPathEntity.swift; sourceTree = "<group>"; };
 		8311527F2E773B2600E05696 /* BaseEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEntity.swift; sourceTree = "<group>"; };
 		831152802E773B2600E05696 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 		831152812E773B2600E05696 /* EntityFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFactory.swift; sourceTree = "<group>"; };
@@ -201,6 +204,7 @@
 				831152B62E773B2600E0569C /* DucksEntity.swift */,
 				831152B82E773B2600E0569D /* BigFishEntity.swift */,
 				831152BA2E773B2600E0569E /* DolphinEntity.swift */,
+				831152BC2E773B2600E0569F /* DolphinPathEntity.swift */,
 				8311527D2E773B2600E05696 /* WaterlineEntity.swift */,
 			);
 			path = Entities;
@@ -492,6 +496,7 @@
 				831152B82E773B2600E0569C /* DucksEntity.swift in Sources */,
 				831152BA2E773B2600E0569D /* BigFishEntity.swift in Sources */,
 				831152BC2E773B2600E0569E /* DolphinEntity.swift in Sources */,
+				831152BE2E773B2600E0569F /* DolphinPathEntity.swift in Sources */,
 				8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */,
 				83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
 				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
@@ -560,6 +565,7 @@
 				831152B72E773B2600E0569C /* DucksEntity.swift in Sources */,
 				831152B92E773B2600E0569D /* BigFishEntity.swift in Sources */,
 				831152BB2E773B2600E0569E /* DolphinEntity.swift in Sources */,
+				831152BD2E773B2600E0569F /* DolphinPathEntity.swift in Sources */,
 				831152902E773B2600E05696 /* BaseEntity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
