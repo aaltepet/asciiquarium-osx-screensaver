@@ -198,7 +198,7 @@ class AsciiquariumEngine: ObservableObject {
     /// Spawn initial entities for testing
     private func spawnInitialEntities() {
         // Create four waterline rows at y=5..8 using explicit (y,z,segmentIndex) tuples
-        /*let waterlineRows: [(y: Int, z: Int, segmentIndex: Int)] = [
+        let waterlineRows: [(y: Int, z: Int, segmentIndex: Int)] = [
             (5, Depth.waterLine3, 0),
             (6, Depth.waterLine2, 1),
             (7, Depth.waterLine1, 2),
@@ -209,10 +209,10 @@ class AsciiquariumEngine: ObservableObject {
             let wl = EntityFactory.create(
                 from: .waterline(position: pos, segmentIndex: row.segmentIndex))
             entities.append(wl)
-        }*/
+        }
 
-        //spawnBottomDecor()
-        //spawnAllFish()
+        spawnBottomDecor()
+        spawnAllFish()
         // Spawn one random object at startup (matching Perl: random_object(undef, $anim))
         spawnRandomObject()
     }
@@ -225,12 +225,10 @@ class AsciiquariumEngine: ObservableObject {
         // There are 8 random object types, so each has 1/8 chance
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
-
-        spawnDolphins()
-        //spawnMonster()
+        spawnWhale()
         return
-        /*            if slot < 1.0
-                {
+        /*
+                if slot < 1.0 {
                     spawnShip()  // 0.0 - 1.0 (1/8)
                 } else if slot < 2.0 {
                     spawnWhale()  // 1.0 - 2.0 (1/8)
@@ -239,7 +237,7 @@ class AsciiquariumEngine: ObservableObject {
                 } else if slot < 4.0 {
                     spawnBigFish()  // 3.0 - 4.0 (1/8)
                 } else if slot < 5.0 {
-                    spawnShip()  // 4.0 - 5.0 (1/8)
+                    spawnShark()  // 4.0 - 5.0 (1/8)
                 } else if slot < 6.0 {
                     // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
                     spawnWhale()  // Fallback to whale for now
@@ -259,9 +257,9 @@ class AsciiquariumEngine: ObservableObject {
         let screenSize = (gridHeight - SpawnConfig.surfaceRegionHeight) * gridWidth
         let fishCount = max(1, screenSize / SpawnConfig.fishDensityDivisor)
 
-        /*        for _ in 0..<fishCount {
-                    spawnFish()
-                }*/
+        for _ in 0..<fishCount {
+            spawnFish()
+        }
     }
 
     private func spawnBottomDecor() {
@@ -510,7 +508,7 @@ class AsciiquariumEngine: ObservableObject {
             spawnX = gridWidth
         }
 
-        whale.position = Position3D(spawnX, 0, Depth.waterGap2)
+        whale.position = Position3D(spawnX, 2, Depth.waterGap2)
 
         // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
         whale.deathCallback = { [weak self] in

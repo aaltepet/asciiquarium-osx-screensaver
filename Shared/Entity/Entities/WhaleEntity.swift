@@ -13,28 +13,29 @@ class WhaleEntity: BaseEntity {
     var speed: Double = 0.5  // Speed matching Perl: $speed = 1
     private var fractionalX: Double = 0.0  // Accumulate fractional movement
 
+    // Spout animation properties
+    private let originalShape: [String]
+    private var spoutFrame: Int? = nil
+    private let spoutDelay = 20
+    private let spoutLength = 10
+    private let spoutShapes = ["'", "`", "."]
+
     // Whale shapes (left and right facing) - matching Perl
-    // Note: Shape includes empty lines at top for spout area (3 lines) + whale body (4 lines)
-    // The spout animation is handled separately in Perl, but for now we'll use a static shape.
-    // Spout animation can be added later by updating the shape array dynamically.
+    // Note: The top line is reserved for the spout.
     private static let whaleShapeRight = [
-        "",  // Spout line 1 (empty for now)
-        "",  // Spout line 2 (empty for now)
-        "",  // Spout line 3 (empty for now)
-        "        .-----:",  // Whale line 1
-        "      .'       `.",  // Whale line 2
-        ",xxxx/       (o) \\",  // Whale line 3
-        "\\`._/          ,__)",  // Whale line 4
+        "                              ",  // Spout line
+        "        .-----:",
+        "      .'       `.",
+        ",    /       (o) \\",
+        "\\`._/          ,__)",
     ]
 
     private static let whaleShapeLeft = [
-        "",  // Spout line 1 (empty for now)
-        "",  // Spout line 2 (empty for now)
-        "",  // Spout line 3 (empty for now)
-        "    :-----.",  // Whale line 1
-        "  .'       `.",  // Whale line 2
-        " / (o)       \\    ,",  // Whale line 3
-        "(__,          \\_.'/",  // Whale line 4
+        "                              ",  // Spout line
+        "    :-----.",
+        "  .'       `.",
+        " / (o)       \\    ,",
+        "(__,          \\_.'/",
     ]
 
     // Whale color masks (matching Perl: @whale_mask)
@@ -42,9 +43,7 @@ class WhaleEntity: BaseEntity {
     // 'C' = cyan bright, 'B' = blue, 'W' = white
     // Note: Masks include spout area (3 extra lines at top) + whale shape (4 lines)
     private static let whaleMaskRight = [
-        "             C C",  // Spout line 1
-        "           CCCCCCC",  // Spout line 2
-        "           C  C  C",  // Spout line 3
+        "",  // Spout line (no color)
         "        BBBBBBB",  // Whale line 1
         "      BBxxxxxxxBB",  // Whale line 2
         "B    BxxxxxxxBWBxB",  // Whale line 3
@@ -52,9 +51,7 @@ class WhaleEntity: BaseEntity {
     ]
 
     private static let whaleMaskLeft = [
-        "   C C",  // Spout line 1
-        " CCCCCCC",  // Spout line 2
-        " C  C  C",  // Spout line 3
+        "",  // Spout line (no color)
         "    BBBBBBB",  // Whale line 1
         "  BBxxxxxxxBB",  // Whale line 2
         " BxBWBxxxxxxxB    B",  // Whale line 3
@@ -67,6 +64,7 @@ class WhaleEntity: BaseEntity {
         let shape = randomDir > 0 ? WhaleEntity.whaleShapeRight : WhaleEntity.whaleShapeLeft
         let mask = randomDir > 0 ? WhaleEntity.whaleMaskRight : WhaleEntity.whaleMaskLeft
 
+        self.originalShape = shape
         super.init(name: name, type: .whale, shape: shape, position: position)
         self.direction = randomDir
         self.colorMask = mask
@@ -79,6 +77,47 @@ class WhaleEntity: BaseEntity {
         autoTransparent = true
         // Perl: callback_args => [ $speed, 0, 0, 1 ]
         callbackArgs = [speed, Double(direction), 0.0, 1.0]
+    }
+
+    override func update(deltaTime: TimeInterval) {
+        super.update(deltaTime: deltaTime)
+        handleSpoutAnimation()
+    }
+
+    private func handleSpoutAnimation() {
+        // Check if it's time to start the spout animation
+        if spoutFrame == nil && (frameCount % (spoutDelay + spoutLength)) > spoutDelay {
+            spoutFrame = 0
+        }
+
+        if var frame = spoutFrame {
+            // End of spout animation
+            if frame >= spoutLength {
+                spoutFrame = nil
+                shape = originalShape
+            } else {
+                // Display spout frame
+                let spoutChar = spoutShapes.randomElement() ?? "."
+                var newShape = originalShape
+                let spoutX = direction > 0 ? 29 : 5
+
+                let spoutY = 0  // Top line of the shape
+                if spoutY < newShape.count {
+                    var line = newShape[spoutY]
+                    let index =
+                        line.index(line.startIndex, offsetBy: spoutX, limitedBy: line.endIndex)
+                        ?? line.endIndex
+                    if index < line.endIndex {
+                        line.replaceSubrange(index...index, with: spoutChar)
+                        newShape[spoutY] = line
+                    }
+                }
+
+                shape = newShape
+                frame += 1
+                spoutFrame = frame
+            }
+        }
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {

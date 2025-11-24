@@ -295,24 +295,24 @@ if shouldGenerateBubble() {
 **Why**: Surface entities add visual variety and complete the "aquarium" experience. They're visible and engaging.
 
 **Tasks**:
-- [ ] Implement **Ship** entity
+- [X] Implement **Ship** entity
   - Spawns at surface region (y ∈ 0…8) at `water_gap1` depth
   - Moves horizontally, dies offscreen, respawns
   - ASCII art ship shape
-- [ ] Implement **Ducks** entity
+- [X] Implement **Ducks** entity
   - Spawns at surface region at `water_gap3` depth
   - Moves horizontally, dies offscreen, respawns
   - Animated duck shapes
 - [ ] Implement **Swan** entity
   - Similar to ducks but with swan-specific shape
   - Spawns at `water_gap3` depth
-- [ ] Implement **Dolphins** entity
+- [X] Implement **Dolphins** entity
   - Surface entity at `water_gap3` depth
   - May have jumping animation
 - [ ] Implement **Whale** entity
   - Large surface entity at `water_gap2` depth
   - Spawns occasionally
-- [ ] Implement **Monster** entity
+- [X] Implement **Monster** entity
   - Sea monster at surface region, `water_gap2` depth
   - Only appears in surface region (never underwater)
 
