@@ -21,13 +21,13 @@ class DolphinEntity: BaseEntity {
     // Each direction has 2 animation frames (up and down positions)
     private static let dolphinShapeRightFrames = [
         [
-            "        ,",
+            "*       ,",
             "      __)\\_",
             "(\\_.-'    a`-.",
             "(/~~````(/~^^`",
         ],
         [
-            "        ,",
+            "*       ,",
             "(\\__  __)\\_",
             "(/~.''    a`-.",
             "    ````\\)~^^`",
@@ -40,13 +40,13 @@ class DolphinEntity: BaseEntity {
     // Each frame needs its own mask to match the shape
     private static let dolphinMaskRightFrames = [
         [
-            "        x",
+            "*       x",
             "      xxxxx",
             "xxxxxxxxxxWxxx",
             "xxxxxxxxxxxxxx",
         ],
         [
-            "        x",
+            "*       x",
             "xxxx  xxxxx",
             "xxxxxxxxxxWxxx",
             "    xxxxxxxxxx",
@@ -55,13 +55,13 @@ class DolphinEntity: BaseEntity {
 
     private static let dolphinShapeLeftFrames = [
         [
-            "     ,",
+            "*    ,",
             "   _/(__",
             ".-'a    `-._/)",
             "'^^~\\)''''~~\\)",
         ],
         [
-            "     ,",
+            "*    ,",
             "   _/(__  __/)",
             ".-'a    ``.~\\)",
             "'^^~(/''''",
@@ -70,13 +70,13 @@ class DolphinEntity: BaseEntity {
 
     private static let dolphinMaskLeftFrames = [
         [
-            "     x        ",
+            "*    x        ",
             "   xxxxx      ",
             "xxxWxxxxxxxxxx",
             "xxxxxxxxxxxxxx",
         ],
         [
-            "     x        ",
+            "*    x        ",
             "   xxxxx  xxxx",
             "xxxWxxxxxxxxxx",
             "xxxxxxxxxx",

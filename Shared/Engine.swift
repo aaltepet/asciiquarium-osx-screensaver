@@ -733,10 +733,24 @@ class AsciiquariumEngine: ObservableObject {
         dolphin3.dieOffscreen = false
 
         // Create path visualization entity (full-width, positioned at min y)
+        // Align with dolphin3 (offset 0) which starts at spawnX - (distance * 2)
+        // Calculate minY first to position the entity correctly
+        var pathMinY = baseY
+        var currentPathY = baseY
+        for step in path {
+            if step.count >= 3 {
+                let dy = step[2]
+                currentPathY += dy
+                pathMinY = min(pathMinY, currentPathY)
+            }
+        }
+        let dolphin3StartX = spawnX - (distance * 2)
         let pathEntity = DolphinPathEntity(
             name: "dolphin_path_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX - (distance * 2), Int(dolphin3Y), 1),
+            position: Position3D(0, 0, 1),  // Y will be calculated by entity based on minY
             path: path,
+            baseY: baseY,  // Pass original baseY (8.0), not pathMinY
+            dolphinStartX: dolphin3StartX
         )
         // Update position to the calculated min Y
         // pathEntity.position.y = pathEntity.calculateMinY()
