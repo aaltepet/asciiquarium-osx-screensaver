@@ -226,8 +226,8 @@ class AsciiquariumEngine: ObservableObject {
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
 
-        //spawnDolphins()
-        spawnMonster()
+        spawnDolphins()
+        //spawnMonster()
         return
         /*            if slot < 1.0
                 {
@@ -720,10 +720,11 @@ class AsciiquariumEngine: ObservableObject {
         let dolphin1Y = calculateYAtStep(24, baseY: baseY)  // Where dolphin3 would be at step 24
 
         // Create 3 dolphins with different positions and path offsets
+        // Dolphins use water_gap1 (depth 7) to render just below the frontmost waterline (water_line0 at depth 8)
         // Dolphin 3 (trailing): x - (distance * 2), calculated y, offset=0
         let dolphin3 = DolphinEntity(
             name: "dolphin3_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX - (distance * 2), Int(dolphin3Y), Depth.waterGap3),
+            position: Position3D(spawnX - (distance * 2), Int(dolphin3Y), Depth.waterGap1),
             direction: randomDir,
             pathOffset: 0,
             path: path
@@ -734,7 +735,7 @@ class AsciiquariumEngine: ObservableObject {
         // Dolphin 2 (middle): x - distance, calculated y, offset=12
         let dolphin2 = DolphinEntity(
             name: "dolphin2_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX - distance, Int(dolphin2Y), Depth.waterGap3),
+            position: Position3D(spawnX - distance, Int(dolphin2Y), Depth.waterGap1),
             direction: randomDir,
             pathOffset: 12,
             path: path
@@ -745,7 +746,7 @@ class AsciiquariumEngine: ObservableObject {
         // Dolphin 1 (lead): x, calculated y, offset=24
         let dolphin1 = DolphinEntity(
             name: "dolphin1_\(UUID().uuidString.prefix(8))",
-            position: Position3D(spawnX, Int(dolphin1Y), Depth.waterGap3),
+            position: Position3D(spawnX, Int(dolphin1Y), Depth.waterGap1),
             direction: randomDir,
             pathOffset: 24,
             path: path
