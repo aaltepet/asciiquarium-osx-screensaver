@@ -143,10 +143,9 @@ class DolphinEntity: BaseEntity {
             return Position3D(position.x + moveX, position.y, position.z)
         }
 
-        // Follow the path
-        // The pathOffset is the step index to start at, not a delay
-        // So dolphin2 with offset 12 starts at step 12 of the path
-        let stepIndex = (frameCount + pathOffset) % path.count
+        // Follow the path, using an effective frame count that starts from 0 after the delay
+        let effectiveFrameCount = frameCount - pathOffset
+        let stepIndex = effectiveFrameCount % path.count
 
         guard stepIndex < path.count else {
             return nil

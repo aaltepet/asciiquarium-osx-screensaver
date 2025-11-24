@@ -691,33 +691,10 @@ class AsciiquariumEngine: ObservableObject {
             spawnX = gridWidth - 2
         }
 
-        // Calculate starting y positions based on path offset
-        // All dolphins should follow the same vertical range, just offset in time
-        // Path: 14 up (-0.5 each), 2 glide (0), 14 down (+0.5 each), 6 glide (0)
-        // Base dolphin3 starts at y=8 with offset 0 (step 0)
-        // We need to calculate where each dolphin should be based on their path offset
-
-        // Calculate cumulative y position for each path step
-        // Step 0: y = 8 (base starting position for dolphin3)
-        // For each step, add the dy value to get the y position
-        func calculateYAtStep(_ step: Int, baseY: Double) -> Double {
-            var y = baseY
-            for i in 0..<step {
-                if i < path.count {
-                    let stepData = path[i]
-                    if stepData.count >= 3 {
-                        let dy = stepData[2]  // Vertical movement per step
-                        y += dy
-                    }
-                }
-            }
-            return y
-        }
-
-        let baseY: Double = 8.0  // Dolphin3's starting y
+        let baseY: Double = 8.0  // All dolphins start at the same Y
         let dolphin3Y = baseY
-        let dolphin2Y = calculateYAtStep(12, baseY: baseY)  // Where dolphin3 would be at step 12
-        let dolphin1Y = calculateYAtStep(24, baseY: baseY)  // Where dolphin3 would be at step 24
+        let dolphin2Y = baseY
+        let dolphin1Y = baseY
 
         // Create 3 dolphins with different positions and path offsets
         // Dolphins use water_gap1 (depth 7) to render just below the frontmost waterline (water_line0 at depth 8)
@@ -731,29 +708,6 @@ class AsciiquariumEngine: ObservableObject {
         )
         dolphin3.defaultColor = .blue
         dolphin3.dieOffscreen = false
-
-        // Create path visualization entity (full-width, positioned at min y)
-        // Align with dolphin3 (offset 0) which starts at spawnX - (distance * 2)
-        // Calculate minY first to position the entity correctly
-        var pathMinY = baseY
-        var currentPathY = baseY
-        for step in path {
-            if step.count >= 3 {
-                let dy = step[2]
-                currentPathY += dy
-                pathMinY = min(pathMinY, currentPathY)
-            }
-        }
-        let dolphin3StartX = spawnX - (distance * 2)
-        let pathEntity = DolphinPathEntity(
-            name: "dolphin_path_\(UUID().uuidString.prefix(8))",
-            position: Position3D(0, 0, 1),  // Y will be calculated by entity based on minY
-            path: path,
-            baseY: baseY,  // Pass original baseY (8.0), not pathMinY
-            dolphinStartX: dolphin3StartX
-        )
-        // Update position to the calculated min Y
-        // pathEntity.position.y = pathEntity.calculateMinY()
 
         // Dolphin 2 (middle): x - distance, calculated y, offset=12
         let dolphin2 = DolphinEntity(
@@ -778,7 +732,6 @@ class AsciiquariumEngine: ObservableObject {
 
         // Lead dolphin's death callback kills path entity, tells others to die offscreen, then spawns random object
         dolphin1.deathCallback = { [weak self] in
-            pathEntity.kill()  // Kill the path visualization when dolphins die
             self?.spawnRandomObject()
         }
 
@@ -788,7 +741,6 @@ class AsciiquariumEngine: ObservableObject {
         dolphin3.spawnCallback = createSpawnCallback()
 
         // Add path visualization and all dolphins to entities
-        entities.append(pathEntity)
         entities.append(dolphin1)
         entities.append(dolphin2)
         entities.append(dolphin3)
