@@ -17,27 +17,26 @@ class WhaleEntity: BaseEntity {
     private var spoutCycle = 0
     private let spoutDelay = 20  // frames to wait
     private let spoutLength = 10  // frames spout is active
-    private var spoutShapesRight: [[String]] = []
-    private var spoutShapesLeft: [[String]] = []
+    private var spoutFrames: [[String]] = []
 
     // Whale shapes (left and right facing) - matching Perl
     // Note: The top lines are reserved for the spout and padded to avoid crashes.
     private static let whaleShapeRight = [
-        "                                ",  // Spout line 1
-        "                                ",  // Spout line 2
-        "                                ",  // Spout line 3
-        "        .-----:",
-        "      .'       `.",
-        ",    /       (o) \\",
+        "                    ",  // Spout line 1
+        "                    ",  // Spout line 2
+        "                    ",  // Spout line 3
+        "        .-----:     ",
+        "      .'       `.   ",
+        ",    /       (o) \\ ",
         "\\`._/          ,__)",
     ]
 
     private static let whaleShapeLeft = [
-        "                                ",  // Spout line 1
-        "                                ",  // Spout line 2
-        "                                ",  // Spout line 3
-        "    :-----.",
-        "  .'       `.",
+        "                    ",  // Spout line 1
+        "                    ",  // Spout line 2
+        "                    ",  // Spout line 3
+        "    :-----          ",
+        "  .'       `.       ",
         " / (o)       \\    ,",
         "(__,          \\_.'/",
     ]
@@ -47,21 +46,21 @@ class WhaleEntity: BaseEntity {
     // 'C' = cyan bright, 'B' = blue, 'W' = white
     // Note: Masks include spout area (3 extra lines at top) + whale shape (4 lines)
     private static let whaleMaskRight = [
-        "             C C  ",
-        "           CCCCCCC",
-        "           C  C  C",
-        "        BBBBBBB",
-        "      BBxxxxxxxBB",
-        "B    BxxxxxxxBWBxB",
+        "             C C   ",
+        "           CCCCCCC ",
+        "           C  C  C ",
+        "        BBBBBBB    ",
+        "      BBxxxxxxxBB  ",
+        "B    BxxxxxxxBWBxB ",
         "BBBBBxxxxxxxxxxBBBB",
     ]
 
     private static let whaleMaskLeft = [
-        "   C C",
-        " CCCCCCC",
-        " C  C  C",
-        "    BBBBBBB",
-        "  BBxxxxxxxBB",
+        "   C C             ",
+        " CCCCCCC           ",
+        " C  C  C           ",
+        "    BBBBBBB        ",
+        "  BBxxxxxxxBB      ",
         " BxBWBxxxxxxxB    B",
         "BBBBxxxxxxxxxxBBBBB",
     ]
@@ -80,25 +79,42 @@ class WhaleEntity: BaseEntity {
     }
 
     private func setupSpoutShapes() {
-        // This replicates the multi-frame spout animation from the Perl script
-        spoutShapesRight = [
-            ["", "", "   :"],
-            ["", "   :", "   :"],
-            ["  . .", "  -:-", "   :"],
-            ["  . .", " .-:-.", "   :"],
-            ["  . .", "'.-:-.`", "'  :  '"],
-            ["", " .- -.", ";  :  ;"],
-            ["", "", ";     ;"],
-        ]
-
-        spoutShapesLeft = [
-            ["", "", ":"],
-            ["", ":", ":"],
-            [". .", "-:-", ":"],
-            [". .", ".-:-.", ":"],
-            [". .", ".-:-.", "'  :  '"],
-            ["", ".- -.", ";  :  ;"],
-            ["", "", ";     ;"],
+        spoutFrames = [
+            [
+                "       ",
+                "       ",
+                "   :   ",
+            ],
+            [
+                "       ",
+                "   :   ",
+                "   :   ",
+            ],
+            [
+                "  . .  ",
+                "  -:-  ",
+                "   :   ",
+            ],
+            [
+                "  . .  ",
+                " .-:-. ",
+                "   :   ",
+            ],
+            [
+                "  . .  ",
+                " .-:-. ",
+                "'  :  '",
+            ],
+            [
+                "       ",
+                " .- -. ",
+                ";  :  ;",
+            ],
+            [
+                "       ",
+                "       ",
+                ";     ;",
+            ],
         ]
     }
 
@@ -120,19 +136,10 @@ class WhaleEntity: BaseEntity {
 
         if spoutCycle > spoutDelay {
             let frameIndex = spoutCycle - spoutDelay - 1
-            let spoutAnimation: [[String]]
-            var spoutX: Int
+            let spoutX = direction > 0 ? 11 : 1
 
-            if direction > 0 {  // Right-facing
-                spoutAnimation = spoutShapesRight
-                spoutX = 18
-            } else {  // Left-facing
-                spoutAnimation = spoutShapesLeft
-                spoutX = 3
-            }
-
-            if frameIndex < spoutAnimation.count {
-                let spoutShape = spoutAnimation[frameIndex]
+            if frameIndex < spoutFrames.count {
+                let spoutShape = spoutFrames[frameIndex]
                 var newShape =
                     direction > 0 ? WhaleEntity.whaleShapeRight : WhaleEntity.whaleShapeLeft
 
