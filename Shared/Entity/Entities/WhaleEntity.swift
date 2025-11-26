@@ -14,16 +14,18 @@ class WhaleEntity: BaseEntity {
     private var fractionalX: Double = 0.0  // Accumulate fractional movement
 
     // Spout animation properties
-    private let originalShape: [String]
-    private var spoutFrame: Int? = nil
-    private let spoutDelay = 20
-    private let spoutLength = 10
-    private let spoutShapes = ["'", "`", "."]
+    private var spoutCycle = 0
+    private let spoutDelay = 20  // frames to wait
+    private let spoutLength = 10  // frames spout is active
+    private var spoutShapesRight: [[String]] = []
+    private var spoutShapesLeft: [[String]] = []
 
     // Whale shapes (left and right facing) - matching Perl
-    // Note: The top line is reserved for the spout.
+    // Note: The top lines are reserved for the spout and padded to avoid crashes.
     private static let whaleShapeRight = [
-        "                              ",  // Spout line
+        "                                ",  // Spout line 1
+        "                                ",  // Spout line 2
+        "                                ",  // Spout line 3
         "        .-----:",
         "      .'       `.",
         ",    /       (o) \\",
@@ -31,7 +33,9 @@ class WhaleEntity: BaseEntity {
     ]
 
     private static let whaleShapeLeft = [
-        "                              ",  // Spout line
+        "                                ",  // Spout line 1
+        "                                ",  // Spout line 2
+        "                                ",  // Spout line 3
         "    :-----.",
         "  .'       `.",
         " / (o)       \\    ,",
@@ -43,19 +47,23 @@ class WhaleEntity: BaseEntity {
     // 'C' = cyan bright, 'B' = blue, 'W' = white
     // Note: Masks include spout area (3 extra lines at top) + whale shape (4 lines)
     private static let whaleMaskRight = [
-        "",  // Spout line (no color)
-        "        BBBBBBB",  // Whale line 1
-        "      BBxxxxxxxBB",  // Whale line 2
-        "B    BxxxxxxxBWBxB",  // Whale line 3
-        "BBBBBxxxxxxxxxxBBBB",  // Whale line 4
+        "             C C  ",
+        "           CCCCCCC",
+        "           C  C  C",
+        "        BBBBBBB",
+        "      BBxxxxxxxBB",
+        "B    BxxxxxxxBWBxB",
+        "BBBBBxxxxxxxxxxBBBB",
     ]
 
     private static let whaleMaskLeft = [
-        "",  // Spout line (no color)
-        "    BBBBBBB",  // Whale line 1
-        "  BBxxxxxxxBB",  // Whale line 2
-        " BxBWBxxxxxxxB    B",  // Whale line 3
-        "BBBBxxxxxxxxxxBBBBB",  // Whale line 4
+        "   C C",
+        " CCCCCCC",
+        " C  C  C",
+        "    BBBBBBB",
+        "  BBxxxxxxxBB",
+        " BxBWBxxxxxxxB    B",
+        "BBBBxxxxxxxxxxBBBBB",
     ]
 
     init(name: String, position: Position3D) {
@@ -64,11 +72,34 @@ class WhaleEntity: BaseEntity {
         let shape = randomDir > 0 ? WhaleEntity.whaleShapeRight : WhaleEntity.whaleShapeLeft
         let mask = randomDir > 0 ? WhaleEntity.whaleMaskRight : WhaleEntity.whaleMaskLeft
 
-        self.originalShape = shape
         super.init(name: name, type: .whale, shape: shape, position: position)
         self.direction = randomDir
         self.colorMask = mask
+        setupSpoutShapes()
         setupWhale()
+    }
+
+    private func setupSpoutShapes() {
+        // This replicates the multi-frame spout animation from the Perl script
+        spoutShapesRight = [
+            ["", "", "   :"],
+            ["", "   :", "   :"],
+            ["  . .", "  -:-", "   :"],
+            ["  . .", " .-:-.", "   :"],
+            ["  . .", "'.-:-.`", "'  :  '"],
+            ["", " .- -.", ";  :  ;"],
+            ["", "", ";     ;"],
+        ]
+
+        spoutShapesLeft = [
+            ["", "", ":"],
+            ["", ":", ":"],
+            [". .", "-:-", ":"],
+            [". .", ".-:-.", ":"],
+            [". .", ".-:-.", "'  :  '"],
+            ["", ".- -.", ";  :  ;"],
+            ["", "", ";     ;"],
+        ]
     }
 
     private func setupWhale() {
@@ -85,38 +116,45 @@ class WhaleEntity: BaseEntity {
     }
 
     private func handleSpoutAnimation() {
-        // Check if it's time to start the spout animation
-        if spoutFrame == nil && (frameCount % (spoutDelay + spoutLength)) > spoutDelay {
-            spoutFrame = 0
-        }
+        spoutCycle = (spoutCycle + 1) % (spoutDelay + spoutLength)
 
-        if var frame = spoutFrame {
-            // End of spout animation
-            if frame >= spoutLength {
-                spoutFrame = nil
-                shape = originalShape
-            } else {
-                // Display spout frame
-                let spoutChar = spoutShapes.randomElement() ?? "."
-                var newShape = originalShape
-                let spoutX = direction > 0 ? 29 : 5
+        if spoutCycle > spoutDelay {
+            let frameIndex = spoutCycle - spoutDelay - 1
+            let spoutAnimation: [[String]]
+            var spoutX: Int
 
-                let spoutY = 0  // Top line of the shape
-                if spoutY < newShape.count {
-                    var line = newShape[spoutY]
-                    let index =
-                        line.index(line.startIndex, offsetBy: spoutX, limitedBy: line.endIndex)
-                        ?? line.endIndex
-                    if index < line.endIndex {
-                        line.replaceSubrange(index...index, with: spoutChar)
-                        newShape[spoutY] = line
+            if direction > 0 {  // Right-facing
+                spoutAnimation = spoutShapesRight
+                spoutX = 18
+            } else {  // Left-facing
+                spoutAnimation = spoutShapesLeft
+                spoutX = 3
+            }
+
+            if frameIndex < spoutAnimation.count {
+                let spoutShape = spoutAnimation[frameIndex]
+                var newShape =
+                    direction > 0 ? WhaleEntity.whaleShapeRight : WhaleEntity.whaleShapeLeft
+
+                for (i, spoutLine) in spoutShape.enumerated() {
+                    if i < newShape.count {
+                        var line = newShape[i]
+                        let start = line.index(line.startIndex, offsetBy: spoutX)
+                        let end =
+                            line.index(start, offsetBy: spoutLine.count, limitedBy: line.endIndex)
+                            ?? line.endIndex
+                        let range = start..<end
+                        if range.upperBound <= line.endIndex {
+                            line.replaceSubrange(range, with: spoutLine)
+                            newShape[i] = line
+                        }
                     }
                 }
-
-                shape = newShape
-                frame += 1
-                spoutFrame = frame
+                self.shape = newShape
             }
+        } else {
+            // Restore original shape when not spouting
+            self.shape = direction > 0 ? WhaleEntity.whaleShapeRight : WhaleEntity.whaleShapeLeft
         }
     }
 

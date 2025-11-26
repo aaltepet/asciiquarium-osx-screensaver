@@ -490,9 +490,8 @@ class AsciiquariumEngine: ObservableObject {
 
     /// Spawn a new whale (matching Perl: add_whale)
     private func spawnWhale() {
-        // Perl: position => [ $x, 0, $depth{'water_gap2'} ]
-        // Whale spawns at y=0 (surface) at water_gap2 depth
-        // Create whale (direction is randomized in WhaleEntity.init)
+        // Create the whale entity to get its properties (direction, width)
+        // It spawns at a temporary position and will be moved before being rendered
         let whale = EntityFactory.createWhale(at: Position3D(0, 0, Depth.waterGap2))
         let whaleWidth = whale.size.width
 
@@ -508,9 +507,10 @@ class AsciiquariumEngine: ObservableObject {
             spawnX = gridWidth
         }
 
-        whale.position = Position3D(spawnX, 2, Depth.waterGap2)
+        // Set the final position of the whale. The Y position is 0, matching the Perl script.
+        whale.position = Position3D(spawnX, 0, Depth.waterGap2)
 
-        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
+        // Set death callback to spawn a new random object
         whale.deathCallback = { [weak self] in
             self?.spawnRandomObject()
         }
@@ -651,7 +651,7 @@ class AsciiquariumEngine: ObservableObject {
     /// Spawn a group of 3 dolphins (matching Perl: add_dolphins)
     private func spawnDolphins() {
         // Perl: creates 3 dolphins that follow the same path with different delays
-        let randomDir = 1  //Bool.random() ? 1 : -1
+        let randomDir = Bool.random() ? 1 : -1
         let speed = 1.0
         let distance = 15  // How far apart the dolphins are
 
