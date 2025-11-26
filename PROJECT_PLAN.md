@@ -303,13 +303,13 @@ if shouldGenerateBubble() {
   - Spawns at surface region at `water_gap3` depth
   - Moves horizontally, dies offscreen, respawns
   - Animated duck shapes
-- [ ] Implement **Swan** entity
+- [X] Implement **Swan** entity
   - Similar to ducks but with swan-specific shape
   - Spawns at `water_gap3` depth
 - [X] Implement **Dolphins** entity
   - Surface entity at `water_gap3` depth
   - May have jumping animation
-- [ ] Implement **Whale** entity
+- [X] Implement **Whale** entity
   - Large surface entity at `water_gap2` depth
   - Spawns occasionally
 - [X] Implement **Monster** entity
@@ -360,7 +360,7 @@ if shouldGenerateBubble() {
 **Why**: Adds variety to fish types.
 
 **Tasks**:
-- [ ] Implement **BigFish** entity
+- [X] Implement **BigFish** entity
   - Larger fish shape
   - Different movement pattern
   - Spawns less frequently than regular fish
