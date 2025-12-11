@@ -9,19 +9,6 @@ import Foundation
 
 // MARK: - Placeholder Entities (to be implemented)
 
-class TeethEntity: BaseEntity {
-    init(name: String, position: Position3D) {
-        super.init(name: name, type: .teeth, shape: ["*"], position: position)
-        setupTeeth()
-    }
-
-    private func setupTeeth() {
-        isPhysical = true
-        defaultColor = .white
-        callbackArgs = [2.0, 1.0, 0.0, 0.0]
-    }
-}
-
 class FishhookEntity: BaseEntity {
     init(name: String, position: Position3D) {
         super.init(name: name, type: .fishhook, shape: [""], position: position)

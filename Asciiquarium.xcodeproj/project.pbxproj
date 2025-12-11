@@ -78,6 +78,7 @@
 		83E0F7E32E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
 		83E0F7E42E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
 		83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
+		831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831B9AB92ED3EBA20059B853 /* TeethEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		836CB76A2E726FFF00A5207B /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		836CB7732E726FFF00A5207B /* FontMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontMetrics.swift; sourceTree = "<group>"; };
 		83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldLayout.swift; sourceTree = "<group>"; };
+		831B9AB92ED3EBA20059B853 /* TeethEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -187,6 +189,7 @@
 		8311527E2E773B2600E05696 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				831B9AB92ED3EBA20059B853 /* TeethEntity.swift */,
 				831152772E773B2600E05696 /* BubbleEntity.swift */,
 				831152782E773B2600E05696 /* CastleEntity.swift */,
 				831152792E773B2600E05696 /* FishEntity.swift */,
@@ -471,6 +474,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */,
 				836CB7652E726FD300A5207B /* ContentView.swift in Sources */,
 				831152912E773B2600E05696 /* WaterlineEntity.swift in Sources */,
 				831152922E773B2600E05696 /* SeaweedEntity.swift in Sources */,
@@ -505,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */,
 				836CB7702E726FFF00A5207B /* Engine.swift in Sources */,
 				836CB7712E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
 				8311529D2E773B2600E05696 /* WaterlineEntity.swift in Sources */,
@@ -537,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */,
 				831152B32E77837800E05696 /* EntityFullWidth.swift in Sources */,
 				836CB8CE2E77054800A5207B /* Engine.swift in Sources */,
 				836CB8CF2E77054800A5207B /* ASCIIRenderer.swift in Sources */,

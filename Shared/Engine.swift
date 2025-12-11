@@ -437,15 +437,28 @@ class AsciiquariumEngine: ObservableObject {
         // Right: $x = -53
         // Left: $x = $anim->width()-2
         let spawnX: Int
+        var teethX: Int
         if shark.direction > 0 {
             // Moving right: spawn off-screen to the left
             spawnX = -sharkWidth
+            teethX = spawnX + sharkWidth - 9  // teeth at the front right
         } else {
             // Moving left: spawn off-screen to the right
             spawnX = gridWidth
+            teethX = spawnX + 9  // teeth at the front left
         }
 
         shark.position = Position3D(spawnX, spawnY, Depth.shark)
+
+        let teethY = spawnY + 7
+        let teeth = EntityFactory.create(
+            from: .teeth(position: Position3D(teethX, teethY, Depth.shark - 1)))
+
+        if let teeth = teeth as? TeethEntity {
+            teeth.speed = shark.speed
+            teeth.direction = shark.direction
+            teeth.callbackArgs = [shark.speed, Double(shark.direction), 0.0, 0.0]
+        }
 
         // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
         // Perl has 8 random object types, so shark has 1/8 chance of respawning
@@ -454,7 +467,9 @@ class AsciiquariumEngine: ObservableObject {
         }
 
         shark.spawnCallback = createSpawnCallback()
+        teeth.spawnCallback = createSpawnCallback()
         entities.append(shark)
+        entities.append(teeth)
     }
 
     /// Spawn a new ship (matching Perl: add_ship)

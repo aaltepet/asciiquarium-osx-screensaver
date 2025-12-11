@@ -113,6 +113,12 @@ class EntityFactory {
         return SharkEntity(name: "shark_\(UUID().uuidString.prefix(8))", position: position)
     }
 
+    static func createTeeth(at position: Position3D, speed: Double, direction: Int) -> TeethEntity {
+        return TeethEntity(
+            name: "teeth_\(UUID().uuidString.prefix(8))", position: position, speed: speed,
+            direction: direction)
+    }
+
     static func createSplat(at position: Position3D) -> SplatEntity {
         return SplatEntity(name: "splat_\(UUID().uuidString.prefix(8))", position: position)
     }

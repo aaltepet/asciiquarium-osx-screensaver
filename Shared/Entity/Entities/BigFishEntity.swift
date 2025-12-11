@@ -93,12 +93,8 @@ class BigFishEntity: BaseEntity {
         let mask = randomDir > 0 ? BigFishEntity.bigFishMaskRight : BigFishEntity.bigFishMaskLeft
 
         super.init(name: name, type: .bigFish, shape: shape, position: position)
-        self.direction = randomDir
-        self.colorMask = mask
-        setupBigFish()
-    }
-
-    private func setupBigFish() {
+        direction = randomDir
+        colorMask = mask
         dieOffscreen = true
         defaultColor = .yellow
         autoTransparent = true
