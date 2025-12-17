@@ -7,87 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		831152852E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
-		831152862E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
-		831152872E773B2600E05696 /* EntityTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152832E773B2600E05696 /* EntityTypes.swift */; };
-		831152882E773B2600E05696 /* PlaceholderEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527A2E773B2600E05696 /* PlaceholderEntities.swift */; };
-		831152892E773B2600E05696 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152802E773B2600E05696 /* Entity.swift */; };
-		8311528A2E773B2600E05696 /* SharkEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527C2E773B2600E05696 /* SharkEntity.swift */; };
-		8311528B2E773B2600E05696 /* CastleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152782E773B2600E05696 /* CastleEntity.swift */; };
-		8311528C2E773B2600E05696 /* EntityProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152822E773B2600E05696 /* EntityProtocol.swift */; };
-		8311528D2E773B2600E05696 /* FishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152792E773B2600E05696 /* FishEntity.swift */; };
-		8311528E2E773B2600E05696 /* EntityFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152812E773B2600E05696 /* EntityFactory.swift */; };
-		8311528F2E773B2600E05696 /* BubbleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152772E773B2600E05696 /* BubbleEntity.swift */; };
-		831152902E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
-		831152912E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
-		831152922E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
-		831152932E773B2600E05696 /* EntityTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152832E773B2600E05696 /* EntityTypes.swift */; };
-		831152942E773B2600E05696 /* PlaceholderEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527A2E773B2600E05696 /* PlaceholderEntities.swift */; };
-		831152952E773B2600E05696 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152802E773B2600E05696 /* Entity.swift */; };
-		831152962E773B2600E05696 /* SharkEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527C2E773B2600E05696 /* SharkEntity.swift */; };
-		831152972E773B2600E05696 /* CastleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152782E773B2600E05696 /* CastleEntity.swift */; };
-		831152982E773B2600E05696 /* EntityProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152822E773B2600E05696 /* EntityProtocol.swift */; };
-		831152992E773B2600E05696 /* FishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152792E773B2600E05696 /* FishEntity.swift */; };
-		8311529A2E773B2600E05696 /* EntityFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152812E773B2600E05696 /* EntityFactory.swift */; };
-		8311529B2E773B2600E05696 /* BubbleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152772E773B2600E05696 /* BubbleEntity.swift */; };
-		8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
-		8311529D2E773B2600E05696 /* WaterlineEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527D2E773B2600E05696 /* WaterlineEntity.swift */; };
-		8311529E2E773B2600E05696 /* SeaweedEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527B2E773B2600E05696 /* SeaweedEntity.swift */; };
-		8311529F2E773B2600E05696 /* EntityTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152832E773B2600E05696 /* EntityTypes.swift */; };
-		831152A02E773B2600E05696 /* PlaceholderEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527A2E773B2600E05696 /* PlaceholderEntities.swift */; };
-		831152A12E773B2600E05696 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152802E773B2600E05696 /* Entity.swift */; };
-		831152A22E773B2600E05696 /* SharkEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527C2E773B2600E05696 /* SharkEntity.swift */; };
-		831152A32E773B2600E05696 /* CastleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152782E773B2600E05696 /* CastleEntity.swift */; };
-		831152A42E773B2600E05696 /* EntityProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152822E773B2600E05696 /* EntityProtocol.swift */; };
-		831152A52E773B2600E05696 /* FishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152792E773B2600E05696 /* FishEntity.swift */; };
-		831152A62E773B2600E05696 /* EntityFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152812E773B2600E05696 /* EntityFactory.swift */; };
-		831152A72E773B2600E05696 /* BubbleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152772E773B2600E05696 /* BubbleEntity.swift */; };
-		831152A82E773B2600E05696 /* BaseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8311527F2E773B2600E05696 /* BaseEntity.swift */; };
-		831152AA2E773B2600E05696 /* SplatEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152A92E773B2600E05697 /* SplatEntity.swift */; };
-		831152AB2E773B2600E05696 /* SplatEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152A92E773B2600E05697 /* SplatEntity.swift */; };
-		831152AD2E773B2600E05698 /* ShipEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AC2E773B2600E05698 /* ShipEntity.swift */; };
-		831152AE2E773B2600E05698 /* ShipEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AC2E773B2600E05698 /* ShipEntity.swift */; };
-		831152B02E773B2600E05699 /* WhaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AF2E773B2600E05699 /* WhaleEntity.swift */; };
-		831152B12E773B2600E05699 /* WhaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AF2E773B2600E05699 /* WhaleEntity.swift */; };
-		831152B22E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
-		831152B32E773B2600E0569A /* MonsterEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B22E773B2600E0569A /* MonsterEntity.swift */; };
-		831152B32E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
-		831152B42E773B2600E0569A /* MonsterEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B22E773B2600E0569A /* MonsterEntity.swift */; };
-		831152B42E77837800E05696 /* EntityFullWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B12E77837800E05696 /* EntityFullWidth.swift */; };
-		831152B52E773B2600E0569B /* SwanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B42E773B2600E0569B /* SwanEntity.swift */; };
-		831152B62E773B2600E0569B /* SwanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B42E773B2600E0569B /* SwanEntity.swift */; };
-		831152B72E773B2600E0569C /* DucksEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B62E773B2600E0569C /* DucksEntity.swift */; };
-		831152B82E773B2600E0569C /* DucksEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B62E773B2600E0569C /* DucksEntity.swift */; };
-		831152B92E773B2600E0569D /* BigFishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B82E773B2600E0569D /* BigFishEntity.swift */; };
-		831152BA2E773B2600E0569D /* BigFishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B82E773B2600E0569D /* BigFishEntity.swift */; };
-		831152BB2E773B2600E0569E /* DolphinEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BA2E773B2600E0569E /* DolphinEntity.swift */; };
-		831152BC2E773B2600E0569E /* DolphinEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BA2E773B2600E0569E /* DolphinEntity.swift */; };
-		831B9AB82ED3EBA20059B853 /* SplatEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152A92E773B2600E05697 /* SplatEntity.swift */; };
-		831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831B9AB92ED3EBA20059B853 /* TeethEntity.swift */; };
-		8325FA6B2EEA691F008F8E15 /* TeethEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831B9AB92ED3EBA20059B853 /* TeethEntity.swift */; };
-		8325FA6C2EEA691F008F8E15 /* TeethEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831B9AB92ED3EBA20059B853 /* TeethEntity.swift */; };
-		8325FA872EEA72CF008F8E15 /* ShipEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AC2E773B2600E05698 /* ShipEntity.swift */; };
-		8325FA882EEA72E4008F8E15 /* WhaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152AF2E773B2600E05699 /* WhaleEntity.swift */; };
-		8325FA892EEA72EC008F8E15 /* MonsterEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B22E773B2600E0569A /* MonsterEntity.swift */; };
-		8325FA8A2EEA72F9008F8E15 /* SwanEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B42E773B2600E0569B /* SwanEntity.swift */; };
-		8325FA8B2EEA7300008F8E15 /* DucksEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B62E773B2600E0569C /* DucksEntity.swift */; };
-		8325FA8C2EEA732D008F8E15 /* BigFishEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152B82E773B2600E0569D /* BigFishEntity.swift */; };
-		8325FA8D2EEA733A008F8E15 /* DolphinEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831152BA2E773B2600E0569E /* DolphinEntity.swift */; };
 		836CB7652E726FD300A5207B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7632E726FD300A5207B /* ContentView.swift */; };
 		836CB7662E726FD300A5207B /* AsciiquariumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7612E726FD300A5207B /* AsciiquariumApp.swift */; };
 		836CB7672E726FD300A5207B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 836CB7622E726FD300A5207B /* Assets.xcassets */; };
 		836CB7682E726FD300A5207B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 836CB75E2E726FD300A5207B /* Preview Assets.xcassets */; };
-		836CB76D2E726FFF00A5207B /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76A2E726FFF00A5207B /* Engine.swift */; };
-		836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */; };
-		836CB7702E726FFF00A5207B /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76A2E726FFF00A5207B /* Engine.swift */; };
-		836CB7712E726FFF00A5207B /* ASCIIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */; };
-		836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7732E726FFF00A5207B /* FontMetrics.swift */; };
-		836CB8CD2E77054800A5207B /* FontMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7732E726FFF00A5207B /* FontMetrics.swift */; };
-		836CB8CE2E77054800A5207B /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB76A2E726FFF00A5207B /* Engine.swift */; };
-		836CB8CF2E77054800A5207B /* ASCIIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */; };
-		83E0F7E32E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
-		83E0F7E42E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
-		83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */; };
+		83D5EA8A2EF25D1200BB7C51 /* AsciiquariumCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83D5EA892EF25D1200BB7C51 /* AsciiquariumCore */; };
+		83D5EA8D2EF2DA5D00BB7C51 /* AsciiquariumCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83D5EA8C2EF2DA5D00BB7C51 /* AsciiquariumCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,28 +33,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		831152772E773B2600E05696 /* BubbleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleEntity.swift; sourceTree = "<group>"; };
-		831152782E773B2600E05696 /* CastleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastleEntity.swift; sourceTree = "<group>"; };
-		831152792E773B2600E05696 /* FishEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FishEntity.swift; sourceTree = "<group>"; };
-		8311527A2E773B2600E05696 /* PlaceholderEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderEntities.swift; sourceTree = "<group>"; };
-		8311527B2E773B2600E05696 /* SeaweedEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaweedEntity.swift; sourceTree = "<group>"; };
-		8311527C2E773B2600E05696 /* SharkEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharkEntity.swift; sourceTree = "<group>"; };
-		8311527D2E773B2600E05696 /* WaterlineEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterlineEntity.swift; sourceTree = "<group>"; };
-		8311527F2E773B2600E05696 /* BaseEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEntity.swift; sourceTree = "<group>"; };
-		831152802E773B2600E05696 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
-		831152812E773B2600E05696 /* EntityFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFactory.swift; sourceTree = "<group>"; };
-		831152822E773B2600E05696 /* EntityProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityProtocol.swift; sourceTree = "<group>"; };
-		831152832E773B2600E05696 /* EntityTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTypes.swift; sourceTree = "<group>"; };
-		831152A92E773B2600E05697 /* SplatEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatEntity.swift; sourceTree = "<group>"; };
-		831152AC2E773B2600E05698 /* ShipEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipEntity.swift; sourceTree = "<group>"; };
-		831152AF2E773B2600E05699 /* WhaleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhaleEntity.swift; sourceTree = "<group>"; };
-		831152B12E77837800E05696 /* EntityFullWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFullWidth.swift; sourceTree = "<group>"; };
-		831152B22E773B2600E0569A /* MonsterEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterEntity.swift; sourceTree = "<group>"; };
-		831152B42E773B2600E0569B /* SwanEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwanEntity.swift; sourceTree = "<group>"; };
-		831152B62E773B2600E0569C /* DucksEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DucksEntity.swift; sourceTree = "<group>"; };
-		831152B82E773B2600E0569D /* BigFishEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigFishEntity.swift; sourceTree = "<group>"; };
-		831152BA2E773B2600E0569E /* DolphinEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DolphinEntity.swift; sourceTree = "<group>"; };
-		831B9AB92ED3EBA20059B853 /* TeethEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethEntity.swift; sourceTree = "<group>"; };
 		836CB6E42E726B9F00A5207B /* AsciiquariumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiquariumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		836CB6F52E726BA100A5207B /* AsciiquariumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		836CB6FF2E726BA100A5207B /* AsciiquariumUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,18 +42,9 @@
 		836CB7612E726FD300A5207B /* AsciiquariumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsciiquariumApp.swift; sourceTree = "<group>"; };
 		836CB7622E726FD300A5207B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		836CB7632E726FD300A5207B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASCIIRenderer.swift; sourceTree = "<group>"; };
-		836CB76A2E726FFF00A5207B /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
-		836CB7732E726FFF00A5207B /* FontMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontMetrics.swift; sourceTree = "<group>"; };
-		83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		836CB6F82E726BA100A5207B /* AsciiquariumTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumTests;
-			sourceTree = "<group>";
-		};
 		836CB7022E726BA100A5207B /* AsciiquariumUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AsciiquariumUITests;
@@ -168,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83D5EA8D2EF2DA5D00BB7C51 /* AsciiquariumCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83D5EA8A2EF25D1200BB7C51 /* AsciiquariumCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,51 +91,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8311527E2E773B2600E05696 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				831B9AB92ED3EBA20059B853 /* TeethEntity.swift */,
-				831152772E773B2600E05696 /* BubbleEntity.swift */,
-				831152782E773B2600E05696 /* CastleEntity.swift */,
-				831152792E773B2600E05696 /* FishEntity.swift */,
-				8311527A2E773B2600E05696 /* PlaceholderEntities.swift */,
-				8311527B2E773B2600E05696 /* SeaweedEntity.swift */,
-				8311527C2E773B2600E05696 /* SharkEntity.swift */,
-				831152A92E773B2600E05697 /* SplatEntity.swift */,
-				831152AC2E773B2600E05698 /* ShipEntity.swift */,
-				831152AF2E773B2600E05699 /* WhaleEntity.swift */,
-				831152B22E773B2600E0569A /* MonsterEntity.swift */,
-				831152B42E773B2600E0569B /* SwanEntity.swift */,
-				831152B62E773B2600E0569C /* DucksEntity.swift */,
-				831152B82E773B2600E0569D /* BigFishEntity.swift */,
-				831152BA2E773B2600E0569E /* DolphinEntity.swift */,
-				8311527D2E773B2600E05696 /* WaterlineEntity.swift */,
-			);
-			path = Entities;
-			sourceTree = "<group>";
-		};
-		831152842E773B2600E05696 /* Entity */ = {
-			isa = PBXGroup;
-			children = (
-				8311527E2E773B2600E05696 /* Entities */,
-				8311527F2E773B2600E05696 /* BaseEntity.swift */,
-				831152802E773B2600E05696 /* Entity.swift */,
-				831152812E773B2600E05696 /* EntityFactory.swift */,
-				831152B12E77837800E05696 /* EntityFullWidth.swift */,
-				831152822E773B2600E05696 /* EntityProtocol.swift */,
-				831152832E773B2600E05696 /* EntityTypes.swift */,
-			);
-			path = Entity;
-			sourceTree = "<group>";
-		};
 		836CB6DB2E726B9F00A5207B = {
 			isa = PBXGroup;
 			children = (
-				836CB76C2E726FFF00A5207B /* Shared */,
 				836CB7642E726FD300A5207B /* AsciiquariumApp */,
-				836CB6F82E726BA100A5207B /* AsciiquariumTests */,
 				836CB7022E726BA100A5207B /* AsciiquariumUITests */,
 				836CB7182E726BE500A5207B /* AsciiquariumScreensaver */,
+				83D5EA8B2EF2DA5D00BB7C51 /* Frameworks */,
 				836CB6E52E726B9F00A5207B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -275,24 +133,11 @@
 			path = AsciiquariumApp;
 			sourceTree = "<group>";
 		};
-		836CB76C2E726FFF00A5207B /* Shared */ = {
+		83D5EA8B2EF2DA5D00BB7C51 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				83E0F7E22E7D9CDC003D08C2 /* Environment */,
-				831152842E773B2600E05696 /* Entity */,
-				836CB7692E726FFF00A5207B /* ASCIIRenderer.swift */,
-				836CB76A2E726FFF00A5207B /* Engine.swift */,
-				836CB7732E726FFF00A5207B /* FontMetrics.swift */,
 			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		83E0F7E22E7D9CDC003D08C2 /* Environment */ = {
-			isa = PBXGroup;
-			children = (
-				83E0F7E12E7D9CDC003D08C2 /* WorldLayout.swift */,
-			);
-			path = Environment;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,6 +167,7 @@
 			);
 			name = AsciiquariumApp;
 			packageProductDependencies = (
+				83D5EA8C2EF2DA5D00BB7C51 /* AsciiquariumCore */,
 			);
 			productName = Asciiquarium;
 			productReference = 836CB6E42E726B9F00A5207B /* AsciiquariumApp.app */;
@@ -340,11 +186,9 @@
 			dependencies = (
 				836CB6F72E726BA100A5207B /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				836CB6F82E726BA100A5207B /* AsciiquariumTests */,
-			);
 			name = AsciiquariumTests;
 			packageProductDependencies = (
+				83D5EA892EF25D1200BB7C51 /* AsciiquariumCore */,
 			);
 			productName = AsciiquariumTests;
 			productReference = 836CB6F52E726BA100A5207B /* AsciiquariumTests.xctest */;
@@ -432,6 +276,9 @@
 			);
 			mainGroup = 836CB6DB2E726B9F00A5207B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				83D5EA882EF25D1200BB7C51 /* XCLocalSwiftPackageReference "../asciiquarium-screensaver" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 836CB6E52E726B9F00A5207B /* Products */;
 			projectDirPath = "";
@@ -483,33 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				831B9AB92ED3EBA20059B854 /* TeethEntity.swift in Sources */,
 				836CB7652E726FD300A5207B /* ContentView.swift in Sources */,
-				831152912E773B2600E05696 /* WaterlineEntity.swift in Sources */,
-				831152922E773B2600E05696 /* SeaweedEntity.swift in Sources */,
-				831152932E773B2600E05696 /* EntityTypes.swift in Sources */,
-				831152942E773B2600E05696 /* PlaceholderEntities.swift in Sources */,
-				831152952E773B2600E05696 /* Entity.swift in Sources */,
-				831152962E773B2600E05696 /* SharkEntity.swift in Sources */,
-				831152972E773B2600E05696 /* CastleEntity.swift in Sources */,
-				831152B22E77837800E05696 /* EntityFullWidth.swift in Sources */,
-				831152982E773B2600E05696 /* EntityProtocol.swift in Sources */,
-				831152992E773B2600E05696 /* FishEntity.swift in Sources */,
-				8311529A2E773B2600E05696 /* EntityFactory.swift in Sources */,
-				8311529B2E773B2600E05696 /* BubbleEntity.swift in Sources */,
-				831152AA2E773B2600E05696 /* SplatEntity.swift in Sources */,
-				831152AE2E773B2600E05698 /* ShipEntity.swift in Sources */,
-				831152B12E773B2600E05699 /* WhaleEntity.swift in Sources */,
-				831152B42E773B2600E0569A /* MonsterEntity.swift in Sources */,
-				831152B62E773B2600E0569B /* SwanEntity.swift in Sources */,
-				831152B82E773B2600E0569C /* DucksEntity.swift in Sources */,
-				831152BA2E773B2600E0569D /* BigFishEntity.swift in Sources */,
-				831152BC2E773B2600E0569E /* DolphinEntity.swift in Sources */,
-				8311529C2E773B2600E05696 /* BaseEntity.swift in Sources */,
-				83E0F7E52E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
-				836CB76D2E726FFF00A5207B /* Engine.swift in Sources */,
-				836CB76E2E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
-				836CB7742E726FFF00A5207B /* FontMetrics.swift in Sources */,
 				836CB7662E726FD300A5207B /* AsciiquariumApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,32 +339,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8325FA6B2EEA691F008F8E15 /* TeethEntity.swift in Sources */,
-				8325FA8A2EEA72F9008F8E15 /* SwanEntity.swift in Sources */,
-				8325FA892EEA72EC008F8E15 /* MonsterEntity.swift in Sources */,
-				836CB7702E726FFF00A5207B /* Engine.swift in Sources */,
-				836CB7712E726FFF00A5207B /* ASCIIRenderer.swift in Sources */,
-				8311529D2E773B2600E05696 /* WaterlineEntity.swift in Sources */,
-				8311529E2E773B2600E05696 /* SeaweedEntity.swift in Sources */,
-				8311529F2E773B2600E05696 /* EntityTypes.swift in Sources */,
-				831152A02E773B2600E05696 /* PlaceholderEntities.swift in Sources */,
-				831152A12E773B2600E05696 /* Entity.swift in Sources */,
-				8325FA882EEA72E4008F8E15 /* WhaleEntity.swift in Sources */,
-				8325FA872EEA72CF008F8E15 /* ShipEntity.swift in Sources */,
-				831152A22E773B2600E05696 /* SharkEntity.swift in Sources */,
-				831152A32E773B2600E05696 /* CastleEntity.swift in Sources */,
-				831152A42E773B2600E05696 /* EntityProtocol.swift in Sources */,
-				8325FA8D2EEA733A008F8E15 /* DolphinEntity.swift in Sources */,
-				831152A52E773B2600E05696 /* FishEntity.swift in Sources */,
-				831152B42E77837800E05696 /* EntityFullWidth.swift in Sources */,
-				8325FA8C2EEA732D008F8E15 /* BigFishEntity.swift in Sources */,
-				83E0F7E42E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
-				831152A62E773B2600E05696 /* EntityFactory.swift in Sources */,
-				8325FA8B2EEA7300008F8E15 /* DucksEntity.swift in Sources */,
-				831152A72E773B2600E05696 /* BubbleEntity.swift in Sources */,
-				831B9AB82ED3EBA20059B853 /* SplatEntity.swift in Sources */,
-				831152A82E773B2600E05696 /* BaseEntity.swift in Sources */,
-				836CB8CD2E77054800A5207B /* FontMetrics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,31 +353,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8325FA6C2EEA691F008F8E15 /* TeethEntity.swift in Sources */,
-				831152B32E77837800E05696 /* EntityFullWidth.swift in Sources */,
-				836CB8CE2E77054800A5207B /* Engine.swift in Sources */,
-				836CB8CF2E77054800A5207B /* ASCIIRenderer.swift in Sources */,
-				831152852E773B2600E05696 /* WaterlineEntity.swift in Sources */,
-				831152862E773B2600E05696 /* SeaweedEntity.swift in Sources */,
-				831152872E773B2600E05696 /* EntityTypes.swift in Sources */,
-				831152882E773B2600E05696 /* PlaceholderEntities.swift in Sources */,
-				831152892E773B2600E05696 /* Entity.swift in Sources */,
-				8311528A2E773B2600E05696 /* SharkEntity.swift in Sources */,
-				8311528B2E773B2600E05696 /* CastleEntity.swift in Sources */,
-				8311528C2E773B2600E05696 /* EntityProtocol.swift in Sources */,
-				83E0F7E32E7D9CDC003D08C2 /* WorldLayout.swift in Sources */,
-				8311528D2E773B2600E05696 /* FishEntity.swift in Sources */,
-				8311528E2E773B2600E05696 /* EntityFactory.swift in Sources */,
-				8311528F2E773B2600E05696 /* BubbleEntity.swift in Sources */,
-				831152AB2E773B2600E05696 /* SplatEntity.swift in Sources */,
-				831152AD2E773B2600E05698 /* ShipEntity.swift in Sources */,
-				831152B02E773B2600E05699 /* WhaleEntity.swift in Sources */,
-				831152B32E773B2600E0569A /* MonsterEntity.swift in Sources */,
-				831152B52E773B2600E0569B /* SwanEntity.swift in Sources */,
-				831152B72E773B2600E0569C /* DucksEntity.swift in Sources */,
-				831152B92E773B2600E0569D /* BigFishEntity.swift in Sources */,
-				831152BB2E773B2600E0569E /* DolphinEntity.swift in Sources */,
-				831152902E773B2600E05696 /* BaseEntity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -984,6 +754,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		83D5EA882EF25D1200BB7C51 /* XCLocalSwiftPackageReference "../asciiquarium-screensaver" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../asciiquarium-screensaver";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		83D5EA892EF25D1200BB7C51 /* AsciiquariumCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AsciiquariumCore;
+		};
+		83D5EA8C2EF2DA5D00BB7C51 /* AsciiquariumCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83D5EA882EF25D1200BB7C51 /* XCLocalSwiftPackageReference "../asciiquarium-screensaver" */;
+			productName = AsciiquariumCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 836CB6DC2E726B9F00A5207B /* Project object */;
 }

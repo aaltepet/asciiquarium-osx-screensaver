@@ -5,6 +5,7 @@
 //  Created by Andy Altepeter on 9/10/25.
 //
 
+import AsciiquariumCore
 import SwiftUI
 
 struct ContentView: View {
