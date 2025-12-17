@@ -51,7 +51,7 @@ class SharkEntity: BaseEntity {
         "  `.xxx`.____...--''xxxxxxxxxxxxxxxxxxxxxxxcRxx`--._",
         "    >xxxxxxxxxxxxxxxxxxxxx_.-'xxxxxx.((xxxxxx._xxxxx)",
         "  .`.-`--...__xxxxxxxxx.-'xxxxx-.___.....-cWWWWWWWW'",
-        " ;.'         `. ...----`.___.',,,_______......---'",
+        " ;.'         `.x...----`.___.',,,_______......---'",
         " '           '-'",
     ]
 
@@ -64,7 +64,7 @@ class SharkEntity: BaseEntity {
         " _.--'xxRcxxxxxxxxxxxxxxxxxxxxxxx``--...____.'xxx.'",
         "(xxxxx_.xxxxxx)).xxxxxx`-._xxxxxxxxxxxxxxxxxxxxx<",
         " `WWWWWWWWc-.....___.-xxxxx`-.xxxxxxxxx__...--'-.'.",
-        "   `---......_______,,,`.___.'----... .'         `.;",
+        "   `---......_______,,,`.___.'----...x.'         `.;",
         "                                     `-`           `",
     ]
 
@@ -89,31 +89,6 @@ class SharkEntity: BaseEntity {
         // Perl: $speed = 2 (or -2 if left), callback_args => [ $speed, 0, 0 ]
         callbackArgs = [speed, Double(direction), 0.0, 0.0]
 
-        // Set up collision handler: shark + fish → spawn splat
-        // Entity controls its own collisions (uses spawnCallback set by engine to spawn entities)
-        collisionHandler = { [weak self] shark, collidingEntities in
-            guard let self = self else { return }
-
-            // Check if any colliding entity is a fish
-            for entity in collidingEntities {
-                if entity.type == .fish {
-                    // Kill the fish
-                    entity.kill()
-
-                    // Spawn splat at collision point (matching Perl: add_splat($anim, $x, $y, $z))
-                    let splatX = entity.position.x - 4
-                    let splatY = entity.position.y - 2
-                    let splatZ = max(0, entity.position.z - 2)
-                    let splat = EntityFactory.createSplat(at: Position3D(splatX, splatY, splatZ))
-
-                    // Use spawnCallback (set by engine) to add splat to engine
-                    self.spawnCallback?(splat)
-
-                    // Only spawn one splat per collision
-                    break
-                }
-            }
-        }
     }
 
     override func moveEntity(deltaTime: TimeInterval) -> Position3D? {

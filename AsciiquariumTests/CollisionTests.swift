@@ -160,150 +160,8 @@ struct CollisionTests {
     }
 
     // MARK: - Shark Collision Tests
-
-    @Test func testSharkCollisionHandlerIsSet() async throws {
-        // Given
-        let shark = EntityFactory.createShark(at: Position3D(0, 10, Depth.shark))
-
-        // Then
-        #expect(shark.isPhysical == true, "Shark should be physical")
-        #expect(shark.collisionHandler != nil, "Shark should have collision handler set")
-    }
-
-    @Test func testSharkKillsFishOnCollision() async throws {
-        // Given
-        let engine = TestHelpers.createTestEngine()
-        engine.entities.removeAll()
-
-        // Create a shark and position fish so their visible pixels overlap
-        // Shark has leading spaces, so we position fish inside shark's visible area
-        let shark = EntityFactory.createShark(at: Position3D(10, 10, Depth.shark))
-        shark.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = shark.spawnCallback
-        }
-        engine.entities.append(shark)
-
-        // Position fish so it overlaps with shark's visible pixels (shark's visible area starts around x=40)
-        let fish = EntityFactory.createFish(at: Position3D(35, 12, Depth.shark))
-        fish.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = fish.spawnCallback
-        }
-        engine.entities.append(fish)
-
-        let fishId = fish.id
-
-        // Verify fish is alive initially
-        #expect(fish.isAlive == true, "Fish should be alive initially")
-
-        // When - update engine (collision should be detected)
-        engine.tickOnceForTests()
-
-        // Then - fish should be dead after collision
-        if let updatedFish = engine.entities.first(where: { $0.id == fishId }) {
-            #expect(
-                updatedFish.isAlive == false,
-                "Fish should be dead after shark collision"
-            )
-        } else {
-            // Fish was removed from entities (also valid - it's dead)
-            #expect(true, "Fish was removed after collision (it's dead)")
-        }
-    }
-
-    @Test func testSharkSpawnsSplatOnFishCollision() async throws {
-        // Given
-        let engine = TestHelpers.createTestEngine()
-        engine.entities.removeAll()
-
-        // Create a shark and position fish so their visible pixels overlap
-        let shark = EntityFactory.createShark(at: Position3D(10, 10, Depth.shark))
-        shark.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = shark.spawnCallback
-        }
-        engine.entities.append(shark)
-
-        // Position fish so it overlaps with shark's visible pixels
-        let fish = EntityFactory.createFish(at: Position3D(35, 12, Depth.shark))
-        fish.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = fish.spawnCallback
-        }
-        engine.entities.append(fish)
-
-        let initialSplatCount = engine.entities.filter { $0.type == .splat }.count
-
-        // When - update engine (collision should spawn splat)
-        engine.tickOnceForTests()
-
-        // Then - should have spawned a splat
-        let finalSplatCount = engine.entities.filter { $0.type == .splat }.count
-        #expect(
-            finalSplatCount > initialSplatCount,
-            "Shark should spawn splat on fish collision. Initial: \(initialSplatCount), Final: \(finalSplatCount)"
-        )
-
-        // Verify splat properties
-        if let splat = engine.entities.first(where: { $0.type == .splat }) as? SplatEntity {
-            #expect(splat.defaultColor == .red, "Splat should be red")
-            #expect(splat.dieFrame != nil, "Splat should have dieFrame set")
-        }
-    }
-
-    @Test func testSplatPositionIsRelativeToFish() async throws {
-        // Given
-        let engine = TestHelpers.createTestEngine()
-        engine.entities.removeAll()
-
-        let sharkX = 10
-        let sharkY = 15
-        let fishX = 45  // Position fish so it overlaps with shark's visible pixels
-        let fishY = 17  // Slightly offset vertically to ensure overlap
-        let fishZ = Depth.shark
-
-        // Create a shark and fish at positions where their visible pixels overlap
-        let shark = EntityFactory.createShark(at: Position3D(sharkX, sharkY, fishZ))
-        shark.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = shark.spawnCallback
-        }
-        engine.entities.append(shark)
-
-        let fish = EntityFactory.createFish(at: Position3D(fishX, fishY, fishZ))
-        fish.spawnCallback = { [weak engine] newEntity in
-            engine?.entities.append(newEntity)
-            newEntity.spawnCallback = fish.spawnCallback
-        }
-        engine.entities.append(fish)
-
-        // When - update engine (collision should spawn splat)
-        engine.tickOnceForTests()
-
-        // Then - splat should be positioned relative to fish (matching Perl: position => [ $x - 4, $y - 2, $z-2 ])
-        let splats = engine.entities.filter { $0.type == .splat }
-        #expect(splats.count > 0, "Should have spawned at least one splat")
-
-        if let splat = splats.first {
-            let expectedX = fishX - 4
-            let expectedY = fishY - 2
-            let expectedZ = max(0, fishZ - 2)
-
-            #expect(
-                splat.position.x == expectedX,
-                "Splat x should be fish x - 4. Expected: \(expectedX), Got: \(splat.position.x)"
-            )
-            #expect(
-                splat.position.y == expectedY,
-                "Splat y should be fish y - 2. Expected: \(expectedY), Got: \(splat.position.y)"
-            )
-            #expect(
-                splat.position.z == expectedZ,
-                "Splat z should be fish z - 2. Expected: \(expectedZ), Got: \(splat.position.z)"
-            )
-        }
-    }
+    // Note: Sharks don't have collision handlers - the teeth entity handles collisions.
+    // See testTeethCollisionWithFish() for collision testing.
 
     @Test func testSharkDoesNotCollideWithNonFishEntities() async throws {
         // Given
@@ -336,5 +194,110 @@ struct CollisionTests {
             finalSplatCount == initialSplatCount,
             "Shark should not spawn splat for non-fish collisions. Initial: \(initialSplatCount), Final: \(finalSplatCount)"
         )
+    }
+
+    // MARK: - Teeth Collision Tests
+
+    @Test func testTeethCollisionWithFish() async throws {
+        // Given
+        let engine = TestHelpers.createTestEngine()
+        engine.entities.removeAll()
+
+        // Set up spawn callback
+        var spawnCallback: ((Entity) -> Void)!
+        spawnCallback = { [weak engine] newEntity in
+            engine?.entities.append(newEntity)
+            newEntity.spawnCallback = spawnCallback
+        }
+
+        // Create teeth moving left (direction = -1) at the right side
+        let teethSpeed = 1.0
+        let teethDirection = -1  // Moving left
+        let teethY = 15  // Vertical position
+        let teethZ = Depth.shark  // Same depth as fish
+        let teethX = 50  // Start on the right side
+
+        let teeth = EntityFactory.createTeeth(
+            at: Position3D(teethX, teethY, teethZ),
+            speed: teethSpeed,
+            direction: teethDirection
+        )
+        teeth.spawnCallback = spawnCallback
+        engine.entities.append(teeth)
+
+        // Create a fish moving right (direction = 1) at the same vertical alignment
+        let fish = EntityFactory.createFish(at: Position3D(10, teethY, teethZ))
+        // Force fish to move right
+        fish.direction = 1
+        fish.speed = 0.5  // Slower speed to ensure collision happens
+        fish.callbackArgs = [fish.speed, Double(fish.direction), 0.0, 0.0]
+        fish.spawnCallback = spawnCallback
+        engine.entities.append(fish)
+
+        let fishId = fish.id
+        let teethId = teeth.id
+
+        // Verify initial state
+        #expect(fish.isAlive == true, "Fish should be alive initially")
+        #expect(teeth.isAlive == true, "Teeth should be alive initially")
+        let initialSplatCount = engine.entities.filter { $0.type == .splat }.count
+        #expect(initialSplatCount == 0, "Should start with no splats")
+
+        // When - run engine until splat is detected or timeout
+        var frame = 0
+        let maxFrames = 200  // Safety timeout
+        var splatDetected = false
+
+        while frame < maxFrames {
+            engine.tickOnceForTests()
+            frame += 1
+
+            // Check if a splat was spawned
+            let splatCount = engine.entities.filter { $0.type == .splat }.count
+            if splatCount > initialSplatCount {
+                splatDetected = true
+                break
+            }
+
+            // Check if fish is dead (collision happened)
+            if let updatedFish = engine.entities.first(where: { $0.id == fishId }) {
+                if !updatedFish.isAlive {
+                    // Fish is dead, check if splat was created
+                    let currentSplatCount = engine.entities.filter { $0.type == .splat }.count
+                    if currentSplatCount > initialSplatCount {
+                        splatDetected = true
+                    }
+                    break
+                }
+            } else {
+                // Fish was removed (it's dead)
+                let currentSplatCount = engine.entities.filter { $0.type == .splat }.count
+                if currentSplatCount > initialSplatCount {
+                    splatDetected = true
+                }
+                break
+            }
+        }
+
+        // Then - splat should be detected
+        #expect(
+            splatDetected == true,
+            "Splat should be detected after collision. Frame: \(frame), Max frames: \(maxFrames)"
+        )
+
+        // Verify splat was created
+        let finalSplatCount = engine.entities.filter { $0.type == .splat }.count
+        #expect(
+            finalSplatCount > initialSplatCount,
+            "Should have spawned a splat. Initial: \(initialSplatCount), Final: \(finalSplatCount)"
+        )
+
+        // Verify fish is dead
+        if let updatedFish = engine.entities.first(where: { $0.id == fishId }) {
+            #expect(updatedFish.isAlive == false, "Fish should be dead after collision")
+        } else {
+            // Fish was removed (also valid - it's dead)
+            #expect(true, "Fish was removed after collision (it's dead)")
+        }
     }
 }

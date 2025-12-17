@@ -225,29 +225,30 @@ class AsciiquariumEngine: ObservableObject {
         // There are 8 random object types, so each has 1/8 chance
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
-        //spawnWhale()
-        //return
-
-        if slot < 1.0 {
-            spawnShip()  // 0.0 - 1.0 (1/8)
-        } else if slot < 2.0 {
-            spawnWhale()  // 1.0 - 2.0 (1/8)
-        } else if slot < 3.0 {
-            spawnMonster()  // 2.0 - 3.0 (1/8)
-        } else if slot < 4.0 {
-            spawnBigFish()  // 3.0 - 4.0 (1/8)
-        } else if slot < 5.0 {
-            spawnShark()  // 4.0 - 5.0 (1/8)
-        } else if slot < 6.0 {
-            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
-        } else if slot < 7.0 {
-            spawnSwan()  // 6.0 - 7.0 (1/8)
-        } else if slot < 8.0 {
-            spawnDucks()  // 7.0 - 8.0 (1/8)
-        } else {
-            spawnDolphins()  // 8.0 (1/8)
-        }
+        spawnShark()
+        return
+        /*
+                    if slot < 1.0
+                {
+                    spawnShip()  // 0.0 - 1.0 (1/8)
+                } else if slot < 2.0 {
+                    spawnWhale()  // 1.0 - 2.0 (1/8)
+                } else if slot < 3.0 {
+                    spawnMonster()  // 2.0 - 3.0 (1/8)
+                } else if slot < 4.0 {
+                    spawnBigFish()  // 3.0 - 4.0 (1/8)
+                } else if slot < 5.0 {
+                    spawnShark()  // 4.0 - 5.0 (1/8)
+                } else if slot < 6.0 {
+                    // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
+                    spawnWhale()  // Fallback to whale for now
+                } else if slot < 7.0 {
+                    spawnSwan()  // 6.0 - 7.0 (1/8)
+                } else if slot < 8.0 {
+                    spawnDucks()  // 7.0 - 8.0 (1/8)
+                } else {
+                    spawnDolphins()  // 8.0 (1/8)
+                }*/
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -431,6 +432,7 @@ class AsciiquariumEngine: ObservableObject {
 
         // Create shark (direction is randomized in SharkEntity.init)
         let shark = EntityFactory.createShark(at: Position3D(0, spawnY, Depth.shark))
+        shark.direction = -1
         let sharkWidth = shark.size.width
 
         // Spawn off-screen based on direction - matching Perl:
@@ -441,23 +443,30 @@ class AsciiquariumEngine: ObservableObject {
         if shark.direction > 0 {
             // Moving right: spawn off-screen to the left
             spawnX = -sharkWidth
-            teethX = spawnX + sharkWidth - 9  // teeth at the front right
+            teethX = spawnX + sharkWidth - 4  // teeth at the front right
         } else {
             // Moving left: spawn off-screen to the right
             spawnX = gridWidth
-            teethX = spawnX + 9  // teeth at the front left
+            teethX = spawnX + 2  // teeth at the front left
         }
 
         shark.position = Position3D(spawnX, spawnY, Depth.shark)
 
-        let teethY = spawnY + 7
+        // Keep teeth at correct X/Y position (at shark's mouth) but use higher depth for visibility
+        // Original depth: Depth.shark + 1 (depth 3) - correct for collision
+        // Debug depth: Depth.waterLine0 (depth 8) - renders above shark so we can see it
+        let teethY = spawnY + 7  // Correct Y position at shark's mouth
         let teeth = EntityFactory.create(
-            from: .teeth(position: Position3D(teethX, teethY, Depth.shark - 1)))
+            from: .teeth(position: Position3D(teethX, teethY, Depth.waterLine0)))  // High depth for visibility
 
         if let teeth = teeth as? TeethEntity {
             teeth.speed = shark.speed
             teeth.direction = shark.direction
             teeth.callbackArgs = [shark.speed, Double(shark.direction), 0.0, 0.0]
+            // Perl: depth => $depth{'fish_end'} - $depth{'fish_start'}
+            // This allows teeth to collide with fish across the entire fish depth range (3-20)
+            // Since collision detection doesn't check depth, we don't need to set collisionDepth,
+            // but the z-position should match fish depths (3-20), so Depth.shark + 1 = 3 is correct
         }
 
         // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
