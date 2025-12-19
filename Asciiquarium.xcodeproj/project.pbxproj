@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		83DE43112EF4F76F00680C01 /* AsciiquariumCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83DE43102EF4F76F00680C01 /* AsciiquariumCore */; };
+		83DE43232EF4F8C900680C01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83DE43202EF4F8C900680C01 /* Assets.xcassets */; };
+		83DE43242EF4F8C900680C01 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83DE431C2EF4F8C900680C01 /* Preview Assets.xcassets */; };
+		83DE43252EF4F8C900680C01 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DE43212EF4F8C900680C01 /* ContentView.swift */; };
+		83DE43262EF4F8C900680C01 /* AsciiquariumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DE431F2EF4F8C900680C01 /* AsciiquariumApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,25 +35,12 @@
 		83DE42E42EF4F75700680C01 /* AsciiquariumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiquariumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83DE42F12EF4F75800680C01 /* AsciiquariumAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83DE42FB2EF4F75800680C01 /* AsciiquariumAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DE431C2EF4F8C900680C01 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		83DE431E2EF4F8C900680C01 /* Asciiquarium.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Asciiquarium.entitlements; sourceTree = "<group>"; };
+		83DE431F2EF4F8C900680C01 /* AsciiquariumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsciiquariumApp.swift; sourceTree = "<group>"; };
+		83DE43202EF4F8C900680C01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		83DE43212EF4F8C900680C01 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		83DE42E62EF4F75700680C01 /* AsciiquariumApp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumApp;
-			sourceTree = "<group>";
-		};
-		83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumAppTests;
-			sourceTree = "<group>";
-		};
-		83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumAppUITests;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		83DE42E12EF4F75700680C01 /* Frameworks */ = {
@@ -80,9 +71,7 @@
 		83DE42DB2EF4F75700680C01 = {
 			isa = PBXGroup;
 			children = (
-				83DE42E62EF4F75700680C01 /* AsciiquariumApp */,
-				83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */,
-				83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */,
+				83DE43222EF4F8C900680C01 /* AsciiquariumApp */,
 				83DE430F2EF4F76F00680C01 /* Frameworks */,
 				83DE42E52EF4F75700680C01 /* Products */,
 			);
@@ -105,6 +94,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		83DE431D2EF4F8C900680C01 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				83DE431C2EF4F8C900680C01 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		83DE43222EF4F8C900680C01 /* AsciiquariumApp */ = {
+			isa = PBXGroup;
+			children = (
+				83DE431D2EF4F8C900680C01 /* Preview Content */,
+				83DE431E2EF4F8C900680C01 /* Asciiquarium.entitlements */,
+				83DE431F2EF4F8C900680C01 /* AsciiquariumApp.swift */,
+				83DE43202EF4F8C900680C01 /* Assets.xcassets */,
+				83DE43212EF4F8C900680C01 /* ContentView.swift */,
+			);
+			path = AsciiquariumApp;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -119,9 +128,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				83DE42E62EF4F75700680C01 /* AsciiquariumApp */,
 			);
 			name = AsciiquariumApp;
 			packageProductDependencies = (
@@ -144,9 +150,6 @@
 			dependencies = (
 				83DE42F32EF4F75800680C01 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */,
-			);
 			name = AsciiquariumAppTests;
 			packageProductDependencies = (
 			);
@@ -166,9 +169,6 @@
 			);
 			dependencies = (
 				83DE42FD2EF4F75800680C01 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */,
 			);
 			name = AsciiquariumAppUITests;
 			packageProductDependencies = (
@@ -200,7 +200,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "AsciiquariumApp" */;
+			buildConfigurationList = 83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "Asciiquarium" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -229,6 +229,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83DE43232EF4F8C900680C01 /* Assets.xcassets in Resources */,
+				83DE43242EF4F8C900680C01 /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +255,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83DE43252EF4F8C900680C01 /* ContentView.swift in Sources */,
+				83DE43262EF4F8C900680C01 /* AsciiquariumApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,7 +557,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "AsciiquariumApp" */ = {
+		83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "Asciiquarium" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83DE43032EF4F75800680C01 /* Debug */,
