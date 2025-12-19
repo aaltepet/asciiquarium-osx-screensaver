@@ -7,67 +7,67 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		83DE42D62EF4F6F700680C01 /* AsciiquariumCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83DE42D52EF4F6F700680C01 /* AsciiquariumCore */; };
+		83DE43112EF4F76F00680C01 /* AsciiquariumCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83DE43102EF4F76F00680C01 /* AsciiquariumCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		83DE42B72EF4F6D600680C01 /* PBXContainerItemProxy */ = {
+		83DE42F22EF4F75800680C01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 83DE42A12EF4F6D600680C01 /* Project object */;
+			containerPortal = 83DE42DC2EF4F75700680C01 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 83DE42A82EF4F6D600680C01;
-			remoteInfo = Asciiquarium;
+			remoteGlobalIDString = 83DE42E32EF4F75700680C01;
+			remoteInfo = AsciiquariumApp;
 		};
-		83DE42C12EF4F6D700680C01 /* PBXContainerItemProxy */ = {
+		83DE42FC2EF4F75800680C01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 83DE42A12EF4F6D600680C01 /* Project object */;
+			containerPortal = 83DE42DC2EF4F75700680C01 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 83DE42A82EF4F6D600680C01;
-			remoteInfo = Asciiquarium;
+			remoteGlobalIDString = 83DE42E32EF4F75700680C01;
+			remoteInfo = AsciiquariumApp;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		83DE42A92EF4F6D600680C01 /* Asciiquarium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Asciiquarium.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		83DE42B62EF4F6D600680C01 /* AsciiquariumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		83DE42C02EF4F6D700680C01 /* AsciiquariumUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DE42E42EF4F75700680C01 /* AsciiquariumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiquariumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DE42F12EF4F75800680C01 /* AsciiquariumAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DE42FB2EF4F75800680C01 /* AsciiquariumAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsciiquariumAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		83DE42AB2EF4F6D600680C01 /* Asciiquarium */ = {
+		83DE42E62EF4F75700680C01 /* AsciiquariumApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Asciiquarium;
+			path = AsciiquariumApp;
 			sourceTree = "<group>";
 		};
-		83DE42B92EF4F6D700680C01 /* AsciiquariumTests */ = {
+		83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumTests;
+			path = AsciiquariumAppTests;
 			sourceTree = "<group>";
 		};
-		83DE42C32EF4F6D700680C01 /* AsciiquariumUITests */ = {
+		83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AsciiquariumUITests;
+			path = AsciiquariumAppUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		83DE42A62EF4F6D600680C01 /* Frameworks */ = {
+		83DE42E12EF4F75700680C01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83DE42D62EF4F6F700680C01 /* AsciiquariumCore in Frameworks */,
+				83DE43112EF4F76F00680C01 /* AsciiquariumCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42B32EF4F6D600680C01 /* Frameworks */ = {
+		83DE42EE2EF4F75800680C01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42BD2EF4F6D700680C01 /* Frameworks */ = {
+		83DE42F82EF4F75800680C01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -77,28 +77,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		83DE42A02EF4F6D600680C01 = {
+		83DE42DB2EF4F75700680C01 = {
 			isa = PBXGroup;
 			children = (
-				83DE42AB2EF4F6D600680C01 /* Asciiquarium */,
-				83DE42B92EF4F6D700680C01 /* AsciiquariumTests */,
-				83DE42C32EF4F6D700680C01 /* AsciiquariumUITests */,
-				83DE42D42EF4F6F700680C01 /* Frameworks */,
-				83DE42AA2EF4F6D600680C01 /* Products */,
+				83DE42E62EF4F75700680C01 /* AsciiquariumApp */,
+				83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */,
+				83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */,
+				83DE430F2EF4F76F00680C01 /* Frameworks */,
+				83DE42E52EF4F75700680C01 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		83DE42AA2EF4F6D600680C01 /* Products */ = {
+		83DE42E52EF4F75700680C01 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				83DE42A92EF4F6D600680C01 /* Asciiquarium.app */,
-				83DE42B62EF4F6D600680C01 /* AsciiquariumTests.xctest */,
-				83DE42C02EF4F6D700680C01 /* AsciiquariumUITests.xctest */,
+				83DE42E42EF4F75700680C01 /* AsciiquariumApp.app */,
+				83DE42F12EF4F75800680C01 /* AsciiquariumAppTests.xctest */,
+				83DE42FB2EF4F75800680C01 /* AsciiquariumAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		83DE42D42EF4F6F700680C01 /* Frameworks */ = {
+		83DE430F2EF4F76F00680C01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -108,138 +108,138 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		83DE42A82EF4F6D600680C01 /* Asciiquarium */ = {
+		83DE42E32EF4F75700680C01 /* AsciiquariumApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83DE42CA2EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "Asciiquarium" */;
+			buildConfigurationList = 83DE43052EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumApp" */;
 			buildPhases = (
-				83DE42A52EF4F6D600680C01 /* Sources */,
-				83DE42A62EF4F6D600680C01 /* Frameworks */,
-				83DE42A72EF4F6D600680C01 /* Resources */,
+				83DE42E02EF4F75700680C01 /* Sources */,
+				83DE42E12EF4F75700680C01 /* Frameworks */,
+				83DE42E22EF4F75700680C01 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				83DE42AB2EF4F6D600680C01 /* Asciiquarium */,
+				83DE42E62EF4F75700680C01 /* AsciiquariumApp */,
 			);
-			name = Asciiquarium;
+			name = AsciiquariumApp;
 			packageProductDependencies = (
-				83DE42D52EF4F6F700680C01 /* AsciiquariumCore */,
+				83DE43102EF4F76F00680C01 /* AsciiquariumCore */,
 			);
-			productName = Asciiquarium;
-			productReference = 83DE42A92EF4F6D600680C01 /* Asciiquarium.app */;
+			productName = AsciiquariumApp;
+			productReference = 83DE42E42EF4F75700680C01 /* AsciiquariumApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		83DE42B52EF4F6D600680C01 /* AsciiquariumTests */ = {
+		83DE42F02EF4F75800680C01 /* AsciiquariumAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83DE42CD2EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumTests" */;
+			buildConfigurationList = 83DE43082EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumAppTests" */;
 			buildPhases = (
-				83DE42B22EF4F6D600680C01 /* Sources */,
-				83DE42B32EF4F6D600680C01 /* Frameworks */,
-				83DE42B42EF4F6D600680C01 /* Resources */,
+				83DE42ED2EF4F75800680C01 /* Sources */,
+				83DE42EE2EF4F75800680C01 /* Frameworks */,
+				83DE42EF2EF4F75800680C01 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				83DE42B82EF4F6D600680C01 /* PBXTargetDependency */,
+				83DE42F32EF4F75800680C01 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				83DE42B92EF4F6D700680C01 /* AsciiquariumTests */,
+				83DE42F42EF4F75800680C01 /* AsciiquariumAppTests */,
 			);
-			name = AsciiquariumTests;
+			name = AsciiquariumAppTests;
 			packageProductDependencies = (
 			);
-			productName = AsciiquariumTests;
-			productReference = 83DE42B62EF4F6D600680C01 /* AsciiquariumTests.xctest */;
+			productName = AsciiquariumAppTests;
+			productReference = 83DE42F12EF4F75800680C01 /* AsciiquariumAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		83DE42BF2EF4F6D700680C01 /* AsciiquariumUITests */ = {
+		83DE42FA2EF4F75800680C01 /* AsciiquariumAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83DE42D02EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumUITests" */;
+			buildConfigurationList = 83DE430B2EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumAppUITests" */;
 			buildPhases = (
-				83DE42BC2EF4F6D700680C01 /* Sources */,
-				83DE42BD2EF4F6D700680C01 /* Frameworks */,
-				83DE42BE2EF4F6D700680C01 /* Resources */,
+				83DE42F72EF4F75800680C01 /* Sources */,
+				83DE42F82EF4F75800680C01 /* Frameworks */,
+				83DE42F92EF4F75800680C01 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				83DE42C22EF4F6D700680C01 /* PBXTargetDependency */,
+				83DE42FD2EF4F75800680C01 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				83DE42C32EF4F6D700680C01 /* AsciiquariumUITests */,
+				83DE42FE2EF4F75800680C01 /* AsciiquariumAppUITests */,
 			);
-			name = AsciiquariumUITests;
+			name = AsciiquariumAppUITests;
 			packageProductDependencies = (
 			);
-			productName = AsciiquariumUITests;
-			productReference = 83DE42C02EF4F6D700680C01 /* AsciiquariumUITests.xctest */;
+			productName = AsciiquariumAppUITests;
+			productReference = 83DE42FB2EF4F75800680C01 /* AsciiquariumAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		83DE42A12EF4F6D600680C01 /* Project object */ = {
+		83DE42DC2EF4F75700680C01 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					83DE42A82EF4F6D600680C01 = {
+					83DE42E32EF4F75700680C01 = {
 						CreatedOnToolsVersion = 26.2;
 					};
-					83DE42B52EF4F6D600680C01 = {
+					83DE42F02EF4F75800680C01 = {
 						CreatedOnToolsVersion = 26.2;
-						TestTargetID = 83DE42A82EF4F6D600680C01;
+						TestTargetID = 83DE42E32EF4F75700680C01;
 					};
-					83DE42BF2EF4F6D700680C01 = {
+					83DE42FA2EF4F75800680C01 = {
 						CreatedOnToolsVersion = 26.2;
-						TestTargetID = 83DE42A82EF4F6D600680C01;
+						TestTargetID = 83DE42E32EF4F75700680C01;
 					};
 				};
 			};
-			buildConfigurationList = 83DE42A42EF4F6D600680C01 /* Build configuration list for PBXProject "Asciiquarium" */;
+			buildConfigurationList = 83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "AsciiquariumApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 83DE42A02EF4F6D600680C01;
+			mainGroup = 83DE42DB2EF4F75700680C01;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				83DE42D32EF4F6ED00680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */,
+				83DE430E2EF4F76700680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 83DE42AA2EF4F6D600680C01 /* Products */;
+			productRefGroup = 83DE42E52EF4F75700680C01 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				83DE42A82EF4F6D600680C01 /* Asciiquarium */,
-				83DE42B52EF4F6D600680C01 /* AsciiquariumTests */,
-				83DE42BF2EF4F6D700680C01 /* AsciiquariumUITests */,
+				83DE42E32EF4F75700680C01 /* AsciiquariumApp */,
+				83DE42F02EF4F75800680C01 /* AsciiquariumAppTests */,
+				83DE42FA2EF4F75800680C01 /* AsciiquariumAppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		83DE42A72EF4F6D600680C01 /* Resources */ = {
+		83DE42E22EF4F75700680C01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42B42EF4F6D600680C01 /* Resources */ = {
+		83DE42EF2EF4F75800680C01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42BE2EF4F6D700680C01 /* Resources */ = {
+		83DE42F92EF4F75800680C01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -249,21 +249,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		83DE42A52EF4F6D600680C01 /* Sources */ = {
+		83DE42E02EF4F75700680C01 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42B22EF4F6D600680C01 /* Sources */ = {
+		83DE42ED2EF4F75800680C01 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83DE42BC2EF4F6D700680C01 /* Sources */ = {
+		83DE42F72EF4F75800680C01 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -273,20 +273,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		83DE42B82EF4F6D600680C01 /* PBXTargetDependency */ = {
+		83DE42F32EF4F75800680C01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 83DE42A82EF4F6D600680C01 /* Asciiquarium */;
-			targetProxy = 83DE42B72EF4F6D600680C01 /* PBXContainerItemProxy */;
+			target = 83DE42E32EF4F75700680C01 /* AsciiquariumApp */;
+			targetProxy = 83DE42F22EF4F75800680C01 /* PBXContainerItemProxy */;
 		};
-		83DE42C22EF4F6D700680C01 /* PBXTargetDependency */ = {
+		83DE42FD2EF4F75800680C01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 83DE42A82EF4F6D600680C01 /* Asciiquarium */;
-			targetProxy = 83DE42C12EF4F6D700680C01 /* PBXContainerItemProxy */;
+			target = 83DE42E32EF4F75700680C01 /* AsciiquariumApp */;
+			targetProxy = 83DE42FC2EF4F75800680C01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		83DE42C82EF4F6D700680C01 /* Debug */ = {
+		83DE43032EF4F75800680C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -350,7 +350,7 @@
 			};
 			name = Debug;
 		};
-		83DE42C92EF4F6D700680C01 /* Release */ = {
+		83DE43042EF4F75800680C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -406,7 +406,7 @@
 			};
 			name = Release;
 		};
-		83DE42CB2EF4F6D700680C01 /* Debug */ = {
+		83DE43062EF4F75800680C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -426,7 +426,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.Asciiquarium;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -438,7 +438,7 @@
 			};
 			name = Debug;
 		};
-		83DE42CC2EF4F6D700680C01 /* Release */ = {
+		83DE43072EF4F75800680C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -458,7 +458,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.Asciiquarium;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -470,7 +470,7 @@
 			};
 			name = Release;
 		};
-		83DE42CE2EF4F6D700680C01 /* Debug */ = {
+		83DE43092EF4F75800680C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -480,18 +480,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.7;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumTests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Asciiquarium.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Asciiquarium";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsciiquariumApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AsciiquariumApp";
 			};
 			name = Debug;
 		};
-		83DE42CF2EF4F6D700680C01 /* Release */ = {
+		83DE430A2EF4F75800680C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -501,18 +501,18 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.7;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumTests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Asciiquarium.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Asciiquarium";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsciiquariumApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AsciiquariumApp";
 			};
 			name = Release;
 		};
-		83DE42D12EF4F6D700680C01 /* Debug */ = {
+		83DE430C2EF4F75800680C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -520,18 +520,18 @@
 				DEVELOPMENT_TEAM = KZC6WCF868;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Asciiquarium;
+				TEST_TARGET_NAME = AsciiquariumApp;
 			};
 			name = Debug;
 		};
-		83DE42D22EF4F6D700680C01 /* Release */ = {
+		83DE430D2EF4F75800680C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -539,52 +539,52 @@
 				DEVELOPMENT_TEAM = KZC6WCF868;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = net.altepeter.AsciiquariumAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Asciiquarium;
+				TEST_TARGET_NAME = AsciiquariumApp;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		83DE42A42EF4F6D600680C01 /* Build configuration list for PBXProject "Asciiquarium" */ = {
+		83DE42DF2EF4F75700680C01 /* Build configuration list for PBXProject "AsciiquariumApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83DE42C82EF4F6D700680C01 /* Debug */,
-				83DE42C92EF4F6D700680C01 /* Release */,
+				83DE43032EF4F75800680C01 /* Debug */,
+				83DE43042EF4F75800680C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83DE42CA2EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "Asciiquarium" */ = {
+		83DE43052EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83DE42CB2EF4F6D700680C01 /* Debug */,
-				83DE42CC2EF4F6D700680C01 /* Release */,
+				83DE43062EF4F75800680C01 /* Debug */,
+				83DE43072EF4F75800680C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83DE42CD2EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumTests" */ = {
+		83DE43082EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83DE42CE2EF4F6D700680C01 /* Debug */,
-				83DE42CF2EF4F6D700680C01 /* Release */,
+				83DE43092EF4F75800680C01 /* Debug */,
+				83DE430A2EF4F75800680C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83DE42D02EF4F6D700680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumUITests" */ = {
+		83DE430B2EF4F75800680C01 /* Build configuration list for PBXNativeTarget "AsciiquariumAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83DE42D12EF4F6D700680C01 /* Debug */,
-				83DE42D22EF4F6D700680C01 /* Release */,
+				83DE430C2EF4F75800680C01 /* Debug */,
+				83DE430D2EF4F75800680C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -592,19 +592,19 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		83DE42D32EF4F6ED00680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */ = {
+		83DE430E2EF4F76700680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../../asciiquarium-screensaver";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		83DE42D52EF4F6F700680C01 /* AsciiquariumCore */ = {
+		83DE43102EF4F76F00680C01 /* AsciiquariumCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 83DE42D32EF4F6ED00680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */;
+			package = 83DE430E2EF4F76700680C01 /* XCLocalSwiftPackageReference "../../../asciiquarium-screensaver" */;
 			productName = AsciiquariumCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 83DE42A12EF4F6D600680C01 /* Project object */;
+	rootObject = 83DE42DC2EF4F75700680C01 /* Project object */;
 }
