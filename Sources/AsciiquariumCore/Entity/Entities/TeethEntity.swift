@@ -11,7 +11,8 @@ public class TeethEntity: BaseEntity {
         super.init(name: name, type: .teeth, shape: ["XXX"], position: position)
 
         isPhysical = true
-        dieOffscreen = true
+        dieOffscreen = false  // Teeth should not die off-screen - they stay with the shark
+        // Teeth will be killed when the shark dies (via shark's death callback)
         defaultColor = .redBright  // Make it bright red so it's very visible
         // Note: For collision detection to work, teeth should be at Depth.shark + 1 (depth 3)
         // But we're using Depth.waterLine0 (depth 8) for visibility during debugging

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8324955F2EF5021900754A02 /* EntityTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8324955E2EF5021900754A02 /* EntityTreeView.swift */; };
 		83DE43232EF4F8C900680C01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83DE43202EF4F8C900680C01 /* Assets.xcassets */; };
 		83DE43242EF4F8C900680C01 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83DE431C2EF4F8C900680C01 /* Preview Assets.xcassets */; };
 		83DE43252EF4F8C900680C01 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DE43212EF4F8C900680C01 /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8324955E2EF5021900754A02 /* EntityTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityTreeView.swift; sourceTree = "<group>"; };
 		83DE42E42EF4F75700680C01 /* AsciiquariumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AsciiquariumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83DE431C2EF4F8C900680C01 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		83DE431E2EF4F8C900680C01 /* Asciiquarium.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Asciiquarium.entitlements; sourceTree = "<group>"; };
@@ -93,8 +95,9 @@
 				83DE431D2EF4F8C900680C01 /* Preview Content */,
 				83DE431E2EF4F8C900680C01 /* Asciiquarium.entitlements */,
 				83DE431F2EF4F8C900680C01 /* AsciiquariumApp.swift */,
-				83DE43202EF4F8C900680C01 /* Assets.xcassets */,
 				83DE43212EF4F8C900680C01 /* ContentView.swift */,
+				8324955E2EF5021900754A02 /* EntityTreeView.swift */,
+				83DE43202EF4F8C900680C01 /* Assets.xcassets */,
 			);
 			path = AsciiquariumApp;
 			sourceTree = "<group>";
@@ -223,6 +226,7 @@
 			files = (
 				83DE43252EF4F8C900680C01 /* ContentView.swift in Sources */,
 				83DE43262EF4F8C900680C01 /* AsciiquariumApp.swift in Sources */,
+				8324955F2EF5021900754A02 /* EntityTreeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

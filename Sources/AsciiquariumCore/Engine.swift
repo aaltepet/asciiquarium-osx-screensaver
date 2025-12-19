@@ -12,6 +12,9 @@ import SwiftUI
 public class AsciiquariumEngine: ObservableObject {
     @Published public var entities: [Entity] = []
     @Published public var isRunning = false
+    /// Frame update counter that increments on each frame update
+    /// Used to trigger SwiftUI updates when entity properties change
+    @Published public var frameUpdateCounter: Int = 0
 
     private var animationTimer: Timer?
     private var lastUpdateTime: CFTimeInterval = 0
@@ -76,6 +79,9 @@ public class AsciiquariumEngine: ObservableObject {
 
         updateEntities(deltaTime: deltaTime)
 
+        // Increment frame counter to trigger SwiftUI updates
+        frameUpdateCounter += 1
+
         // Notify that a new frame is ready - ContentView will handle the actual rendering
         frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
     }
@@ -84,6 +90,9 @@ public class AsciiquariumEngine: ObservableObject {
     /// This allows manual stepping through the animation when paused
     public func stepForward() {
         updateEntities(deltaTime: frameInterval)
+
+        // Increment frame counter to trigger SwiftUI updates
+        frameUpdateCounter += 1
 
         // Notify that a new frame is ready - ContentView will handle the actual rendering
         frameCallback?(CGRect.zero)
@@ -225,30 +234,26 @@ public class AsciiquariumEngine: ObservableObject {
         // There are 8 random object types, so each has 1/8 chance
         let randomValue = Double.random(in: 0...1)
         let slot = randomValue * 8.0
-        spawnShark()
-        return
-        /*
-                    if slot < 1.0
-                {
-                    spawnShip()  // 0.0 - 1.0 (1/8)
-                } else if slot < 2.0 {
-                    spawnWhale()  // 1.0 - 2.0 (1/8)
-                } else if slot < 3.0 {
-                    spawnMonster()  // 2.0 - 3.0 (1/8)
-                } else if slot < 4.0 {
-                    spawnBigFish()  // 3.0 - 4.0 (1/8)
-                } else if slot < 5.0 {
-                    spawnShark()  // 4.0 - 5.0 (1/8)
-                } else if slot < 6.0 {
-                    // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-                    spawnWhale()  // Fallback to whale for now
-                } else if slot < 7.0 {
-                    spawnSwan()  // 6.0 - 7.0 (1/8)
-                } else if slot < 8.0 {
-                    spawnDucks()  // 7.0 - 8.0 (1/8)
-                } else {
-                    spawnDolphins()  // 8.0 (1/8)
-                }*/
+        if slot < 1.0 {
+            spawnShip()  // 0.0 - 1.0 (1/8)
+        } else if slot < 2.0 {
+            spawnWhale()  // 1.0 - 2.0 (1/8)
+        } else if slot < 3.0 {
+            spawnMonster()  // 2.0 - 3.0 (1/8)
+        } else if slot < 4.0 {
+            spawnBigFish()  // 3.0 - 4.0 (1/8)
+        } else if slot < 5.0 {
+            spawnShark()  // 4.0 - 5.0 (1/8)
+        } else if slot < 6.0 {
+            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
+            spawnWhale()  // Fallback to whale for now
+        } else if slot < 7.0 {
+            spawnSwan()  // 6.0 - 7.0 (1/8)
+        } else if slot < 8.0 {
+            spawnDucks()  // 7.0 - 8.0 (1/8)
+        } else {
+            spawnDolphins()  // 8.0 (1/8)
+        }
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -432,7 +437,6 @@ public class AsciiquariumEngine: ObservableObject {
 
         // Create shark (direction is randomized in SharkEntity.init)
         let shark = EntityFactory.createShark(at: Position3D(0, spawnY, Depth.shark))
-        shark.direction = -1
         let sharkWidth = shark.size.width
 
         // Spawn off-screen based on direction - matching Perl:
@@ -469,10 +473,18 @@ public class AsciiquariumEngine: ObservableObject {
             // but the z-position should match fish depths (3-20), so Depth.shark + 1 = 3 is correct
         }
 
-        // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
-        // Perl has 8 random object types, so shark has 1/8 chance of respawning
+        // Set up death callback to kill teeth and spawn random object
+        // Perl: death_cb => sub { group_death(@_, 'teeth') }
+        // When shark dies, kill all teeth entities, then spawn random object
         shark.deathCallback = { [weak self] in
-            self?.spawnRandomObject()
+            guard let self = self else { return }
+            // Kill all teeth entities (matching Perl: group_death)
+            let teethEntities = self.entities.filter { $0.type == .teeth }
+            for teeth in teethEntities {
+                teeth.kill()
+            }
+            // Then spawn random object (matching Perl: random_object)
+            self.spawnRandomObject()
         }
 
         shark.spawnCallback = createSpawnCallback()
