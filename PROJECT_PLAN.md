@@ -122,7 +122,7 @@ Both formats share the same core asciiquarium engine:
 
 ## Screen Regions and Spawning Parity Checklist
 
-- [ ] Surface entity spawners (ship, whale, monster, ducks, dolphins, swan)
+- [X] Surface entity spawners (ship, whale, monster, ducks, dolphins, swan)
   - **Acceptance**:
     - Spawners create entities constrained to surface rows (near `y ∈ 0…8`) and use appropriate gap depths:
       - Ship at `water_gap1`, Whale at `water_gap2`, Monster at `water_gap2`, Ducks/Dolphins/Swan at `water_gap3`.
@@ -323,44 +323,51 @@ if shouldGenerateBubble() {
 - Entities move horizontally and respawn offscreen
 - Unit tests verify spawn positions and depth layers
 
-#### Priority 2: Teeth Entity (Low Complexity, Completes Shark)
+#### Priority 2: Teeth Entity (Low Complexity, Completes Shark) ✅
 **Why**: The shark in Perl has a "teeth" helper entity that moves with it. This completes the shark implementation.
 
 **Tasks**:
-- [ ] Implement **TeethEntity**
+- [X] Implement **TeethEntity**
   - Spawns with shark at slightly different z-depth
   - Moves in sync with shark
   - Simple shape (asterisk `*`)
   - Collision detection (or just visual)
 
 **Acceptance Criteria**:
-- Teeth spawn with shark
-- Teeth move in sync with shark
-- Teeth positioned correctly relative to shark
+- ✅ Teeth spawn with shark
+- ✅ Teeth move in sync with shark
+- ✅ Teeth positioned correctly relative to shark
 
 #### Priority 3: Fishing Equipment (Medium Complexity, Interactive Feature)
-**Why**: Adds interactive gameplay element (fishing mechanics).
 
-**Tasks**:
-- [ ] Implement **Fishhook** entity
-  - Drops from surface
-  - Collision with fish triggers retraction
-- [ ] Implement **Fishline** entity
-  - Connects hook to surface
-  - Visual line representation
-- [ ] Implement **HookPoint** entity
-  - Anchor point at surface
+**Detailed Implementation Plan**:
+
+- [ ] **Phase 1: Porting Visuals**
+    - [ ] Create `FishhookEntity.swift` with the hook ASCII art and state tracking.
+    - [ ] Create `FishlineEntity.swift` using a vertical string of `|` characters.
+    - [ ] Create `HookPointEntity.swift` for the physical tip of the hook.
+    - [ ] Remove existing placeholders from `PlaceholderEntities.swift`.
+
+- [ ] **Phase 2: Movement & Synchronization**
+    - [ ] Implement synchronized `moveEntity` logic (shared speed and direction).
+    - [ ] Add "Max Depth" logic (stop descent at ~75% screen height).
+    - [ ] Create a mechanism to link states (if one entity retracts, all retract).
+
+- [ ] **Phase 3: Spawning Integration**
+    - [ ] Add `spawnFishhook()` to `AsciiquariumEngine.swift`.
+    - [ ] Update the Engine's main loop to trigger hook spawning based on a random chance.
+
+- [ ] **Phase 4: Lifecycle & Retraction**
+    - [ ] Implement timed retraction (auto-reel-in if nothing is caught after X seconds).
+    - [ ] Ensure all three entities are cleaned up together via `deathCallback`.
+
+- [ ] **Phase 5: The "Catch" (Collisions)**
+    - [ ] Implement `collisionHandler` in `HookPointEntity`.
+    - [ ] Add a `isHooked` state to `FishEntity`.
+    - [ ] Update `FishEntity.moveEntity` to follow the `HookPointEntity` while hooked.
 
 **Acceptance Criteria**:
 - Hook drops and retracts on fish collision
 - Line connects hook to surface
 - Proper collision detection with fish
-
-#### Priority 4: Big Fish Entity (Low Priority, Visual Enhancement)
-**Why**: Adds variety to fish types.
-
-**Tasks**:
-- [X] Implement **BigFish** entity
-  - Larger fish shape
-  - Different movement pattern
-  - Spawns less frequently than regular fish
+- Caught fish are pulled to the surface
