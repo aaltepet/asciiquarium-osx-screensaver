@@ -245,8 +245,7 @@ public class AsciiquariumEngine: ObservableObject {
         } else if slot < 5.0 {
             spawnShark()  // 4.0 - 5.0 (1/8)
         } else if slot < 6.0 {
-            // spawnFishhook()  // 5.0 - 6.0 (1/8) - not yet implemented
-            spawnWhale()  // Fallback to whale for now
+            spawnFishhook()  // 5.0 - 6.0 (1/8)
         } else if slot < 7.0 {
             spawnSwan()  // 6.0 - 7.0 (1/8)
         } else if slot < 8.0 {
@@ -492,6 +491,25 @@ public class AsciiquariumEngine: ObservableObject {
         teeth.spawnCallback = createSpawnCallback()
         entities.append(shark)
         entities.append(teeth)
+    }
+
+    internal func spawnFishhook() {
+        // Random X position, but keeping enough space for the hook width
+        let spawnX = Int.random(in: 10..<max(11, gridWidth - 20))
+        let (group, hook, line, point) = EntityFactory.createFishingAssembly(
+            atX: spawnX, y: -4, gridHeight: gridHeight)
+
+        // Lifecycle: when the hook is killed, clean up the whole group and trigger the next random event
+        hook.deathCallback = { [weak self, weak group] in
+            group?.killAll()
+            self?.spawnRandomObject()
+        }
+
+        let assemblyEntities = [hook, line, point]
+        for entity in assemblyEntities {
+            entity.spawnCallback = createSpawnCallback()
+            entities.append(entity)
+        }
     }
 
     /// Spawn a new ship (matching Perl: add_ship)

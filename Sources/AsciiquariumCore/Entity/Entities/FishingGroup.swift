@@ -17,9 +17,19 @@ public class FishingGroup {
     public var state: State = .descending
     public var caughtFish: Entity? = nil
 
+    public weak var hook: Entity?
+    public weak var line: Entity?
+    public weak var point: Entity?
+
     public init() {}
 
     public func retract() {
         state = .retracting
+    }
+
+    public func killAll() {
+        hook?.kill()
+        line?.kill()
+        point?.kill()
     }
 }

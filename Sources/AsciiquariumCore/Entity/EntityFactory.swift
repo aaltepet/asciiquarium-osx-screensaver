@@ -150,4 +150,39 @@ public class EntityFactory {
     public static func createBigFish(at position: Position3D) -> BigFishEntity {
         return BigFishEntity(name: "bigfish_\(UUID().uuidString.prefix(8))", position: position)
     }
+
+    public static func createFishhook(at position: Position3D) -> FishhookEntity {
+        return FishhookEntity(name: "fishhook_\(UUID().uuidString.prefix(8))", position: position)
+    }
+
+    public static func createFishline(at position: Position3D) -> FishlineEntity {
+        return FishlineEntity(name: "fishline_\(UUID().uuidString.prefix(8))", position: position)
+    }
+
+    public static func createHookPoint(at position: Position3D) -> HookPointEntity {
+        return HookPointEntity(name: "hookpoint_\(UUID().uuidString.prefix(8))", position: position)
+    }
+
+    public static func createFishingAssembly(atX x: Int, y: Int, gridHeight: Int)
+        -> (group: FishingGroup, hook: FishhookEntity, line: FishlineEntity, point: HookPointEntity)
+    {
+        let group = FishingGroup()
+
+        let hook = createFishhook(at: Position3D(x, y, Depth.fishingHook))
+        let line = createFishline(at: Position3D(x + 7, y - 100, Depth.fishingLine))
+        let point = createHookPoint(at: Position3D(x + 1, y + 2, Depth.fishingHookPoint))
+
+        hook.group = group
+        hook.gridHeight = gridHeight
+        line.group = group
+        line.gridHeight = gridHeight
+        point.group = group
+        point.gridHeight = gridHeight
+
+        group.hook = hook
+        group.line = line
+        group.point = point
+
+        return (group, hook, line, point)
+    }
 }

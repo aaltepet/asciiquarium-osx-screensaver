@@ -353,9 +353,9 @@ if shouldGenerateBubble() {
     - [X] Add "Max Depth" logic (stop descent at ~75% screen height).
     - [X] Create a mechanism to link states (if one entity retracts, all retract).
 
-- [ ] **Phase 3: Spawning Integration**
-    - [ ] Add `spawnFishhook()` to `AsciiquariumEngine.swift`.
-    - [ ] Update the Engine's main loop to trigger hook spawning based on a random chance.
+- [X] **Phase 3: Spawning Integration**
+    - [X] Add `spawnFishhook()` to `AsciiquariumEngine.swift`.
+    - [X] Update the Engine's main loop to trigger hook spawning based on a random chance.
 
 - [ ] **Phase 4: Lifecycle & Retraction**
     - [ ] Implement timed retraction (auto-reel-in if nothing is caught after X seconds).

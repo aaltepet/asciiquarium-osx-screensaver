@@ -68,4 +68,48 @@ struct FishingTests {
         let newPos2 = hook.moveEntity(deltaTime: deltaTime)
         #expect(newPos2?.y == 12)  // Should NOT move further down
     }
+
+    @Test func testSpawnFishhook() async throws {
+        let engine = AsciiquariumEngine()
+        engine.entities.removeAll()
+
+        // When
+        engine.spawnFishhook()
+
+        // Then
+        let entities = engine.entities
+        #expect(entities.count == 3)
+
+        let hook = entities.first(where: { $0.type == .fishhook }) as? FishhookEntity
+        let line = entities.first(where: { $0.type == .fishline }) as? FishlineEntity
+        let point = entities.first(where: { $0.type == .hookPoint }) as? HookPointEntity
+
+        #expect(hook != nil)
+        #expect(line != nil)
+        #expect(point != nil)
+
+        // Verify group linkage
+        #expect(hook?.group === line?.group)
+        #expect(hook?.group === point?.group)
+        #expect(hook?.group != nil)
+
+        // Verify FishingGroup references are set
+        #expect(hook?.group?.hook === hook)
+        #expect(hook?.group?.line === line)
+        #expect(hook?.group?.point === point)
+
+        // Verify initial positions
+        #expect(hook?.position.y == -4)
+        #expect(line?.position.y == -104)
+        #expect(point?.position.y == -2)
+
+        if let hookX = hook?.position.x, let lineX = line?.position.x,
+            let pointX = point?.position.x
+        {
+            #expect(hookX == lineX - 7)
+            #expect(hookX == pointX - 1)
+        } else {
+            #expect(Bool(false), "Entities should have X positions")
+        }
+    }
 }

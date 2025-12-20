@@ -25,6 +25,11 @@ public enum Depth {
     public static let shark: Int = 2
     public static let fishStart: Int = 3
     public static let fishEnd: Int = 20
+
+    // Fishing equipment depths
+    public static let fishingLine: Int = waterLine1
+    public static let fishingHook: Int = waterLine1
+    public static let fishingHookPoint: Int = shark + 1
 }
 
 // MARK: - Spawn Configuration (matching Perl values)
