@@ -8,14 +8,14 @@ public class TeethEntity: BaseEntity {
         self.speed = speed
         self.direction = direction
         // Make teeth more visible for debugging - using "XXX" instead of "*"
-        super.init(name: name, type: .teeth, shape: ["XXX"], position: position)
+        super.init(name: name, type: .teeth, shape: ["***"], position: position)
 
         isPhysical = true
         dieOffscreen = false  // Teeth should not die off-screen - they stay with the shark
         // Teeth will be killed when the shark dies (via shark's death callback)
         defaultColor = .redBright  // Make it bright red so it's very visible
-        // Note: For collision detection to work, teeth should be at Depth.shark + 1 (depth 3)
-        // But we're using Depth.waterLine0 (depth 8) for visibility during debugging
+        // Teeth are at Depth.shark - 1 (depth 1) to render behind the shark
+        // Collision detection doesn't check depth (only X/Y), so this works fine
         callbackArgs = [speed, Double(direction), 0.0, 0.0]
 
         // The teeth are the aggressor; they handle the collision.

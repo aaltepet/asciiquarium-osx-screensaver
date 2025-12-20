@@ -456,12 +456,13 @@ public class AsciiquariumEngine: ObservableObject {
 
         shark.position = Position3D(spawnX, spawnY, Depth.shark)
 
-        // Keep teeth at correct X/Y position (at shark's mouth) but use higher depth for visibility
-        // Original depth: Depth.shark + 1 (depth 3) - correct for collision
-        // Debug depth: Depth.waterLine0 (depth 8) - renders above shark so we can see it
+        // Teeth at correct X/Y position (at shark's mouth)
+        // Depth: Use Depth.shark - 1 (depth 1) so teeth render BEHIND the shark
+        // Note: Collision detection doesn't check depth (only X/Y), so this works fine
+        // Perl uses $depth{'shark'}+1 (depth 3), but that renders teeth in front
         let teethY = spawnY + 7  // Correct Y position at shark's mouth
         let teeth = EntityFactory.create(
-            from: .teeth(position: Position3D(teethX, teethY, Depth.waterLine0)))  // High depth for visibility
+            from: .teeth(position: Position3D(teethX, teethY, Depth.shark - 1)))
 
         if let teeth = teeth as? TeethEntity {
             teeth.speed = shark.speed
