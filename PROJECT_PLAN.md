@@ -342,16 +342,16 @@ if shouldGenerateBubble() {
 
 **Detailed Implementation Plan**:
 
-- [ ] **Phase 1: Porting Visuals**
-    - [ ] Create `FishhookEntity.swift` with the hook ASCII art and state tracking.
-    - [ ] Create `FishlineEntity.swift` using a vertical string of `|` characters.
-    - [ ] Create `HookPointEntity.swift` for the physical tip of the hook.
-    - [ ] Remove existing placeholders from `PlaceholderEntities.swift`.
+- [X] **Phase 1: Porting Visuals**
+    - [X] Create `FishhookEntity.swift` with the hook ASCII art and state tracking.
+    - [X] Create `FishlineEntity.swift` using a vertical string of `|` characters.
+    - [X] Create `HookPointEntity.swift` for the physical tip of the hook.
+    - [X] Remove existing placeholders from `PlaceholderEntities.swift`.
 
-- [ ] **Phase 2: Movement & Synchronization**
-    - [ ] Implement synchronized `moveEntity` logic (shared speed and direction).
-    - [ ] Add "Max Depth" logic (stop descent at ~75% screen height).
-    - [ ] Create a mechanism to link states (if one entity retracts, all retract).
+- [X] **Phase 2: Movement & Synchronization**
+    - [X] Implement synchronized `moveEntity` logic (shared speed and direction).
+    - [X] Add "Max Depth" logic (stop descent at ~75% screen height).
+    - [X] Create a mechanism to link states (if one entity retracts, all retract).
 
 - [ ] **Phase 3: Spawning Integration**
     - [ ] Add `spawnFishhook()` to `AsciiquariumEngine.swift`.
