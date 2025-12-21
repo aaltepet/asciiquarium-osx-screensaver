@@ -51,6 +51,50 @@ struct FishingTests {
         #expect(retractPointPos?.y == 2)
     }
 
+    @Test func testFishCatching() async throws {
+        let engine = AsciiquariumEngine()
+        engine.entities.removeAll()
+
+        let (group, hook, _, point) = EntityFactory.createFishingAssembly(
+            atX: 20, y: 10, gridHeight: 40)
+        group.y = 10.0
+        engine.entities.append(contentsOf: [hook, point])
+
+        // Hook point is at (21, 12).
+        // In first tick, it will move to y=13.
+        let fish = FishEntity(name: "target_fish", position: Position3D(20, 14, Depth.fishStart))
+        fish.shape = ["XXX", "XXX", "XXX"]
+        fish.colorMask = nil
+        fish.transparentChar = nil
+        fish.speed = 0.0
+        fish.callbackArgs = [0.0, 0.0, 0.0, 0.0]
+        engine.entities.append(fish)
+
+        // Run one tick
+        engine.tickOnceForTests()
+
+        // The engine update loop handles collisions.
+        #expect(group.state == .retracting)
+        #expect(group.caughtFish === fish)
+        #expect(fish.caughtBy === group)
+        #expect(fish.isPhysical == false)
+        #expect(fish.position.z == Depth.fishingHook + 1)
+        #expect(point.isPhysical == false)
+
+        // Next tick: reeling in (group.y goes from 11.0 down to 10.0)
+        engine.tickOnceForTests()
+
+        #expect(group.y == 10.0)
+        #expect(hook.position.y == 10)
+        #expect(point.position.y == 12)  // floor(10.0) + 2
+
+        // Original catch: point was at (21, 13), fish was at (20, 14).
+        // Offset: (20-21=-1, 14-13=1)
+        // New fish pos: point.x - 1 = 20, point.y + 1 = 13
+        #expect(fish.position.x == 20)
+        #expect(fish.position.y == 13)
+    }
+
     @Test func testMaxDepthLogic() async throws {
         let group = FishingGroup()
         let gridHeight = 24
@@ -171,24 +215,34 @@ struct FishingTests {
         engine.entities.removeAll()
         engine.spawnFishhook()
 
-        let hook = engine.entities.first(where: { $0.type == .fishhook })
-        let oldHookId = hook?.id
-        #expect(engine.entities.count == 3)
+        let entities = engine.entities
+        let hook = entities.first(where: { $0.type == .fishhook })
+        let line = entities.first(where: { $0.type == .fishline })
+        let point = entities.first(where: { $0.type == .hookPoint }) as? HookPointEntity
 
-        // Kill the hook - this should trigger the cleanup of the whole group
+        // Add a caught fish to verify its cleanup
+        let fish = FishEntity(name: "caught_fish", position: Position3D(0, 0, 0))
+        if let group = point?.group {
+            group.caughtFish = fish
+            fish.caughtBy = group
+            engine.entities.append(fish)
+        }
+
+        let oldIds = Set([hook?.id, line?.id, point?.id, fish.id].compactMap { $0 })
+        #expect(engine.entities.count == 4)
+
+        // Kill the hook - this should trigger the cleanup of the whole group (including fish)
         hook?.kill()
 
         // The Engine processes dead entities in updateEntities
         engine.tickOnceForTests()
 
-        // The old hook should be gone
-        #expect(engine.entities.filter({ $0.id == oldHookId }).isEmpty)
+        // None of the old entities (including fish) should be in the engine anymore
+        let remainingIds = Set(engine.entities.map { $0.id })
+        #expect(oldIds.isDisjoint(with: remainingIds))
 
-        // Note: engine.spawnRandomObject() is called in deathCallback,
-        // which currently always spawns a new hook. So there will be 3 entities again,
-        // but they should be new ones.
-        #expect(engine.entities.count == 3)
-        #expect(engine.entities.first(where: { $0.type == .fishhook })?.id != oldHookId)
+        // engine.spawnRandomObject() was called, so some new entity/entities should exist
+        #expect(engine.entities.count >= 1)
     }
 
     @Test func testFractionalSynchronization() async throws {

@@ -14,6 +14,11 @@ public class FishEntity: BaseEntity {
     public var bubbleChance: Double = 0.005  // 0.5% chance per frame to generate bubble (adjusted from 3% due to frame rate differences)
     private var accumulatedMovement: Double = 0.0  // Accumulate fractional movement to preserve speed differences
 
+    /// The fishing group that caught this fish, if any
+    public var caughtBy: FishingGroup?
+    /// The relative offset from the hook point when caught
+    private var caughtOffset: (x: Int, y: Int) = (0, 0)
+
     public init(name: String, position: Position3D) {
         super.init(name: name, type: .fish, shape: [""], position: position)
         // Set up fish-specific properties
@@ -303,9 +308,27 @@ public class FishEntity: BaseEntity {
         }
     }
 
+    public func setCaught(by group: FishingGroup, offset: (x: Int, y: Int)) {
+        self.caughtBy = group
+        self.caughtOffset = offset
+        self.isPhysical = false
+    }
+
     public override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
+        // If caught, follow the fishing group
+        if let group = caughtBy {
+            // Follow hook point with the offset established at time of catch
+            // HookPoint is at (hook.x + 1, floor(group.y) + 2)
+            let hookX = (group.hook?.position.x ?? position.x) + 1
+            let hookY = Int(floor(group.y)) + 2
+            return Position3D(
+                hookX + caughtOffset.x,
+                hookY + caughtOffset.y,
+                position.z
+            )
+        }
+
         // Fish-specific movement logic - speed is randomized (0.05 to 2.0) matching Perl
-        // Ensure speed is valid (safeguard against any edge cases)
         if speed < 0.05 {
             // If speed somehow became invalid, reset to minimum
             speed = 0.05
@@ -345,6 +368,9 @@ public class FishEntity: BaseEntity {
 
     public override func update(deltaTime: TimeInterval) {
         super.update(deltaTime: deltaTime)
+
+        // Only generate bubbles if not caught
+        guard caughtBy == nil else { return }
 
         // Check if fish should generate a bubble
         // Perl: if(int(rand(100)) > 97) { add_bubble($fish, $anim); } - 3% chance per frame

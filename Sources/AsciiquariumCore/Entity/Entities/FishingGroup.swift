@@ -35,5 +35,6 @@ public class FishingGroup {
         hook?.kill()
         line?.kill()
         point?.kill()
+        caughtFish?.kill()
     }
 }

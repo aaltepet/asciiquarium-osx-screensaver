@@ -361,10 +361,12 @@ if shouldGenerateBubble() {
     - [X] Implement timed retraction (auto-reel-in if nothing is caught after X seconds).
     - [X] Ensure all three entities are cleaned up together via `deathCallback`.
 
-- [ ] **Phase 5: The "Catch" (Collisions)**
-    - [ ] Implement `collisionHandler` in `HookPointEntity`.
-    - [ ] Add a `isHooked` state to `FishEntity`.
-    - [ ] Update `FishEntity.moveEntity` to follow the `HookPointEntity` while hooked.
+- [X] **Phase 5: The "Catch" (Collisions)**
+    - [X] Implement `collisionHandler` in `HookPointEntity`.
+    - [X] Add a `isHooked` state to `FishEntity` (implemented as `caughtBy: FishingGroup?`).
+    - [X] Update `FishEntity.moveEntity` to follow the `HookPointEntity` while hooked.
+    - [X] Update `FishingGroup.killAll()` to kill the caught fish.
+    - [X] Add unit tests for collision/catching.
 
 **Acceptance Criteria**:
 - Hook drops and retracts on fish collision

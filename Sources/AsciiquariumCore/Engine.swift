@@ -227,10 +227,22 @@ public class AsciiquariumEngine: ObservableObject {
     }
 
     /// Spawn a random object (matching Perl: random_object)
-    /// Perl has 8 random object types: ship, whale, monster, big_fish, shark, fishhook, swan, ducks, dolphins
-    /// Each has 1/8 chance of being selected
+    /// Perl has 9 random object types: ship, whale, monster, big_fish, shark, fishhook, swan, ducks, dolphins
+    /// Each has 1/9 chance of being selected
     private func spawnRandomObject() {
-        spawnFishhook()
+        let selection = Int.random(in: 0..<9)
+        switch selection {
+        case 0: spawnShip()
+        case 1: spawnWhale()
+        case 2: spawnMonster()
+        case 3: spawnBigFish()
+        case 4: spawnShark()
+        case 5: spawnFishhook()
+        case 6: spawnSwan()
+        case 7: spawnDucks()
+        case 8: spawnDolphins()
+        default: break
+        }
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
@@ -471,6 +483,7 @@ public class AsciiquariumEngine: ObservableObject {
         entities.append(teeth)
     }
 
+    /// Spawn the fishhook assembly (matching Perl: add_fishhook)
     internal func spawnFishhook() {
         // Random X position, but keeping enough space for the hook width
         let spawnX = Int.random(in: 10..<max(11, gridWidth - 20))
