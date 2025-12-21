@@ -474,8 +474,12 @@ public class AsciiquariumEngine: ObservableObject {
     internal func spawnFishhook() {
         // Random X position, but keeping enough space for the hook width
         let spawnX = Int.random(in: 10..<max(11, gridWidth - 20))
+        let spawnY = -4
         let (group, hook, line, point) = EntityFactory.createFishingAssembly(
-            atX: spawnX, y: -4, gridHeight: gridHeight)
+            atX: spawnX, y: spawnY, gridHeight: gridHeight)
+
+        // Initialize the group's floating-point Y
+        group.y = Double(spawnY)
 
         // Lifecycle: when the hook is killed, clean up the whole group and trigger the next random event
         hook.deathCallback = { [weak self, weak group] in

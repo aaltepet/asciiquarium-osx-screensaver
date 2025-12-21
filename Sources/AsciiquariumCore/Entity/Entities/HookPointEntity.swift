@@ -32,29 +32,11 @@ public class HookPointEntity: BaseEntity {
     }
 
     public override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        guard let args = callbackArgs, args.count >= 3 else { return nil }
+        guard let group = group else { return nil }
 
-        let speed = args[0] as? Double ?? 0.0
-        let dy = (group?.state ?? .descending) == .descending ? 1.0 : -1.0
-
-        let gridSpeed = speed * 30.0
-        let movementThisFrame = gridSpeed * dy * deltaTime
-
-        let newY = Double(position.y) + movementThisFrame
-
-        if (group?.state ?? .descending) == .descending {
-            // HookPoint is offset relative to hook. Hook height is 6.
-            // Perl: hook at $y, point at $y + 2.
-            // So point stops at (gridHeight * 0.75 - hookHeight) + offset
-            let hookHeight = 6.0
-            let pointOffset = 2.0
-            let maxPointY = (Double(gridHeight) * 0.75) - hookHeight + pointOffset
-
-            if newY > maxPointY {
-                return Position3D(position.x, Int(maxPointY), position.z)
-            }
-        }
-
-        return Position3D(position.x, Int(newY), position.z)
+        // Follow the group's floating-point Y with fixed offset
+        // Perl: hook at $y, point at $y + 2
+        let pointY = group.y + 2
+        return Position3D(position.x, Int(floor(pointY)), position.z)
     }
 }

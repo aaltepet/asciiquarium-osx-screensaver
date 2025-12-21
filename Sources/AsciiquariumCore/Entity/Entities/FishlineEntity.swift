@@ -23,31 +23,16 @@ public class FishlineEntity: BaseEntity {
     private func setupFishline() {
         defaultColor = .green
         dieOffscreen = false
+        transparentChar = " "
         // Speed: 1.0 cell/tick -> 30 cells/sec
         callbackArgs = [1.0, 0.0, 1.0, 0.0]
     }
 
     public override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        guard let args = callbackArgs, args.count >= 3 else { return nil }
+        guard let group = group else { return nil }
 
-        let speed = args[0] as? Double ?? 0.0
-        let dy = (group?.state ?? .descending) == .descending ? 1.0 : -1.0
-
-        let gridSpeed = speed * 30.0
-        let movementThisFrame = gridSpeed * dy * deltaTime
-
-        let newY = Double(position.y) + movementThisFrame
-
-        if (group?.state ?? .descending) == .descending {
-            // Synchronized with hook's max depth logic
-            // The line's bottom (including spaces) should stop at the hook's bottom.
-            let maxHeight = Double(gridHeight) * 0.75
-
-            if newY + Double(size.height) > maxHeight {
-                return Position3D(position.x, Int(maxHeight - Double(size.height)), position.z)
-            }
-        }
-
-        return Position3D(position.x, Int(newY), position.z)
+        // Follow the group's floating-point Y with fixed offset
+        let lineY = group.y - 100
+        return Position3D(position.x, Int(floor(lineY)), position.z)
     }
 }

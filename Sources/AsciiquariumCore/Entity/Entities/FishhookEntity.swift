@@ -52,25 +52,26 @@ public class FishhookEntity: BaseEntity {
     }
 
     public override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
-        guard let args = callbackArgs, args.count >= 3 else { return nil }
+        guard let args = callbackArgs, args.count >= 3, let group = group else { return nil }
 
         let speed = args[0] as? Double ?? 0.0
-        let dy = (group?.state ?? .descending) == .descending ? 1.0 : -1.0
+        let dy = group.state == .descending ? 1.0 : -1.0
 
         // 30 FPS * 1 cell/sec = 1 cell per frame
         let gridSpeed = speed * 30.0
         let movementThisFrame = gridSpeed * dy * deltaTime
 
-        let newY = Double(position.y) + movementThisFrame
+        // Update the shared floating-point Y in the group
+        group.y += movementThisFrame
 
-        if (group?.state ?? .descending) == .descending {
+        if group.state == .descending {
             // Stop at 75% of grid height
             let maxHeight = Double(gridHeight) * 0.75
-            if newY + Double(size.height) > maxHeight {
-                return Position3D(position.x, Int(maxHeight - Double(size.height)), position.z)
+            if group.y + Double(size.height) > maxHeight {
+                group.y = maxHeight - Double(size.height)
             }
         }
 
-        return Position3D(position.x, Int(newY), position.z)
+        return Position3D(position.x, Int(floor(group.y)), position.z)
     }
 }

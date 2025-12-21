@@ -9,12 +9,13 @@ struct FishingTests {
     @Test func testFishingGroupSynchronization() async throws {
         let group = FishingGroup()
         let hook = FishhookEntity(name: "hook", position: Position3D(10, 0, 0))
-        let line = FishlineEntity(name: "line", position: Position3D(17, -100, 0))
+        let line = FishlineEntity(name: "line", position: Position3D(16, -100, 0))
         let point = HookPointEntity(name: "point", position: Position3D(11, 2, 0))
 
         hook.group = group
         line.group = group
         point.group = group
+        group.y = 0.0
 
         // Initial state: descending
         #expect(group.state == .descending)
@@ -22,14 +23,17 @@ struct FishingTests {
         // Move one tick (1/30 sec)
         let deltaTime: TimeInterval = 1.0 / 30.0
 
+        // hook is the leader, it updates group.y
         let newHookPos = hook.moveEntity(deltaTime: deltaTime)
+        // Followers use the updated group.y
         let newLinePos = line.moveEntity(deltaTime: deltaTime)
         let newPointPos = point.moveEntity(deltaTime: deltaTime)
 
-        // All should move down by 1 cell (speed 1.0 * 30 FPS * 1/30 sec = 1 cell)
+        // group.y should now be 1.0 (speed 1.0 * 30 FPS * 1/30 sec = 1.0)
+        #expect(group.y == 1.0)
         #expect(newHookPos?.y == 1)
-        #expect(newLinePos?.y == -99)
-        #expect(newPointPos?.y == 3)
+        #expect(newLinePos?.y == -99)  // 1.0 - 100
+        #expect(newPointPos?.y == 3)  // 1.0 + 2
 
         // Switch to retracting
         group.retract()
@@ -40,11 +44,11 @@ struct FishingTests {
         let retractLinePos = line.moveEntity(deltaTime: deltaTime)
         let retractPointPos = point.moveEntity(deltaTime: deltaTime)
 
-        // Verify synchronized upward movement (retracting state)
-        // Note: moveEntity returns the projected next position based on the current position without mutating it.
-        #expect(retractHookPos?.y == -1)
-        #expect(retractLinePos?.y == -101)
-        #expect(retractPointPos?.y == 1)
+        // group.y should now be 0.0 (1.0 - 1.0)
+        #expect(group.y == 0.0)
+        #expect(retractHookPos?.y == 0)
+        #expect(retractLinePos?.y == -100)
+        #expect(retractPointPos?.y == 2)
     }
 
     @Test func testMaxDepthLogic() async throws {
@@ -56,6 +60,7 @@ struct FishingTests {
         let hook = FishhookEntity(name: "hook", position: Position3D(10, 11, 0))
         hook.group = group
         hook.gridHeight = gridHeight
+        group.y = 11.0
 
         let deltaTime: TimeInterval = 1.0 / 30.0
 
@@ -73,21 +78,31 @@ struct FishingTests {
         let group = FishingGroup()
         let gridHeight = 24
         // Hook top stops at 18 - 6 = 12.
-        // Line height is 100. Line bottom should stop at 12.
-        // Line top should be at 12 - 100 = -88.
+        // Line height is 106 (100 pipes + 6 spaces).
+        // Line bottom should stop at 18.
+        // Line top should be at 18 - 106 = -88.
 
         let line = FishlineEntity(name: "line", position: Position3D(10, -89, 0))
         line.group = group
         line.gridHeight = gridHeight
+        // The line follows group.y. If line is at -89 and offset is -100, group.y must be 11.0
+        group.y = 11.0
 
         let deltaTime: TimeInterval = 1.0 / 30.0
 
+        // We need the leader (hook) to move the group
+        let hook = FishhookEntity(name: "hook", position: Position3D(10, 11, 0))
+        hook.group = group
+        hook.gridHeight = gridHeight
+
+        _ = hook.moveEntity(deltaTime: deltaTime)
         let newPos = line.moveEntity(deltaTime: deltaTime)
-        #expect(newPos?.y == -88)  // Bottom at -88 + 100 = 12.
+        #expect(newPos?.y == -88)  // group.y became 12.0, line is 12.0 - 100 = -88
 
         line.position = newPos!
+        _ = hook.moveEntity(deltaTime: deltaTime)  // Try to move hook further
         let newPos2 = line.moveEntity(deltaTime: deltaTime)
-        #expect(newPos2?.y == -88)  // Should stay clamped
+        #expect(newPos2?.y == -88)  // Should stay clamped because hook stayed clamped
     }
 
     @Test func testTimedRetraction() async throws {
@@ -174,5 +189,34 @@ struct FishingTests {
         // but they should be new ones.
         #expect(engine.entities.count == 3)
         #expect(engine.entities.first(where: { $0.type == .fishhook })?.id != oldHookId)
+    }
+
+    @Test func testFractionalSynchronization() async throws {
+        let group = FishingGroup()
+        let hook = FishhookEntity(name: "hook", position: Position3D(10, 0, 0))
+        let line = FishlineEntity(name: "line", position: Position3D(16, -100, 0))
+
+        hook.group = group
+        line.group = group
+
+        // Scenario: group.y moves to 1.9
+        group.y = 1.9
+
+        // With floor rounding:
+        // hook.moveEntity returns floor(1.9) = 1
+        // line.moveEntity returns floor(1.9 - 100) = floor(-98.1) = -99
+        // Relative distance: 1 - (-99) = 100. Correct.
+
+        // Without floor rounding (using Int truncation):
+        // hook.moveEntity would return Int(1.9) = 1
+        // line.moveEntity would return Int(-98.1) = -98
+        // Relative distance: 1 - (-98) = 99. INCORRECT!
+
+        let hookPos = hook.moveEntity(deltaTime: 0)
+        let linePos = line.moveEntity(deltaTime: 0)
+
+        #expect(hookPos?.y == 1)
+        #expect(linePos?.y == -99)
+        #expect((hookPos?.y ?? 0) - (linePos?.y ?? 0) == 100)
     }
 }

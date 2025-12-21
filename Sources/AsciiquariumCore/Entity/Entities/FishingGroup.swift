@@ -17,6 +17,10 @@ public class FishingGroup {
     public var state: State = .descending
     public var caughtFish: Entity? = nil
 
+    /// The source of truth for the vertical position of the assembly.
+    /// This is updated by the 'leader' (the hook) and followed by others.
+    public var y: Double = 0.0
+
     public weak var hook: Entity?
     public weak var line: Entity?
     public weak var point: Entity?
