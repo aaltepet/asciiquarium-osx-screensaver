@@ -169,7 +169,7 @@ public class EntityFactory {
         let group = FishingGroup()
 
         let hook = createFishhook(at: Position3D(x, y, Depth.fishingHook))
-        let line = createFishline(at: Position3D(x + 7, y - 100, Depth.fishingLine))
+        let line = createFishline(at: Position3D(x + 6, y - 100, Depth.fishingLine))
         let point = createHookPoint(at: Position3D(x + 1, y + 2, Depth.fishingHookPoint))
 
         hook.group = group

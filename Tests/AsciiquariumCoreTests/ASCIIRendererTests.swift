@@ -372,6 +372,72 @@ struct ASCIIRendererTests {
         #expect(renderedString == expected)
     }
 
+    @Test func testFullWidthEntityDoesNotOverwriteWithSpaces() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+        let gridWidth = 10
+        let gridHeight = 1
+
+        // Background: a regular entity at z=0
+        let bg = BaseEntity(
+            name: "bg",
+            type: .fish,
+            shape: ["XXXXXXXXXX"],
+            position: Position3D(0, 0, 0)
+        )
+        bg.defaultColor = .blue
+
+        // Foreground: a full-width entity at z=1 with spaces
+        // We'll use a mock full-width entity
+        class MockFullWidth: EntityFullWidth {
+            override func getShape(for width: Int) -> [String] {
+                return ["  ~~~~~   "]  // 10 chars
+            }
+        }
+        let fg = MockFullWidth(
+            name: "fg",
+            type: .waterline,
+            shape: [""],  // shape ignored for full-width
+            position: Position3D(0, 0, 1)
+        )
+        fg.isFullWidth = true
+        fg.defaultColor = .green
+        fg.transparentChar = " "
+
+        let out = renderer.renderScene(
+            entities: [bg, fg], gridWidth: gridWidth, gridHeight: gridHeight)
+        let renderedString = String(out.string.prefix(10))
+
+        // Expected: "XX~~~~~XXX"
+        // The spaces in the full-width entity should be transparent, showing the 'X's behind.
+        #expect(renderedString == "XX~~~~~XXX")
+    }
+
+    @Test func testRenderingOfEntitiesStartingOffscreenTop() async throws {
+        let renderer = TestHelpers.createTestRenderer()
+        let gridWidth = 5
+        let gridHeight = 2
+
+        // Entity starting at y = -1, but height is 2, so row index 1 should be visible at y=0
+        let e = BaseEntity(
+            name: "offscreen",
+            type: .fish,
+            shape: [
+                "TOPXX",  // row 0 (off-screen)
+                "BOTXX",  // row 1 (visible at y=0)
+            ],
+            position: Position3D(0, -1, 0)
+        )
+        e.defaultColor = .white
+
+        let out = renderer.renderScene(entities: [e], gridWidth: gridWidth, gridHeight: gridHeight)
+        let lines = out.string.components(separatedBy: "\n")
+
+        // line[0] should be "BOTXX" (from row 1 of shape)
+        // line[1] should be "     " (empty space)
+        #expect(lines[0] == "BOTXX")
+        #expect(lines[1] == "     ")
+    }
+
     @Test func testSceneDimensions() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()

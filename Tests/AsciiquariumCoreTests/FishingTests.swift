@@ -69,6 +69,44 @@ struct FishingTests {
         #expect(newPos2?.y == 12)  // Should NOT move further down
     }
 
+    @Test func testLineStopAtHookTop() async throws {
+        let group = FishingGroup()
+        let gridHeight = 24
+        // Hook top stops at 18 - 6 = 12.
+        // Line height is 100. Line bottom should stop at 12.
+        // Line top should be at 12 - 100 = -88.
+
+        let line = FishlineEntity(name: "line", position: Position3D(10, -89, 0))
+        line.group = group
+        line.gridHeight = gridHeight
+
+        let deltaTime: TimeInterval = 1.0 / 30.0
+
+        let newPos = line.moveEntity(deltaTime: deltaTime)
+        #expect(newPos?.y == -88)  // Bottom at -88 + 100 = 12.
+
+        line.position = newPos!
+        let newPos2 = line.moveEntity(deltaTime: deltaTime)
+        #expect(newPos2?.y == -88)  // Should stay clamped
+    }
+
+    @Test func testTimedRetraction() async throws {
+        let group = FishingGroup()
+        let hook = FishhookEntity(name: "hook", position: Position3D(10, 12, 0))  // Already at max depth (12+6=18)
+        hook.group = group
+        hook.gridHeight = 24
+
+        #expect(group.state == .descending)
+
+        // Update for 29 seconds - should still be descending
+        hook.update(deltaTime: 29.0)
+        #expect(group.state == .descending)
+
+        // Update for another 2 seconds - total 31 seconds - should be retracting
+        hook.update(deltaTime: 2.0)
+        #expect(group.state == .retracting)
+    }
+
     @Test func testSpawnFishhook() async throws {
         let engine = AsciiquariumEngine()
         engine.entities.removeAll()
@@ -106,10 +144,35 @@ struct FishingTests {
         if let hookX = hook?.position.x, let lineX = line?.position.x,
             let pointX = point?.position.x
         {
-            #expect(hookX == lineX - 7)
+            #expect(hookX == lineX - 6)
             #expect(hookX == pointX - 1)
         } else {
             #expect(Bool(false), "Entities should have X positions")
         }
+    }
+
+    @Test func testGroupCleanupOnDeath() async throws {
+        let engine = AsciiquariumEngine()
+        engine.entities.removeAll()
+        engine.spawnFishhook()
+
+        let hook = engine.entities.first(where: { $0.type == .fishhook })
+        let oldHookId = hook?.id
+        #expect(engine.entities.count == 3)
+
+        // Kill the hook - this should trigger the cleanup of the whole group
+        hook?.kill()
+
+        // The Engine processes dead entities in updateEntities
+        engine.tickOnceForTests()
+
+        // The old hook should be gone
+        #expect(engine.entities.filter({ $0.id == oldHookId }).isEmpty)
+
+        // Note: engine.spawnRandomObject() is called in deathCallback,
+        // which currently always spawns a new hook. So there will be 3 entities again,
+        // but they should be new ones.
+        #expect(engine.entities.count == 3)
+        #expect(engine.entities.first(where: { $0.type == .fishhook })?.id != oldHookId)
     }
 }

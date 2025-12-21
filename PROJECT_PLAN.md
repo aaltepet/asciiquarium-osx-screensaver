@@ -357,9 +357,9 @@ if shouldGenerateBubble() {
     - [X] Add `spawnFishhook()` to `AsciiquariumEngine.swift`.
     - [X] Update the Engine's main loop to trigger hook spawning based on a random chance.
 
-- [ ] **Phase 4: Lifecycle & Retraction**
-    - [ ] Implement timed retraction (auto-reel-in if nothing is caught after X seconds).
-    - [ ] Ensure all three entities are cleaned up together via `deathCallback`.
+- [X] **Phase 4: Lifecycle & Retraction**
+    - [X] Implement timed retraction (auto-reel-in if nothing is caught after X seconds).
+    - [X] Ensure all three entities are cleaned up together via `deathCallback`.
 
 - [ ] **Phase 5: The "Catch" (Collisions)**
     - [ ] Implement `collisionHandler` in `HookPointEntity`.

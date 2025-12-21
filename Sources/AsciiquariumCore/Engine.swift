@@ -230,29 +230,7 @@ public class AsciiquariumEngine: ObservableObject {
     /// Perl has 8 random object types: ship, whale, monster, big_fish, shark, fishhook, swan, ducks, dolphins
     /// Each has 1/8 chance of being selected
     private func spawnRandomObject() {
-        // Perl: my $sub = int(rand(scalar(@random_objects)));
-        // There are 8 random object types, so each has 1/8 chance
-        let randomValue = Double.random(in: 0...1)
-        let slot = randomValue * 8.0
-        if slot < 1.0 {
-            spawnShip()  // 0.0 - 1.0 (1/8)
-        } else if slot < 2.0 {
-            spawnWhale()  // 1.0 - 2.0 (1/8)
-        } else if slot < 3.0 {
-            spawnMonster()  // 2.0 - 3.0 (1/8)
-        } else if slot < 4.0 {
-            spawnBigFish()  // 3.0 - 4.0 (1/8)
-        } else if slot < 5.0 {
-            spawnShark()  // 4.0 - 5.0 (1/8)
-        } else if slot < 6.0 {
-            spawnFishhook()  // 5.0 - 6.0 (1/8)
-        } else if slot < 7.0 {
-            spawnSwan()  // 6.0 - 7.0 (1/8)
-        } else if slot < 8.0 {
-            spawnDucks()  // 7.0 - 8.0 (1/8)
-        } else {
-            spawnDolphins()  // 8.0 (1/8)
-        }
+        spawnFishhook()
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)

@@ -25,7 +25,7 @@ public class HookPointEntity: BaseEntity {
     private func setupHookPoint() {
         isPhysical = true
         defaultColor = .green
-        dieOffscreen = true
+        dieOffscreen = false
         transparentChar = " "
         // Speed: 1.0 cell/tick -> 30 cells/sec
         callbackArgs = [1.0, 0.0, 1.0, 0.0]
@@ -45,8 +45,11 @@ public class HookPointEntity: BaseEntity {
         if (group?.state ?? .descending) == .descending {
             // HookPoint is offset relative to hook. Hook height is 6.
             // Perl: hook at $y, point at $y + 2.
-            // So point stops at (gridHeight * 0.75 - hook.height) + 2
-            let maxPointY = Double(gridHeight) * 0.75 - 6.0 + 2.0
+            // So point stops at (gridHeight * 0.75 - hookHeight) + offset
+            let hookHeight = 6.0
+            let pointOffset = 2.0
+            let maxPointY = (Double(gridHeight) * 0.75) - hookHeight + pointOffset
+
             if newY > maxPointY {
                 return Position3D(position.x, Int(maxPointY), position.z)
             }

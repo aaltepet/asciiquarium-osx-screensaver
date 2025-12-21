@@ -10,13 +10,15 @@ import Foundation
 public class FishhookEntity: BaseEntity {
     public var group: FishingGroup?
     public var gridHeight: Int = 24  // Default grid height
+    private var timeAtMaxDepth: TimeInterval = 0
+    private let maxTimeAtBottom: TimeInterval = 30.0  // Retract after 30 seconds at bottom
 
     public init(name: String, position: Position3D) {
         let hookShape = [
-            "       o",
-            "      ||",
-            "      ||",
-            "/ \\   ||",
+            "      o",
+            "     ||",
+            "     ||",
+            "/ \\  ||",
             "  \\__//",
             "  `--' ",
         ]
@@ -31,6 +33,22 @@ public class FishhookEntity: BaseEntity {
         // Speed: 1.0 cell/tick -> 30 cells/sec
         // callbackArgs: [speed, dx, dy, dz]
         callbackArgs = [1.0, 0.0, 1.0, 0.0]
+    }
+
+    public override func update(deltaTime: TimeInterval) {
+        super.update(deltaTime: deltaTime)
+
+        // Handle timed retraction if we've reached max depth and aren't already retracting
+        if let group = group, group.state == .descending {
+            let maxHeight = Double(gridHeight) * 0.75
+            // Check if we are at or near max depth (within 1 cell)
+            if Double(position.y) + Double(size.height) >= maxHeight - 1.0 {
+                timeAtMaxDepth += deltaTime
+                if timeAtMaxDepth >= maxTimeAtBottom {
+                    group.retract()
+                }
+            }
+        }
     }
 
     public override func moveEntity(deltaTime: TimeInterval) -> Position3D? {
