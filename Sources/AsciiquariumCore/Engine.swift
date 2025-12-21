@@ -86,16 +86,21 @@ public class AsciiquariumEngine: ObservableObject {
         frameCallback?(CGRect.zero)  // ContentView doesn't need bounds for grid-based rendering
     }
 
-    /// Step forward one tick (one frame duration)
-    /// This allows manual stepping through the animation when paused
-    public func stepForward() {
-        updateEntities(deltaTime: frameInterval)
+    /// Step forward by a specific time delta
+    public func tick(deltaTime: CFTimeInterval) {
+        updateEntities(deltaTime: deltaTime)
 
         // Increment frame counter to trigger SwiftUI updates
         frameUpdateCounter += 1
 
-        // Notify that a new frame is ready - ContentView will handle the actual rendering
+        // Notify that a new frame is ready
         frameCallback?(CGRect.zero)
+    }
+
+    /// Step forward one tick (one frame duration)
+    /// This allows manual stepping through the animation when paused
+    public func stepForward() {
+        tick(deltaTime: frameInterval)
     }
 
     /// Restart the simulation by clearing all entities and respawning initial entities
