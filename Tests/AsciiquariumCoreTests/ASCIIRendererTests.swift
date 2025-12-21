@@ -105,7 +105,6 @@ struct ASCIIRendererTests {
 
     @Test func testFontUpdateWithOptimalSizing() async throws {
         let renderer = TestHelpers.createTestRenderer()
-        _ = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Update font with optimal sizing
         renderer.updateFont(size: 12.0)
@@ -135,7 +134,6 @@ struct ASCIIRendererTests {
     @Test func testCharacterPositioning() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
         let attributedString = renderer.renderScene(
             entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
@@ -351,20 +349,7 @@ struct ASCIIRendererTests {
         // Extract the rendered string (first 9 chars, ignoring newline)
         let renderedString = String(out.string.prefix(9))
 
-        // Debug: print actual vs expected
         let expected = "==>   <=="
-        if renderedString != expected {
-            print("Expected: '\(expected)' (length: \(expected.count))")
-            print("Actual:   '\(renderedString)' (length: \(renderedString.count))")
-            for (i, (e, a)) in zip(expected, renderedString).enumerated() {
-                if e != a {
-                    print(
-                        "  Position \(i): expected '\(e)' (code: \(e.unicodeScalars.first!.value)), got '\(a)' (code: \(a.unicodeScalars.first!.value))"
-                    )
-                }
-            }
-        }
-
         // Expected: "==>   <=="
         // - First 2 chars: background (==) - transparent leading spaces
         // - Next 5 chars: foreground (">   <") - opaque including interior spaces
@@ -441,7 +426,6 @@ struct ASCIIRendererTests {
     @Test func testSceneDimensions() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
         let attributedString = renderer.renderScene(
             entities: entities, gridWidth: 80, gridHeight: 24)
         let lines = attributedString.string.components(separatedBy: "\n")
@@ -482,7 +466,6 @@ struct ASCIIRendererTests {
     @Test func testRenderingPerformance() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Measure time for multiple renders
         let (_, executionTime) = TestHelpers.measureExecutionTime {
@@ -502,7 +485,6 @@ struct ASCIIRendererTests {
     @Test func testRenderingConsistency() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let entities = TestHelpers.createTestEntities()
-        let bounds = CGRect(x: 0, y: 0, width: 800, height: 600)
 
         // Render the same scene multiple times
         let result1 = renderer.renderScene(entities: entities, gridWidth: 80, gridHeight: 24)

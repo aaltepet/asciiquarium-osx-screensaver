@@ -604,8 +604,11 @@ public class AsciiquariumEngine: ObservableObject {
     private func spawnSwan() {
         // Perl: position => [ $x, 1, $depth{'water_gap3'} ]
         // Swan spawns at y=1 (surface) at water_gap3 depth
-        // Create swan (direction is randomized in SwanEntity.init)
-        let swan = EntityFactory.createSwan(at: Position3D(0, 1, Depth.waterGap3))
+        // However, since the swan is 7 rows high, it spans y=1..7.
+        // The waterlines at y=5..7 have depths 2, 4, 6.
+        // water_gap3 (depth 3) is behind the waterlines at y=6 and y=7.
+        // Using water_gap1 (depth 7) ensures the swan renders in front of these waterlines.
+        let swan = EntityFactory.createSwan(at: Position3D(0, 1, Depth.waterGap1))
 
         // Spawn off-screen based on direction - matching Perl:
         // Right: $x = -10
@@ -619,7 +622,7 @@ public class AsciiquariumEngine: ObservableObject {
             spawnX = gridWidth - 2
         }
 
-        swan.position = Position3D(spawnX, 1, Depth.waterGap3)
+        swan.position = Position3D(spawnX, 1, Depth.waterGap1)
 
         // Set up death callback to spawn random object (matching Perl: death_cb => \&random_object)
         swan.deathCallback = { [weak self] in

@@ -36,20 +36,10 @@ struct TeethDiagnostics {
         engine.entities.append(teeth)
 
         // Then - verify positions
-        print("Shark position: x=\(shark.position.x), y=\(shark.position.y), z=\(shark.position.z)")
-        print("Shark size: width=\(shark.size.width), height=\(shark.size.height)")
-        print("Teeth position: x=\(teeth.position.x), y=\(teeth.position.y), z=\(teeth.position.z)")
-        print("Teeth isPhysical: \(teeth.isPhysical)")
-        print("Teeth collisionHandler: \(teeth.collisionHandler != nil ? "set" : "nil")")
-
         // Check if teeth are within shark's bounds
         let sharkTop = shark.position.y
         let sharkBottom = shark.position.y + shark.size.height - 1
-        let teethInSharkBounds = teethY >= sharkTop && teethY <= sharkBottom
-
-        print(
-            "Teeth Y (\(teethY)) within shark Y bounds (\(sharkTop)-\(sharkBottom)): \(teethInSharkBounds)"
-        )
+        _ = teethY >= sharkTop && teethY <= sharkBottom
 
         #expect(teeth.isPhysical == true, "Teeth should be physical")
         #expect(teeth.collisionHandler != nil, "Teeth should have collision handler")
@@ -83,11 +73,7 @@ struct TeethDiagnostics {
 
             // Check collision
             let collisions = teeth.checkCollisions(with: engine.entities)
-            let fishCollision = collisions.first { $0.id == fish.id }
-
-            print(
-                "Fish at z=\(fishZ), teeth at z=\(teeth.position.z): collision=\(fishCollision != nil)"
-            )
+            _ = collisions.first { $0.id == fish.id }
         }
     }
 
@@ -120,17 +106,12 @@ struct TeethDiagnostics {
         let initialTeethX = teeth.position.x
         let expectedOffset = initialTeethX - initialSharkX
 
-        print(
-            "Initial: shark x=\(initialSharkX), teeth x=\(initialTeethX), offset=\(expectedOffset)")
-
         // When - move both
         engine.tickOnceForTests()
 
         let newSharkX = shark.position.x
         let newTeethX = teeth.position.x
         let newOffset = newTeethX - newSharkX
-
-        print("After 1 frame: shark x=\(newSharkX), teeth x=\(newTeethX), offset=\(newOffset)")
 
         // Then - offset should remain constant
         #expect(

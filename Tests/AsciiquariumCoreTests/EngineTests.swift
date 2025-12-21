@@ -155,7 +155,7 @@ struct EngineTests {
             let expectedX = max(0, engine.gridWidth - castle.size.width)
             #expect(castle.position.x == expectedX, "Castle should be re-aligned right")
         } else {
-            #expect(false, "Castle should exist after resize")
+            #expect(Bool(false), "Castle should exist after resize")
         }
 
         // Seaweed reflow
@@ -178,7 +178,7 @@ struct EngineTests {
 
         // Get a seaweed and verify it has a death callback
         guard let seaweed = engine.entities.first(where: { $0.type == .seaweed }) else {
-            #expect(false, "Should have at least one seaweed")
+            #expect(Bool(false), "Should have at least one seaweed")
             return
         }
         #expect(seaweed.deathCallback != nil, "Seaweed should have death callback for respawn")
@@ -224,7 +224,7 @@ struct EngineTests {
         // Then: verify each fish spawns off-screen based on direction
         for f in fish {
             guard let fishEntity = f as? FishEntity else {
-                #expect(false, "Fish should be a FishEntity")
+                #expect(Bool(false), "Fish should be a FishEntity")
                 continue
             }
 
@@ -293,7 +293,7 @@ struct EngineTests {
 
         // Get a fish and verify it has a death callback
         guard let fish = engine.entities.first(where: { $0.type == .fish }) else {
-            #expect(false, "Should have at least one fish")
+            #expect(Bool(false), "Should have at least one fish")
             return
         }
         #expect(fish.deathCallback != nil, "Fish should have death callback for respawn")
@@ -353,7 +353,6 @@ struct EngineTests {
         // When: Move fish frame by frame and track when it dies
         var frame = 0
         var fishDied = false
-        var deathFrame = -1
 
         // Record initial position
         if let initialFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity {
@@ -378,7 +377,6 @@ struct EngineTests {
             else {
                 // Fish was removed, it died during the update
                 fishDied = true
-                deathFrame = frame
                 // Use the last known position (fish died after moving offscreen)
                 if let lastEntry = positionHistory.last {
                     // Fish moved one more step before dying, so calculate the death position
@@ -407,39 +405,11 @@ struct EngineTests {
             // Check if fish is dead
             if !isAlive {
                 fishDied = true
-                deathFrame = frame
                 break
             }
         }
 
         // Then: Analyze what happened
-        print("\n=== Fish Movement Analysis ===")
-        print("Grid width: \(gridWidth)")
-        print("Fish width: \(fishWidth)")
-        print("Start position: x=\(startX), left=\(startX), right=\(startX + fishWidth - 1)")
-        print("\nPosition history:")
-        for entry in positionHistory {
-            let status = entry.isAlive ? "alive" : "DEAD"
-            let onScreen = entry.right >= 0 && entry.left < gridWidth ? "on-screen" : "off-screen"
-            print(
-                "  Frame \(entry.frame): x=\(entry.x), left=\(entry.left), right=\(entry.right), \(status), \(onScreen)"
-            )
-        }
-
-        if fishDied {
-            print("\nFish died at frame \(deathFrame)")
-            if let deathEntry = positionHistory.last {
-                print(
-                    "Death position: x=\(deathEntry.x), left=\(deathEntry.left), right=\(deathEntry.right)"
-                )
-                print("At death: left >= gridWidth? \(deathEntry.left >= gridWidth)")
-                print("At death: right < 0? \(deathEntry.right < 0)")
-            }
-        } else {
-            print("\nFish did not die within 20 frames")
-        }
-        print("=============================\n")
-
         // Verify fish died
         #expect(fishDied, "Fish should die when moving off right edge")
 
@@ -455,7 +425,7 @@ struct EngineTests {
             // Fish SHOULD die when left >= gridWidth (fully off right edge)
             if deathEntry.left < gridWidth && deathEntry.right >= 0 {
                 #expect(
-                    false,
+                    Bool(false),
                     "Fish died while still visible! left=\(deathEntry.left), right=\(deathEntry.right), gridWidth=\(gridWidth)"
                 )
             }
@@ -495,7 +465,6 @@ struct EngineTests {
         // When: Move fish frame by frame and track when it dies
         var frame = 0
         var fishDied = false
-        var deathFrame = -1
 
         // Record initial position
         if let initialFish = engine.entities.first(where: { $0.id == fishId }) as? FishEntity {
@@ -520,7 +489,6 @@ struct EngineTests {
             else {
                 // Fish was removed, it died during the update
                 fishDied = true
-                deathFrame = frame
                 // Use the last known position (fish died after moving offscreen)
                 if let lastEntry = positionHistory.last {
                     // Fish moved one more step before dying, so calculate the death position
@@ -549,40 +517,11 @@ struct EngineTests {
             // Check if fish is dead
             if !isAlive {
                 fishDied = true
-                deathFrame = frame
                 break
             }
         }
 
         // Then: Analyze what happened
-        print("\n=== Left-Moving Fish Movement Analysis ===")
-        print("Grid width: \(gridWidth)")
-        print("Fish width: \(fishWidth)")
-        print("Start position: x=\(startX), left=\(startX), right=\(startX + fishWidth - 1)")
-        print("\nPosition history:")
-        for entry in positionHistory {
-            let status = entry.isAlive ? "alive" : "DEAD"
-            let onScreen = entry.right >= 0 && entry.left < gridWidth ? "on-screen" : "off-screen"
-            print(
-                "  Frame \(entry.frame): x=\(entry.x), left=\(entry.left), right=\(entry.right), \(status), \(onScreen)"
-            )
-        }
-
-        if fishDied {
-            print("\nFish died at frame \(deathFrame)")
-            if let deathEntry = positionHistory.last {
-                print(
-                    "Death position: x=\(deathEntry.x), left=\(deathEntry.left), right=\(deathEntry.right)"
-                )
-                print("At death: left >= gridWidth? \(deathEntry.left >= gridWidth)")
-                print("At death: right < 0? \(deathEntry.right < 0)")
-                print("At death: left == 0? \(deathEntry.left == 0)")
-            }
-        } else {
-            print("\nFish did not die within 20 frames")
-        }
-        print("==========================================\n")
-
         // Verify fish died
         #expect(fishDied, "Fish should die when moving off left edge")
 
@@ -599,7 +538,7 @@ struct EngineTests {
             // CRITICAL: Fish should NOT die when left = 0 (that's the left edge of screen, fish is still visible)
             if deathEntry.left == 0 && deathEntry.right >= 0 {
                 #expect(
-                    false,
+                    Bool(false),
                     "BUG: Fish died when left=0! Fish is still visible. left=\(deathEntry.left), right=\(deathEntry.right), gridWidth=\(gridWidth)"
                 )
             }
@@ -607,7 +546,7 @@ struct EngineTests {
             // Fish should die when right < 0 (fully off left edge)
             if deathEntry.left < gridWidth && deathEntry.right >= 0 {
                 #expect(
-                    false,
+                    Bool(false),
                     "Fish died while still visible! left=\(deathEntry.left), right=\(deathEntry.right), gridWidth=\(gridWidth)"
                 )
             }
