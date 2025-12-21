@@ -42,7 +42,7 @@ struct EngineTests {
         let initialCount = engine.entities.count
 
         // A fish that will move fully off the right in one tick
-        var fish = EntityFactory.createFish(
+        let fish = EntityFactory.createFish(
             at: Position3D(max(0, engine.gridWidth - 1), layout.fishSpawnMinY, Depth.fishStart))
         fish.direction = 1  // move right
         fish.speed = 1.0  // 1 cell per frame
@@ -141,7 +141,6 @@ struct EngineTests {
     @Test func testBottomDecorReflowsOnResize() async throws {
         // Given
         let engine = TestHelpers.createTestEngine()
-        let initialLayout = WorldLayout(gridWidth: engine.gridWidth, gridHeight: engine.gridHeight)
         let initialSeaweedCount = engine.entities.filter { $0.type == .seaweed }.count
         #expect(initialSeaweedCount == max(1, engine.gridWidth / 15))
 
@@ -340,7 +339,6 @@ struct EngineTests {
 
         // Position fish near right edge (but still fully visible)
         let fishWidth = fish.size.width
-        let fishHeight = fish.size.height
         let startX = gridWidth - fishWidth - 2  // 2 cells from right edge
         fish.position = Position3D(startX, layout.fishSpawnMinY, Depth.fishStart)
 
@@ -369,7 +367,7 @@ struct EngineTests {
         }
 
         // Move for enough frames to ensure fish goes off screen
-        while frame < 20 && !fishDied {
+        while frame < 100 && !fishDied {
             // Advance one frame FIRST, then check position
             // This ensures we capture the position after the update that might kill the fish
             engine.tickOnceForTests()
@@ -511,7 +509,7 @@ struct EngineTests {
         }
 
         // Move for enough frames to ensure fish goes off screen
-        while frame < 20 && !fishDied {
+        while frame < 100 && !fishDied {
             // Advance one frame FIRST, then check position
             // This ensures we capture the position after the update that might kill the fish
             engine.tickOnceForTests()

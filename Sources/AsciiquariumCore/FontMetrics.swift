@@ -12,57 +12,37 @@ public class FontMetrics {
 
     // MARK: - Character Width Calculation
 
-    /// Calculate character width for a given font using NSLayoutManager
-    /// This is the most accurate method as it measures actual rendered text
+    /// Calculate character width for a given font
+    /// This uses NSAttributedString.size() for accurate measurement of rendered text
     public func calculateCharacterWidth(for font: NSFont) -> CGFloat {
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer()
-        let textStorage = NSTextStorage()
-
-        textStorage.addLayoutManager(layoutManager)
-        layoutManager.addTextContainer(textContainer)
-
         // Test with multiple characters to get accurate per-character width
         let testString = "MMMMMMMMMMMMMMMM"  // 16 characters
         let attributedString = NSAttributedString(string: testString, attributes: [.font: font])
-        textStorage.setAttributedString(attributedString)
-
-        let usedRect = layoutManager.usedRect(for: textContainer)
-        let perCharWidth = usedRect.width / CGFloat(testString.count)
+        let size = attributedString.size()
+        let perCharWidth = size.width / CGFloat(testString.count)
 
         // Validate the result and fallback to font.maximumAdvancement if invalid
         if perCharWidth.isFinite && perCharWidth > 0 {
             return perCharWidth
         } else {
-            print("Warning: NSLayoutManager calculation failed, using font.maximumAdvancement")
             return font.maximumAdvancement.width
         }
     }
 
     // MARK: - Line Height Calculation
 
-    /// Calculate line height for a given font using NSLayoutManager
-    /// This is more accurate than using font metrics directly as it measures actual rendered text
+    /// Calculate line height for a given font
+    /// This uses NSAttributedString.size() for accurate measurement of rendered text
     public func calculateLineHeight(for font: NSFont) -> CGFloat {
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer()
-        let textStorage = NSTextStorage()
-
-        textStorage.addLayoutManager(layoutManager)
-        layoutManager.addTextContainer(textContainer)
-
-        let testString = "M\nM"  // Two lines
+        let testString = "M"
         let attributedString = NSAttributedString(string: testString, attributes: [.font: font])
-        textStorage.setAttributedString(attributedString)
-
-        let usedRect = layoutManager.usedRect(for: textContainer)
-        let lineHeight = usedRect.height / 2.0  // Divide by 2 since we have 2 lines
+        let size = attributedString.size()
+        let lineHeight = size.height
 
         // Validate the result and fallback to font metrics if invalid
         if lineHeight.isFinite && lineHeight > 0 {
             return lineHeight
         } else {
-            print("Warning: NSLayoutManager line height calculation failed, using font metrics")
             return font.ascender - font.descender + font.leading
         }
     }

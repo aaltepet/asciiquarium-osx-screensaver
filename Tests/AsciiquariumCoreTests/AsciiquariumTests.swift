@@ -67,7 +67,6 @@ struct AsciiquariumTests {
     @Test func testMultipleResizeScenarios() async throws {
         let renderer = TestHelpers.createTestRenderer()
         let engine = TestHelpers.createTestEngine()
-        let entities = TestHelpers.createTestEntities()
 
         let resizeScenarios = [
             CGSize(width: 400, height: 300),
@@ -87,9 +86,9 @@ struct AsciiquariumTests {
             // Update engine
             engine.updateGridDimensions(width: dims.width, height: dims.height)
 
-            // Render scene
+            // Render scene using engine's reflowed entities
             let attributedString = renderer.renderScene(
-                entities: entities, gridWidth: dims.width, gridHeight: dims.height)
+                entities: engine.entities, gridWidth: dims.width, gridHeight: dims.height)
 
             // Should always produce valid output
             #expect(!attributedString.string.isEmpty, "Should render for size \(size)")
