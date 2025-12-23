@@ -11,109 +11,74 @@ This project ports the popular [asciiquarium](https://github.com/cmatsuoka/ascii
 ## Features
 
 - 🐠 **Animated ASCII Aquarium**: Watch fish, whales, and sea creatures swim in ASCII art
-- 🎨 **Multiple Color Schemes**: Monochrome, colored, and custom themes
-- ⚙️ **Configurable Settings**: Animation speed, font size, and visual options
-- 🖥️ **Native macOS Integration**: Seamless screensaver experience
-- 🚀 **Lightweight**: Minimal resource usage for smooth performance
+- 🎨 **Pixel-Perfect Collisions**: Shark eats fish with blood splat animations
+- 🎣 **Fishing Logic**: Random fishing hooks and lines
+- ⚙️ **Native Performance**: 100% Swift implementation (no Perl/external dependencies)
+- 🖥️ **macOS Integration**: Works as both a `.saver` and a standalone `.app`
 
 ## Requirements
 
 - macOS 10.15 (Catalina) or later
-- asciiquarium Perl script (installed via Homebrew)
+- Xcode 15+ (for building from source)
 
-## Installation
+## Installation (Pre-built)
 
-1. Install asciiquarium via Homebrew:
-   ```bash
-   brew install asciiquarium
-   ```
+1. Download the latest `AsciiquariumScreensaver.saver` bundle from the releases page.
+2. Double-click the `.saver` file to install.
+3. If macOS blocks the installation (Unidentified Developer):
+   - Go to **System Settings > Privacy & Security**.
+   - Scroll down and click **Open Anyway**.
+4. Open **System Settings > Screen Saver** and select "Asciiquarium Screensaver".
 
-2. Download the latest `.saver` bundle from the releases page
+## Building from Source
 
-3. Double-click the `.saver` file to install, or manually copy to:
-   ```
-   ~/Library/Screen Savers/
-   ```
+### 1. Build using Xcode
+1. Open `Asciiquarium.xcodeproj` in Xcode.
+2. Select the **AsciiquariumScreensaver** scheme in the top toolbar.
+3. Press **Cmd + Option + B** (or hold Option and go to **Product > Build for Profiling**) to create a **Release** build.
+4. To find the file:
+   - Go to the **Report Navigator** (Cmd + 9).
+   - Select the latest Build log.
+   - Click the folder icon next to the build result to "Show in Finder".
 
-4. Open System Preferences > Desktop & Screen Saver and select "Asciiquarium Screensaver"
-
-## Configuration
-
-The screensaver includes several configuration options:
-
-- **Animation Speed**: Slow, Normal, Fast
-- **Color Scheme**: Monochrome, Colored, Custom
-- **Font Size**: Auto, Small, Medium, Large
-- **Background**: Black, Dark Gray, Custom
-
-## Development
-
-### Prerequisites
-
-- Xcode 12.0 or later
-- macOS development environment
-- asciiquarium installed locally
-
-### Building from Source
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/asciiquarium-screensaver.git
-   cd asciiquarium-screensaver
-   ```
-
-2. Open `AsciiquariumScreensaver.xcodeproj` in Xcode
-
-3. Build the project (⌘+B)
-
-4. The `.saver` bundle will be created in the build directory
-
-### Project Structure
-
+### 2. Build using Terminal
+Run this command from the project root to build and place the output in a local `build` folder:
+```bash
+xcodebuild -project Asciiquarium.xcodeproj \
+           -scheme AsciiquariumScreensaver \
+           -configuration Release \
+           build \
+           SYMROOT=$(PWD)/build
 ```
-AsciiquariumScreensaver/
-├── AsciiquariumScreensaver/
-│   ├── AsciiquariumScreensaverView.swift    # Main screensaver view
-│   ├── AsciiquariumEngine.swift             # Script execution engine
-│   ├── ASCIIRenderer.swift                  # Text rendering system
-│   └── ConfigurationManager.swift           # Settings management
-├── Resources/
-│   └── asciiquarium.pl                      # Bundled Perl script
-└── AsciiquariumScreensaver.xcodeproj       # Xcode project file
+The screensaver will be located at: `./build/Release/AsciiquariumScreensaver.saver`
+
+### 3. Install via Terminal
+After building with the command above, you can install it immediately:
+```bash
+mkdir -p ~/Library/Screen\ Savers/
+cp -R ./build/Release/AsciiquariumScreensaver.saver ~/Library/Screen\ Savers/
 ```
+
+## Project Structure
+
+- `Sources/AsciiquariumCore`: Shared Swift logic for the aquarium engine and ASCII rendering.
+- `AsciiquariumApp`: Native macOS application wrapper.
+- `AsciiquariumScreensaver`: macOS Screensaver bundle implementation.
+- `Asciiquarium.xcodeproj`: Main Xcode project with shared schemes.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-
-1. Follow Swift style guidelines
-2. Add comments for complex logic
-3. Test on multiple macOS versions
-4. Ensure performance remains optimal
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v2 (GPL-2.0) - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
 - Original [asciiquarium](https://github.com/cmatsuoka/asciiquarium) by Kirk Baucom
 - [Term::Animation](https://metacpan.org/pod/Term::Animation) Perl module
 - macOS ScreenSaver framework
-
-## Roadmap
-
-- [ ] Multiple aquarium themes
-- [ ] Sound effects integration
-- [ ] Interactive elements
-- [ ] Custom ASCII art support
-- [ ] Network aquarium (multiple screens)
-
-## Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
 
 ---
 

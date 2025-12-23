@@ -65,8 +65,18 @@ public class AsciiquariumEngine: ObservableObject {
 
     // Grid dimensions can change when the controller (e.g. ContentView or screensaver) is resized.
     public func updateGridDimensions(width: Int, height: Int) {
+        let isInitialSize = (self.gridWidth == 80 && self.gridHeight == 24)
         self.gridWidth = width
         self.gridHeight = height
+
+        // If this is the first time we're setting real dimensions,
+        // or if the dimensions changed significantly, respawn fish to match density.
+        if isInitialSize || entities.filter({ $0.type == .fish }).isEmpty {
+            // Remove existing fish if we're doing a full reset
+            entities.removeAll { $0.type == .fish }
+            spawnAllFish()
+        }
+
         // Reflow static decor to match new grid size
         reflowBottomDecorForCurrentGrid()
     }

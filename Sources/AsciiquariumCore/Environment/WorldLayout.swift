@@ -36,7 +36,8 @@ public enum Depth {
 public enum SpawnConfig {
     // Fish density: Perl uses int((height - 9) * width / 350)
     // This divisor controls how many fish spawn initially based on screen size
-    public static let fishDensityDivisor: Int = 350
+    // Lower values = more fish. 100 provides approximately 10 fish on a standard terminal size.
+    public static let fishDensityDivisor: Int = 100
 
     // Seaweed count: Perl uses int(width / 15)
     // This divisor controls how many seaweed spawn based on screen width
