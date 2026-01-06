@@ -42,15 +42,19 @@ This project ports the popular [asciiquarium](https://github.com/cmatsuoka/ascii
    - Click the folder icon next to the build result to "Show in Finder".
 
 ### 2. Build using Terminal
-Run this command from the project root to build and place the output in a local `build` folder:
+Run this command from the project root to build a universal binary (arm64 + x86_64) and place the output in a local `build` folder:
 ```bash
 xcodebuild -project Asciiquarium.xcodeproj \
            -scheme AsciiquariumScreensaver \
            -configuration Release \
-           build \
+           clean build \
+           ARCHS="arm64 x86_64" \
+           ONLY_ACTIVE_ARCH=NO \
            SYMROOT=$(PWD)/build
 ```
 The screensaver will be located at: `./build/Release/AsciiquariumScreensaver.saver`
+
+**Note**: The `ARCHS="arm64 x86_64"` and `ONLY_ACTIVE_ARCH=NO` flags ensure a universal binary that works on both Apple Silicon and Intel Macs.
 
 ### 3. Install via Terminal
 After building with the command above, you can install it immediately:
