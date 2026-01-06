@@ -89,7 +89,7 @@ public class AsciiquariumEngine: ObservableObject {
         // Reflow static decor to match new grid size
         reflowBottomDecorForCurrentGrid()
     }
-    
+
     /// Respawn fish with current configuration (useful when fish count changes)
     public func respawnFish() {
         entities.removeAll { $0.type == .fish }

@@ -96,7 +96,12 @@ class AsciiquariumScreensaverView: ScreenSaverView {
   }
 
   private func updateDimensions() {
+    // Guard against zero-sized bounds (can happen during initialization)
     let bounds = self.bounds
+    guard bounds.width > 0 && bounds.height > 0 else {
+      return
+    }
+    
     let font = FontMetrics.shared.createDefaultFont()
     let dimensions = FontMetrics.shared.calculateGridDimensions(for: bounds, font: font)
 
@@ -121,7 +126,10 @@ class AsciiquariumScreensaverView: ScreenSaverView {
   }
 
   override var configureSheet: NSWindow? {
+    // Create configuration sheet lazily
     let controller = ConfigureSheetController()
+    // Ensure window is loaded
+    _ = controller.window
     return controller.window
   }
 }
