@@ -373,3 +373,10 @@ if shouldGenerateBubble() {
 - Line connects hook to surface
 - Proper collision detection with fish
 - Caught fish are pulled to the surface
+
+## BUGS
+
+- multiple "specials" can appear on the screen at the same time.  Perhaps one of them
+  causes a spawn before ending?  Maybe the dolphins?
+- Right-moving ship is missing sails
+- Screensaver is missing top row or two

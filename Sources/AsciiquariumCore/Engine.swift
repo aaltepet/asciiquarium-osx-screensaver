@@ -24,6 +24,9 @@ public class AsciiquariumEngine: ObservableObject {
     public var gridWidth: Int = 80
     public var gridHeight: Int = 24
 
+    // Custom fish count override (0 means use automatic calculation)
+    public var customFishCount: Int = 0
+
     // Animation settings
     private let targetFPS: Double = 30.0
     private let frameInterval: Double = 1.0 / 30.0
@@ -66,6 +69,8 @@ public class AsciiquariumEngine: ObservableObject {
     // Grid dimensions can change when the controller (e.g. ContentView or screensaver) is resized.
     public func updateGridDimensions(width: Int, height: Int) {
         let isInitialSize = (self.gridWidth == 80 && self.gridHeight == 24)
+        let oldWidth = self.gridWidth
+        let oldHeight = self.gridHeight
         self.gridWidth = width
         self.gridHeight = height
 
@@ -75,10 +80,20 @@ public class AsciiquariumEngine: ObservableObject {
             // Remove existing fish if we're doing a full reset
             entities.removeAll { $0.type == .fish }
             spawnAllFish()
+        } else if oldWidth != width || oldHeight != height {
+            // Dimensions changed - respawn fish to match new size and custom count
+            entities.removeAll { $0.type == .fish }
+            spawnAllFish()
         }
 
         // Reflow static decor to match new grid size
         reflowBottomDecorForCurrentGrid()
+    }
+    
+    /// Respawn fish with current configuration (useful when fish count changes)
+    public func respawnFish() {
+        entities.removeAll { $0.type == .fish }
+        spawnAllFish()
     }
 
     /// Update animation frame
@@ -261,11 +276,18 @@ public class AsciiquariumEngine: ObservableObject {
     }
 
     /// Spawn all initial fish using Perl formula: int((height - 9) * width / 350)
+    /// If customFishCount is set (non-zero), uses that value instead
     private func spawnAllFish() {
-        // Perl: my $screen_size = ($anim->height() - 9) * $anim->width();
-        //       my $fish_count = int($screen_size / 350);
-        let screenSize = (gridHeight - SpawnConfig.surfaceRegionHeight) * gridWidth
-        let fishCount = max(1, screenSize / SpawnConfig.fishDensityDivisor)
+        let fishCount: Int
+        if customFishCount > 0 {
+            // Use custom fish count from configuration
+            fishCount = customFishCount
+        } else {
+            // Perl: my $screen_size = ($anim->height() - 9) * $anim->width();
+            //       my $fish_count = int($screen_size / 350);
+            let screenSize = (gridHeight - SpawnConfig.surfaceRegionHeight) * gridWidth
+            fishCount = max(1, screenSize / SpawnConfig.fishDensityDivisor)
+        }
 
         for _ in 0..<fishCount {
             spawnFish()
